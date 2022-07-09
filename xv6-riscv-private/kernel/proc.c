@@ -176,6 +176,14 @@ freeproc(struct proc *p)
   p->chan = 0;
   p->killed = 0;
   p->xstate = 0;
+  //Take back the ticket if p is in LOW queue
+  if (p->in_queue == LOW) {
+  	total_tickets = total_tickets - p->ticket;
+  	p->ticket = 0;
+  }
+  p->hticks = 0;
+  p->lticks = 0;
+  p->in_queue = HIGH;
   p->state = UNUSED;
 }
 
@@ -383,6 +391,11 @@ exit(int status)
 
   p->xstate = status;
   p->state = ZOMBIE;
+  //Take back the ticket if p is in LOW queue
+  if (p->in_queue == LOW) {
+  	total_tickets = total_tickets - p->ticket;
+  	p->ticket = 0;
+  }
 
   release(&wait_lock);
 
@@ -463,24 +476,22 @@ scheduler(void)
     	acquire(&p->lock);
     	if ((p->state == RUNNABLE) && (p->in_queue == HIGH)) {
 	    	// Run process on HIGH queue	
-			// Switch to chosen process.  It is the process's job
-	        // to release its lock and then reacquire it
-	        // before jumping back to us.
 	        p->state = RUNNING;
-	        p->hticks++;
 	        c->proc = p;
 	        high_p_count++;
+	        const int start_ticks = ticks;
 	        swtch(&c->context, &p->context);
 	
-	        // Process is done running for now.
-	        // It should have changed its p->state before coming back.
 	        c->proc = 0;
 	        
 	        //Move to LOW queue and give a ticket
+	        p->hticks = ticks - start_ticks;
 	        p->in_queue = LOW;
-	        p->ticket = 1;
-	        total_tickets ++;
-//	        printf ("higher priority end: %s %d\n", p->name, p->pid);
+	        //If p hasnt had any tickets
+	        if (p->ticket == 0) {
+				p->ticket = 1;
+			}
+	        total_tickets += p->ticket;
 		}
 		release(&p->lock);
 	}
@@ -493,13 +504,17 @@ scheduler(void)
 		bool run = false;
 	    for(p = proc; p < &proc[NPROC]; p++) {
 	    	acquire(&p->lock);
-	    	counter += p->ticket;
+	    	if (p->in_queue == LOW) {
+	    		counter += p->ticket;
+	    	}
 			if ((p->state == RUNNABLE) && (p->in_queue == LOW) && (counter >= winner)) {
-//				printf ("%s %s\n", "RUNNING", p->name);
 		        p->state = RUNNING;
-		        p->lticks++;
 		        c->proc = p;
+		        const int start_ticks = ticks;
+		        
 		        swtch(&c->context, &p->context);
+		        
+				p->lticks = p->lticks + ticks - start_ticks;
 		        c->proc = 0;
 		        run = true;
 			}
@@ -711,8 +726,8 @@ cps (void)
 	
 	//Enable interrupt
 	intr_on();
-	
-	printf ("name \t pid \t state \t queue \t tickets \t high ticks \t low ticks\n");
+	printf ("Total tickets: %d\n", total_tickets);
+	printf ("name \t pid \t state \t\t queue \t ticket \t hticks \t lticks\n");
 	for (p = proc; p < &proc[NPROC]; p++) {
 		acquire (&p->lock);
 		if (p->state == SLEEPING)
@@ -721,6 +736,10 @@ cps (void)
 			printf ("%s \t %d \t RUNNING \t %s \t %d \t %d \t %d\n", p->name, p->pid, queue [p->in_queue], p->ticket, p->hticks, p->lticks);
 		else if (p->state == RUNNABLE)
 			printf ("%s \t %d \t RUNNABLE \t %s \t %d \t %d \t %d\n", p->name, p->pid, queue [p->in_queue], p->ticket, p->hticks, p->lticks);
+		else if (p->state == USED)
+			printf ("%s \t %d \t USED \t %s \t %d \t %d \t %d\n", p->name, p->pid, queue [p->in_queue], p->ticket, p->hticks, p->lticks);
+		else if (p->state == ZOMBIE)
+			printf ("%s \t %d \t ZOMBIE \t %s \t %d \t %d \t %d\n", p->name, p->pid, queue [p->in_queue], p->ticket, p->hticks, p->lticks);
 		release(&p->lock);
 	}
 	return 0;
