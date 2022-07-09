@@ -131,6 +131,7 @@ found:
   p->hticks = 0;
   p->lticks = 0;
   p->ticket = 0;
+  p->ticket_collected = 0;
 
 
   // Allocate a trapframe page.
@@ -170,20 +171,23 @@ freeproc(struct proc *p)
     proc_freepagetable(p->pagetable, p->sz);
   p->pagetable = 0;
   p->sz = 0;
+  
+    //Take back the ticket if p is in LOW queue and is currently in total_tickets
+  if ((p->ticket_collected == 1) && (p->in_queue == LOW)) {
+  	total_tickets = total_tickets - p->ticket;
+  	p->ticket_collected = 0;
+  }
+  p->ticket = 0;
+  p->hticks = 0;
+  p->lticks = 0;
+  p->in_queue = HIGH;
+  
   p->pid = 0;
   p->parent = 0;
   p->name[0] = 0;
   p->chan = 0;
   p->killed = 0;
   p->xstate = 0;
-  //Take back the ticket if p is in LOW queue
-  if (p->in_queue == LOW) {
-  	total_tickets = total_tickets - p->ticket;
-  	p->ticket = 0;
-  }
-  p->hticks = 0;
-  p->lticks = 0;
-  p->in_queue = HIGH;
   p->state = UNUSED;
 }
 
@@ -391,11 +395,12 @@ exit(int status)
 
   p->xstate = status;
   p->state = ZOMBIE;
-  //Take back the ticket if p is in LOW queue
-  if (p->in_queue == LOW) {
+  //Take back the ticket if p is in LOW queue and is added in total_tickets
+  if ((p->ticket_collected == 1) && (p->in_queue == LOW)) {
   	total_tickets = total_tickets - p->ticket;
-  	p->ticket = 0;
+  	p->ticket_collected = 0;
   }
+  p->ticket = 0;
 
   release(&wait_lock);
 
@@ -492,6 +497,7 @@ scheduler(void)
 				p->ticket = 1;
 			}
 	        total_tickets += p->ticket;
+	        p->ticket_collected = 1;
 		}
 		release(&p->lock);
 	}
@@ -504,20 +510,22 @@ scheduler(void)
 		bool run = false;
 	    for(p = proc; p < &proc[NPROC]; p++) {
 	    	acquire(&p->lock);
-	    	if (p->in_queue == LOW) {
+	    	if ((p->in_queue == LOW) && (p->state == RUNNABLE)) {
 	    		counter += p->ticket;
+	    		if (counter >= winner) {
+//					printf ("Winner: %s, ticket hold: %d, winning ticket %d\n", p->name, p->ticket, winner);
+			        p->state = RUNNING;
+			        c->proc = p;
+			        const int start_ticks = ticks;
+			        
+			        swtch(&c->context, &p->context);
+			        
+					p->lticks = p->lticks + ticks - start_ticks;
+			        c->proc = 0;
+			        run = true;
+				}
 	    	}
-			if ((p->state == RUNNABLE) && (p->in_queue == LOW) && (counter >= winner)) {
-		        p->state = RUNNING;
-		        c->proc = p;
-		        const int start_ticks = ticks;
-		        
-		        swtch(&c->context, &p->context);
-		        
-				p->lticks = p->lticks + ticks - start_ticks;
-		        c->proc = 0;
-		        run = true;
-			}
+			
 			release(&p->lock);
 			if (run) {
 				break;	
@@ -606,6 +614,10 @@ sleep(void *chan, struct spinlock *lk)
   // Go to sleep.
   p->chan = chan;
   p->state = SLEEPING;
+  if ((p->ticket_collected == 1) && (p->in_queue == LOW)) {
+  	total_tickets -= p->ticket;
+  	p->ticket_collected = 0;
+  }
 
   sched();
 
@@ -629,6 +641,10 @@ wakeup(void *chan)
       acquire(&p->lock);
       if(p->state == SLEEPING && p->chan == chan) {
         p->state = RUNNABLE;
+        if ((p->ticket_collected == 0) && (p->in_queue == LOW)) {
+  			total_tickets += p->ticket;
+  			p->ticket_collected = 1;
+  		}
       }
       release(&p->lock);
     }
@@ -650,6 +666,10 @@ kill(int pid)
       if(p->state == SLEEPING){
         // Wake process from sleep().
         p->state = RUNNABLE;
+        if ((p->ticket_collected == 0) && (p->in_queue == LOW)) {
+  			total_tickets += p->ticket;
+  			p->ticket_collected = 1;
+  		}
       }
       release(&p->lock);
       return 0;
@@ -756,9 +776,12 @@ settickets (int pid, int num) {
 	for (p = proc; p < &proc[NPROC]; p++) {
 		acquire (&p->lock);
 		if (p->pid == pid) {
-			total_tickets -= p->ticket;
+			int old_tickets = p->ticket;
 			p->ticket = num;
-			total_tickets += p->ticket;
+			//Only count tickets in LOW and has been added to total_tickets
+			if ((p->ticket_collected == 1) && (p->in_queue == LOW)) {
+				total_tickets = total_tickets - old_tickets + p->ticket;
+			}
 			is_set = true;
 		}
 		release (&p->lock);

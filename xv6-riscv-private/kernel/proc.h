@@ -111,5 +111,6 @@ struct proc {
   int hticks;
   int lticks;
   int ticket;
+  int ticket_collected;
   enum queue_name in_queue;
 };

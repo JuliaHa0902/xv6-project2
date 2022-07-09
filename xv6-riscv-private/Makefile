@@ -136,6 +136,7 @@ UPROGS=\
 	$U/_ps\
 	$U/_foo\
 	$U/_test_settickets\
+	$U/_test_childmaker\
 
 fs.img: mkfs/mkfs README $(UPROGS)
 	mkfs/mkfs fs.img README $(UPROGS)

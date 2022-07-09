@@ -27,6 +27,7 @@ int main (int argc, char *argv[]) {
 			settickets (ticket_list[i]);
 			cps();
 			spin();
+			exit (0);
 		} else {
 			// parent goes down this path (main)
 			spin();
