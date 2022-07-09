@@ -115,3 +115,8 @@ cps:
  li a7, SYS_cps
  ecall
  ret
+.global settickets
+settickets:
+ li a7, SYS_settickets
+ ecall
+ ret

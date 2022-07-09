@@ -5,6 +5,12 @@
 #include "spinlock.h"
 #include "proc.h"
 #include "defs.h"
+#include "stddef.h"
+#include "random.h"
+#include "stdbool.h"
+
+//Initialize totoal number of ticket
+int total_tickets = 0;
 
 struct cpu cpus[NCPU];
 
@@ -124,6 +130,7 @@ found:
   p->in_queue = HIGH;
   p->hticks = 0;
   p->lticks = 0;
+  p->ticket = 0;
 
 
   // Allocate a trapframe page.
@@ -451,22 +458,57 @@ scheduler(void)
     // Avoid deadlock by ensuring that devices can interrupt.
     intr_on();
 
+    int high_p_count = 0;
     for(p = proc; p < &proc[NPROC]; p++) {
-      acquire(&p->lock);
-      if(p->state == RUNNABLE) {
-        // Switch to chosen process.  It is the process's job
-        // to release its lock and then reacquire it
-        // before jumping back to us.
-        p->state = RUNNING;
-        c->proc = p;
-        swtch(&c->context, &p->context);
-
-        // Process is done running for now.
-        // It should have changed its p->state before coming back.
-        c->proc = 0;
-      }
-      release(&p->lock);
-    }
+    	acquire(&p->lock);
+    	if ((p->state == RUNNABLE) && (p->in_queue == HIGH)) {
+	    	// Run process on HIGH queue	
+			// Switch to chosen process.  It is the process's job
+	        // to release its lock and then reacquire it
+	        // before jumping back to us.
+	        p->state = RUNNING;
+	        p->hticks++;
+	        c->proc = p;
+	        high_p_count++;
+	        swtch(&c->context, &p->context);
+	
+	        // Process is done running for now.
+	        // It should have changed its p->state before coming back.
+	        c->proc = 0;
+	        
+	        //Move to LOW queue and give a ticket
+	        p->in_queue = LOW;
+	        p->ticket = 1;
+	        total_tickets ++;
+//	        printf ("higher priority end: %s %d\n", p->name, p->pid);
+		}
+		release(&p->lock);
+	}
+	
+	if (high_p_count == 0) {
+		// No process on HIGH queue
+		// Run process on LOW queue
+		int winner = (rand() * total_tickets * 10)/10 + 1;
+		int counter = 0;
+		bool run = false;
+	    for(p = proc; p < &proc[NPROC]; p++) {
+	    	acquire(&p->lock);
+	    	counter += p->ticket;
+			if ((p->state == RUNNABLE) && (p->in_queue == LOW) && (counter >= winner)) {
+//				printf ("%s %s\n", "RUNNING", p->name);
+		        p->state = RUNNING;
+		        p->lticks++;
+		        c->proc = p;
+		        swtch(&c->context, &p->context);
+		        c->proc = 0;
+		        run = true;
+			}
+			release(&p->lock);
+			if (run) {
+				break;	
+			}
+	    }
+	}
   }
 }
 
@@ -666,16 +708,42 @@ cps (void)
 {
 	struct proc *p;
 	static const char *queue[] = { "HIGH","LOW" };
-	acquire (&proc->lock);
-	printf ("name \t pid \t state \t queue\n");
+	
+	//Enable interrupt
+	intr_on();
+	
+	printf ("name \t pid \t state \t queue \t tickets \t high ticks \t low ticks\n");
 	for (p = proc; p < &proc[NPROC]; p++) {
+		acquire (&p->lock);
 		if (p->state == SLEEPING)
-			printf ("%s \t %d \t SLEEPING \t %s\n", p->nasme, p->pid, queue [p->in_queue]);
+			printf ("%s \t %d \t SLEEPING \t %s \t %d \t %d \t %d\n", p->name, p->pid, queue [p->in_queue], p->ticket, p->hticks, p->lticks);
 		else if (p->state == RUNNING)
-			printf ("%s \t %d \t RUNNING \t %s\n", p->name, p->pid, queue [p->in_queue]);
+			printf ("%s \t %d \t RUNNING \t %s \t %d \t %d \t %d\n", p->name, p->pid, queue [p->in_queue], p->ticket, p->hticks, p->lticks);
 		else if (p->state == RUNNABLE)
-			printf ("%s \t %d \t SLEEPING \t %s\n", p->name, p->pid, queue [p->in_queue]);
+			printf ("%s \t %d \t RUNNABLE \t %s \t %d \t %d \t %d\n", p->name, p->pid, queue [p->in_queue], p->ticket, p->hticks, p->lticks);
+		release(&p->lock);
 	}
-	release(&proc->lock);
-	return 22;
+	return 0;
+}
+
+
+//set ticket for each processor to num
+int 
+settickets (int pid, int num) {
+	struct proc *p;
+	if (num < 0)
+		return -1;
+	bool is_set = false;
+	for (p = proc; p < &proc[NPROC]; p++) {
+		acquire (&p->lock);
+		if (p->pid == pid) {
+			total_tickets -= p->ticket;
+			p->ticket = num;
+			total_tickets += p->ticket;
+			is_set = true;
+		}
+		release (&p->lock);
+		if (is_set) break;
+	}
+	return 0;
 }

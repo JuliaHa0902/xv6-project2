@@ -25,6 +25,7 @@ int sleep(int);
 int uptime(void);
 int getsyscallinfo(void);
 int cps(void);
+int settickets (int num);
 
 // ulib.c
 int stat(const char*, struct stat*);

@@ -6,7 +6,7 @@ Disassembly of section .text:
 
 0000000080000000 <_entry>:
     80000000:	00009117          	auipc	sp,0x9
-    80000004:	8f013103          	ld	sp,-1808(sp) # 800088f0 <_GLOBAL_OFFSET_TABLE_+0x8>
+    80000004:	97013103          	ld	sp,-1680(sp) # 80008970 <_GLOBAL_OFFSET_TABLE_+0x8>
     80000008:	6505                	lui	a0,0x1
     8000000a:	f14025f3          	csrr	a1,mhartid
     8000000e:	0585                	addi	a1,a1,1
@@ -75,7 +75,7 @@ w_mscratch(uint64 x)
     8000005e:	34071073          	csrw	mscratch,a4
   asm volatile("csrw mtvec, %0" : : "r" (x));
     80000062:	00006797          	auipc	a5,0x6
-    80000066:	bfe78793          	addi	a5,a5,-1026 # 80005c60 <timervec>
+    80000066:	e8e78793          	addi	a5,a5,-370 # 80005ef0 <timervec>
     8000006a:	30579073          	csrw	mtvec,a5
   asm volatile("csrr %0, mstatus" : "=r" (x) );
     8000006e:	300027f3          	csrr	a5,mstatus
@@ -199,7 +199,7 @@ consolewrite(int user_src, uint64 src, int n)
     80000124:	85d2                	mv	a1,s4
     80000126:	fbf40513          	addi	a0,s0,-65
     8000012a:	00002097          	auipc	ra,0x2
-    8000012e:	336080e7          	jalr	822(ra) # 80002460 <either_copyin>
+    8000012e:	4d0080e7          	jalr	1232(ra) # 800025fa <either_copyin>
     80000132:	01550d63          	beq	a0,s5,8000014c <consolewrite+0x4c>
       break;
     uartputc(c);
@@ -304,15 +304,15 @@ consoleread(int user_dst, uint64 dst, int n)
     800001b8:	09c4a703          	lw	a4,156(s1)
     800001bc:	02f71463          	bne	a4,a5,800001e4 <consoleread+0x80>
       if(myproc()->killed){
-    800001c0:	00001097          	auipc	ra,0x1
-    800001c4:	7d6080e7          	jalr	2006(ra) # 80001996 <myproc>
+    800001c0:	00002097          	auipc	ra,0x2
+    800001c4:	880080e7          	jalr	-1920(ra) # 80001a40 <myproc>
     800001c8:	551c                	lw	a5,40(a0)
     800001ca:	e7b5                	bnez	a5,80000236 <consoleread+0xd2>
       sleep(&cons.r, &cons.lock);
     800001cc:	85a6                	mv	a1,s1
     800001ce:	854a                	mv	a0,s2
     800001d0:	00002097          	auipc	ra,0x2
-    800001d4:	e96080e7          	jalr	-362(ra) # 80002066 <sleep>
+    800001d4:	030080e7          	jalr	48(ra) # 80002200 <sleep>
     while(cons.r == cons.w){
     800001d8:	0984a783          	lw	a5,152(s1)
     800001dc:	09c4a703          	lw	a4,156(s1)
@@ -334,7 +334,7 @@ consoleread(int user_dst, uint64 dst, int n)
     80000208:	85d2                	mv	a1,s4
     8000020a:	8556                	mv	a0,s5
     8000020c:	00002097          	auipc	ra,0x2
-    80000210:	1fe080e7          	jalr	510(ra) # 8000240a <either_copyout>
+    80000210:	398080e7          	jalr	920(ra) # 800025a4 <either_copyout>
     80000214:	01850663          	beq	a0,s8,80000220 <consoleread+0xbc>
     dst++;
     80000218:	0a05                	addi	s4,s4,1
@@ -446,7 +446,7 @@ consoleintr(int c)
   case C('P'):  // Print process list.
     procdump();
     800002ec:	00002097          	auipc	ra,0x2
-    800002f0:	1ca080e7          	jalr	458(ra) # 800024b6 <procdump>
+    800002f0:	364080e7          	jalr	868(ra) # 80002650 <procdump>
       }
     }
     break;
@@ -573,7 +573,7 @@ consoleintr(int c)
     80000438:	00011517          	auipc	a0,0x11
     8000043c:	de050513          	addi	a0,a0,-544 # 80011218 <cons+0x98>
     80000440:	00002097          	auipc	ra,0x2
-    80000444:	db2080e7          	jalr	-590(ra) # 800021f2 <wakeup>
+    80000444:	f4c080e7          	jalr	-180(ra) # 8000238c <wakeup>
     80000448:	b575                	j	800002f4 <consoleintr+0x3c>
 
 000000008000044a <consoleinit>:
@@ -587,7 +587,7 @@ consoleinit(void)
     80000450:	0800                	addi	s0,sp,16
   initlock(&cons.lock, "cons");
     80000452:	00008597          	auipc	a1,0x8
-    80000456:	bbe58593          	addi	a1,a1,-1090 # 80008010 <etext+0x10>
+    80000456:	bce58593          	addi	a1,a1,-1074 # 80008020 <etext+0x20>
     8000045a:	00011517          	auipc	a0,0x11
     8000045e:	d2650513          	addi	a0,a0,-730 # 80011180 <cons>
     80000462:	00000097          	auipc	ra,0x0
@@ -648,7 +648,7 @@ printint(int xx, int base, int sign)
     buf[i++] = digits[x % base];
     800004b2:	2581                	sext.w	a1,a1
     800004b4:	00008617          	auipc	a2,0x8
-    800004b8:	b8c60613          	addi	a2,a2,-1140 # 80008040 <digits>
+    800004b8:	b9c60613          	addi	a2,a2,-1124 # 80008050 <digits>
     800004bc:	883a                	mv	a6,a4
     800004be:	2705                	addiw	a4,a4,1
     800004c0:	02b577bb          	remuw	a5,a0,a1
@@ -721,7 +721,7 @@ panic(char *s)
     8000054a:	ce07ad23          	sw	zero,-774(a5) # 80011240 <pr+0x18>
   printf("panic: ");
     8000054e:	00008517          	auipc	a0,0x8
-    80000552:	aca50513          	addi	a0,a0,-1334 # 80008018 <etext+0x18>
+    80000552:	ada50513          	addi	a0,a0,-1318 # 80008028 <etext+0x28>
     80000556:	00000097          	auipc	ra,0x0
     8000055a:	02e080e7          	jalr	46(ra) # 80000584 <printf>
   printf(s);
@@ -730,7 +730,7 @@ panic(char *s)
     80000564:	024080e7          	jalr	36(ra) # 80000584 <printf>
   printf("\n");
     80000568:	00008517          	auipc	a0,0x8
-    8000056c:	b6050513          	addi	a0,a0,-1184 # 800080c8 <digits+0x88>
+    8000056c:	b7050513          	addi	a0,a0,-1168 # 800080d8 <digits+0x88>
     80000570:	00000097          	auipc	ra,0x0
     80000574:	014080e7          	jalr	20(ra) # 80000584 <printf>
   panicked = 1; // freeze uart output from other CPUs
@@ -787,7 +787,7 @@ panic(char *s)
     800005e0:	4d41                	li	s10,16
     consputc(digits[x >> (sizeof(uint64) * 8 - 4)]);
     800005e2:	00008b17          	auipc	s6,0x8
-    800005e6:	a5eb0b13          	addi	s6,s6,-1442 # 80008040 <digits>
+    800005e6:	a6eb0b13          	addi	s6,s6,-1426 # 80008050 <digits>
     switch(c){
     800005ea:	07300c93          	li	s9,115
     800005ee:	06400c13          	li	s8,100
@@ -800,7 +800,7 @@ panic(char *s)
     80000604:	bf7d                	j	800005c2 <printf+0x3e>
     panic("null fmt");
     80000606:	00008517          	auipc	a0,0x8
-    8000060a:	a2250513          	addi	a0,a0,-1502 # 80008028 <etext+0x28>
+    8000060a:	a3250513          	addi	a0,a0,-1486 # 80008038 <etext+0x38>
     8000060e:	00000097          	auipc	ra,0x0
     80000612:	f2c080e7          	jalr	-212(ra) # 8000053a <panic>
       consputc(c);
@@ -895,7 +895,7 @@ panic(char *s)
     800006fe:	b705                	j	8000061e <printf+0x9a>
         s = "(null)";
     80000700:	00008497          	auipc	s1,0x8
-    80000704:	92048493          	addi	s1,s1,-1760 # 80008020 <etext+0x20>
+    80000704:	93048493          	addi	s1,s1,-1744 # 80008030 <etext+0x30>
       for(; *s; s++)
     80000708:	02800513          	li	a0,40
     8000070c:	b7cd                	j	800006ee <printf+0x16a>
@@ -957,7 +957,7 @@ printfinit(void)
     8000076e:	00011497          	auipc	s1,0x11
     80000772:	aba48493          	addi	s1,s1,-1350 # 80011228 <pr>
     80000776:	00008597          	auipc	a1,0x8
-    8000077a:	8c258593          	addi	a1,a1,-1854 # 80008038 <etext+0x38>
+    8000077a:	8d258593          	addi	a1,a1,-1838 # 80008048 <etext+0x48>
     8000077e:	8526                	mv	a0,s1
     80000780:	00000097          	auipc	ra,0x0
     80000784:	3c0080e7          	jalr	960(ra) # 80000b40 <initlock>
@@ -1017,7 +1017,7 @@ uartinit(void)
 
   initlock(&uart_tx_lock, "uart");
     800007c6:	00008597          	auipc	a1,0x8
-    800007ca:	89258593          	addi	a1,a1,-1902 # 80008058 <digits+0x18>
+    800007ca:	8a258593          	addi	a1,a1,-1886 # 80008068 <digits+0x18>
     800007ce:	00011517          	auipc	a0,0x11
     800007d2:	a7a50513          	addi	a0,a0,-1414 # 80011248 <uart_tx_lock>
     800007d6:	00000097          	auipc	ra,0x0
@@ -1137,7 +1137,7 @@ uartstart()
     wakeup(&uart_tx_r);
     8000088c:	8526                	mv	a0,s1
     8000088e:	00002097          	auipc	ra,0x2
-    80000892:	964080e7          	jalr	-1692(ra) # 800021f2 <wakeup>
+    80000892:	afe080e7          	jalr	-1282(ra) # 8000238c <wakeup>
     
     WriteReg(THR, c);
     80000896:	01590023          	sb	s5,0(s2)
@@ -1198,8 +1198,8 @@ uartstart()
       sleep(&uart_tx_r, &uart_tx_lock);
     80000916:	85ce                	mv	a1,s3
     80000918:	8526                	mv	a0,s1
-    8000091a:	00001097          	auipc	ra,0x1
-    8000091e:	74c080e7          	jalr	1868(ra) # 80002066 <sleep>
+    8000091a:	00002097          	auipc	ra,0x2
+    8000091e:	8e6080e7          	jalr	-1818(ra) # 80002200 <sleep>
     if(uart_tx_w == uart_tx_r + UART_TX_BUF_SIZE){
     80000922:	00093703          	ld	a4,0(s2)
     80000926:	609c                	ld	a5,0(s1)
@@ -1372,7 +1372,7 @@ kfree(void *pa)
     80000a46:	8082                	ret
     panic("kfree");
     80000a48:	00007517          	auipc	a0,0x7
-    80000a4c:	61850513          	addi	a0,a0,1560 # 80008060 <digits+0x20>
+    80000a4c:	62850513          	addi	a0,a0,1576 # 80008070 <digits+0x20>
     80000a50:	00000097          	auipc	ra,0x0
     80000a54:	aea080e7          	jalr	-1302(ra) # 8000053a <panic>
 
@@ -1425,7 +1425,7 @@ kfree(void *pa)
     80000aaa:	0800                	addi	s0,sp,16
   initlock(&kmem.lock, "kmem");
     80000aac:	00007597          	auipc	a1,0x7
-    80000ab0:	5bc58593          	addi	a1,a1,1468 # 80008068 <digits+0x28>
+    80000ab0:	5cc58593          	addi	a1,a1,1484 # 80008078 <digits+0x28>
     80000ab4:	00010517          	auipc	a0,0x10
     80000ab8:	7cc50513          	addi	a0,a0,1996 # 80011280 <kmem>
     80000abc:	00000097          	auipc	ra,0x0
@@ -1542,7 +1542,7 @@ holding(struct spinlock *lk)
   r = (lk->locked && lk->cpu == mycpu());
     80000b68:	6904                	ld	s1,16(a0)
     80000b6a:	00001097          	auipc	ra,0x1
-    80000b6e:	e10080e7          	jalr	-496(ra) # 8000197a <mycpu>
+    80000b6e:	eba080e7          	jalr	-326(ra) # 80001a24 <mycpu>
     80000b72:	40a48533          	sub	a0,s1,a0
     80000b76:	00153513          	seqz	a0,a0
 }
@@ -1576,13 +1576,13 @@ push_off(void)
   intr_off();
   if(mycpu()->noff == 0)
     80000b9c:	00001097          	auipc	ra,0x1
-    80000ba0:	dde080e7          	jalr	-546(ra) # 8000197a <mycpu>
+    80000ba0:	e88080e7          	jalr	-376(ra) # 80001a24 <mycpu>
     80000ba4:	5d3c                	lw	a5,120(a0)
     80000ba6:	cf89                	beqz	a5,80000bc0 <push_off+0x3c>
     mycpu()->intena = old;
   mycpu()->noff += 1;
     80000ba8:	00001097          	auipc	ra,0x1
-    80000bac:	dd2080e7          	jalr	-558(ra) # 8000197a <mycpu>
+    80000bac:	e7c080e7          	jalr	-388(ra) # 80001a24 <mycpu>
     80000bb0:	5d3c                	lw	a5,120(a0)
     80000bb2:	2785                	addiw	a5,a5,1
     80000bb4:	dd3c                	sw	a5,120(a0)
@@ -1594,7 +1594,7 @@ push_off(void)
     80000bbe:	8082                	ret
     mycpu()->intena = old;
     80000bc0:	00001097          	auipc	ra,0x1
-    80000bc4:	dba080e7          	jalr	-582(ra) # 8000197a <mycpu>
+    80000bc4:	e64080e7          	jalr	-412(ra) # 80001a24 <mycpu>
   return (x & SSTATUS_SIE) != 0;
     80000bc8:	8085                	srli	s1,s1,0x1
     80000bca:	8885                	andi	s1,s1,1
@@ -1629,7 +1629,7 @@ push_off(void)
     80000bfc:	0ff0000f          	fence
   lk->cpu = mycpu();
     80000c00:	00001097          	auipc	ra,0x1
-    80000c04:	d7a080e7          	jalr	-646(ra) # 8000197a <mycpu>
+    80000c04:	e24080e7          	jalr	-476(ra) # 80001a24 <mycpu>
     80000c08:	e888                	sd	a0,16(s1)
 }
     80000c0a:	60e2                	ld	ra,24(sp)
@@ -1639,7 +1639,7 @@ push_off(void)
     80000c12:	8082                	ret
     panic("acquire");
     80000c14:	00007517          	auipc	a0,0x7
-    80000c18:	45c50513          	addi	a0,a0,1116 # 80008070 <digits+0x30>
+    80000c18:	46c50513          	addi	a0,a0,1132 # 80008080 <digits+0x30>
     80000c1c:	00000097          	auipc	ra,0x0
     80000c20:	91e080e7          	jalr	-1762(ra) # 8000053a <panic>
 
@@ -1654,7 +1654,7 @@ pop_off(void)
     80000c2a:	0800                	addi	s0,sp,16
   struct cpu *c = mycpu();
     80000c2c:	00001097          	auipc	ra,0x1
-    80000c30:	d4e080e7          	jalr	-690(ra) # 8000197a <mycpu>
+    80000c30:	df8080e7          	jalr	-520(ra) # 80001a24 <mycpu>
   asm volatile("csrr %0, sstatus" : "=r" (x) );
     80000c34:	100027f3          	csrr	a5,sstatus
   return (x & SSTATUS_SIE) != 0;
@@ -1688,12 +1688,12 @@ pop_off(void)
     80000c62:	8082                	ret
     panic("pop_off - interruptible");
     80000c64:	00007517          	auipc	a0,0x7
-    80000c68:	41450513          	addi	a0,a0,1044 # 80008078 <digits+0x38>
+    80000c68:	42450513          	addi	a0,a0,1060 # 80008088 <digits+0x38>
     80000c6c:	00000097          	auipc	ra,0x0
     80000c70:	8ce080e7          	jalr	-1842(ra) # 8000053a <panic>
     panic("pop_off");
     80000c74:	00007517          	auipc	a0,0x7
-    80000c78:	41c50513          	addi	a0,a0,1052 # 80008090 <digits+0x50>
+    80000c78:	42c50513          	addi	a0,a0,1068 # 800080a0 <digits+0x50>
     80000c7c:	00000097          	auipc	ra,0x0
     80000c80:	8be080e7          	jalr	-1858(ra) # 8000053a <panic>
 
@@ -1727,7 +1727,7 @@ pop_off(void)
     80000cba:	8082                	ret
     panic("release");
     80000cbc:	00007517          	auipc	a0,0x7
-    80000cc0:	3dc50513          	addi	a0,a0,988 # 80008098 <digits+0x58>
+    80000cc0:	3ec50513          	addi	a0,a0,1004 # 800080a8 <digits+0x58>
     80000cc4:	00000097          	auipc	ra,0x0
     80000cc8:	876080e7          	jalr	-1930(ra) # 8000053a <panic>
 
@@ -2047,7 +2047,7 @@ main()
     80000e78:	0800                	addi	s0,sp,16
   if(cpuid() == 0){
     80000e7a:	00001097          	auipc	ra,0x1
-    80000e7e:	af0080e7          	jalr	-1296(ra) # 8000196a <cpuid>
+    80000e7e:	b9a080e7          	jalr	-1126(ra) # 80001a14 <cpuid>
     virtio_disk_init(); // emulated hard disk
     userinit();      // first user process
     __sync_synchronize();
@@ -2067,10 +2067,10 @@ main()
     80000e92:	0ff0000f          	fence
     printf("hart %d starting\n", cpuid());
     80000e96:	00001097          	auipc	ra,0x1
-    80000e9a:	ad4080e7          	jalr	-1324(ra) # 8000196a <cpuid>
+    80000e9a:	b7e080e7          	jalr	-1154(ra) # 80001a14 <cpuid>
     80000e9e:	85aa                	mv	a1,a0
     80000ea0:	00007517          	auipc	a0,0x7
-    80000ea4:	21850513          	addi	a0,a0,536 # 800080b8 <digits+0x78>
+    80000ea4:	22850513          	addi	a0,a0,552 # 800080c8 <digits+0x78>
     80000ea8:	fffff097          	auipc	ra,0xfffff
     80000eac:	6dc080e7          	jalr	1756(ra) # 80000584 <printf>
     kvminithart();    // turn on paging
@@ -2078,15 +2078,15 @@ main()
     80000eb4:	0d8080e7          	jalr	216(ra) # 80000f88 <kvminithart>
     trapinithart();   // install kernel trap vector
     80000eb8:	00002097          	auipc	ra,0x2
-    80000ebc:	838080e7          	jalr	-1992(ra) # 800026f0 <trapinithart>
+    80000ebc:	a88080e7          	jalr	-1400(ra) # 80002940 <trapinithart>
     plicinithart();   // ask PLIC for device interrupts
     80000ec0:	00005097          	auipc	ra,0x5
-    80000ec4:	de0080e7          	jalr	-544(ra) # 80005ca0 <plicinithart>
+    80000ec4:	070080e7          	jalr	112(ra) # 80005f30 <plicinithart>
   }
 
   scheduler();        
     80000ec8:	00001097          	auipc	ra,0x1
-    80000ecc:	fec080e7          	jalr	-20(ra) # 80001eb4 <scheduler>
+    80000ecc:	09a080e7          	jalr	154(ra) # 80001f62 <scheduler>
     consoleinit();
     80000ed0:	fffff097          	auipc	ra,0xfffff
     80000ed4:	57a080e7          	jalr	1402(ra) # 8000044a <consoleinit>
@@ -2095,17 +2095,17 @@ main()
     80000edc:	88c080e7          	jalr	-1908(ra) # 80000764 <printfinit>
     printf("\n");
     80000ee0:	00007517          	auipc	a0,0x7
-    80000ee4:	1e850513          	addi	a0,a0,488 # 800080c8 <digits+0x88>
+    80000ee4:	1f850513          	addi	a0,a0,504 # 800080d8 <digits+0x88>
     80000ee8:	fffff097          	auipc	ra,0xfffff
     80000eec:	69c080e7          	jalr	1692(ra) # 80000584 <printf>
     printf("xv6 kernel is booting\n");
     80000ef0:	00007517          	auipc	a0,0x7
-    80000ef4:	1b050513          	addi	a0,a0,432 # 800080a0 <digits+0x60>
+    80000ef4:	1c050513          	addi	a0,a0,448 # 800080b0 <digits+0x60>
     80000ef8:	fffff097          	auipc	ra,0xfffff
     80000efc:	68c080e7          	jalr	1676(ra) # 80000584 <printf>
     printf("\n");
     80000f00:	00007517          	auipc	a0,0x7
-    80000f04:	1c850513          	addi	a0,a0,456 # 800080c8 <digits+0x88>
+    80000f04:	1d850513          	addi	a0,a0,472 # 800080d8 <digits+0x88>
     80000f08:	fffff097          	auipc	ra,0xfffff
     80000f0c:	67c080e7          	jalr	1660(ra) # 80000584 <printf>
     kinit();         // physical page allocator
@@ -2119,34 +2119,34 @@ main()
     80000f24:	068080e7          	jalr	104(ra) # 80000f88 <kvminithart>
     procinit();      // process table
     80000f28:	00001097          	auipc	ra,0x1
-    80000f2c:	992080e7          	jalr	-1646(ra) # 800018ba <procinit>
+    80000f2c:	a3c080e7          	jalr	-1476(ra) # 80001964 <procinit>
     trapinit();      // trap vectors
-    80000f30:	00001097          	auipc	ra,0x1
-    80000f34:	798080e7          	jalr	1944(ra) # 800026c8 <trapinit>
+    80000f30:	00002097          	auipc	ra,0x2
+    80000f34:	9e8080e7          	jalr	-1560(ra) # 80002918 <trapinit>
     trapinithart();  // install kernel trap vector
-    80000f38:	00001097          	auipc	ra,0x1
-    80000f3c:	7b8080e7          	jalr	1976(ra) # 800026f0 <trapinithart>
+    80000f38:	00002097          	auipc	ra,0x2
+    80000f3c:	a08080e7          	jalr	-1528(ra) # 80002940 <trapinithart>
     plicinit();      // set up interrupt controller
     80000f40:	00005097          	auipc	ra,0x5
-    80000f44:	d4a080e7          	jalr	-694(ra) # 80005c8a <plicinit>
+    80000f44:	fda080e7          	jalr	-38(ra) # 80005f1a <plicinit>
     plicinithart();  // ask PLIC for device interrupts
     80000f48:	00005097          	auipc	ra,0x5
-    80000f4c:	d58080e7          	jalr	-680(ra) # 80005ca0 <plicinithart>
+    80000f4c:	fe8080e7          	jalr	-24(ra) # 80005f30 <plicinithart>
     binit();         // buffer cache
     80000f50:	00002097          	auipc	ra,0x2
-    80000f54:	f1c080e7          	jalr	-228(ra) # 80002e6c <binit>
+    80000f54:	1ae080e7          	jalr	430(ra) # 800030fe <binit>
     iinit();         // inode table
-    80000f58:	00002097          	auipc	ra,0x2
-    80000f5c:	5aa080e7          	jalr	1450(ra) # 80003502 <iinit>
+    80000f58:	00003097          	auipc	ra,0x3
+    80000f5c:	83c080e7          	jalr	-1988(ra) # 80003794 <iinit>
     fileinit();      // file table
     80000f60:	00003097          	auipc	ra,0x3
-    80000f64:	55c080e7          	jalr	1372(ra) # 800044bc <fileinit>
+    80000f64:	7ee080e7          	jalr	2030(ra) # 8000474e <fileinit>
     virtio_disk_init(); // emulated hard disk
     80000f68:	00005097          	auipc	ra,0x5
-    80000f6c:	e58080e7          	jalr	-424(ra) # 80005dc0 <virtio_disk_init>
+    80000f6c:	0e8080e7          	jalr	232(ra) # 80006050 <virtio_disk_init>
     userinit();      // first user process
     80000f70:	00001097          	auipc	ra,0x1
-    80000f74:	d0a080e7          	jalr	-758(ra) # 80001c7a <userinit>
+    80000f74:	db8080e7          	jalr	-584(ra) # 80001d28 <userinit>
     __sync_synchronize();
     80000f78:	0ff0000f          	fence
     started = 1;
@@ -2219,7 +2219,7 @@ walk(pagetable_t pagetable, uint64 va, int alloc)
     80000fce:	04b7f263          	bgeu	a5,a1,80001012 <walk+0x66>
     panic("walk");
     80000fd2:	00007517          	auipc	a0,0x7
-    80000fd6:	0fe50513          	addi	a0,a0,254 # 800080d0 <digits+0x90>
+    80000fd6:	10e50513          	addi	a0,a0,270 # 800080e0 <digits+0x90>
     80000fda:	fffff097          	auipc	ra,0xfffff
     80000fde:	560080e7          	jalr	1376(ra) # 8000053a <panic>
     pte_t *pte = &pagetable[PX(level, va)];
@@ -2404,12 +2404,12 @@ mappages(pagetable_t pagetable, uint64 va, uint64 size, uint64 pa, int perm)
     800010f6:	bfc9                	j	800010c8 <mappages+0x34>
     panic("mappages: size");
     800010f8:	00007517          	auipc	a0,0x7
-    800010fc:	fe050513          	addi	a0,a0,-32 # 800080d8 <digits+0x98>
+    800010fc:	ff050513          	addi	a0,a0,-16 # 800080e8 <digits+0x98>
     80001100:	fffff097          	auipc	ra,0xfffff
     80001104:	43a080e7          	jalr	1082(ra) # 8000053a <panic>
       panic("mappages: remap");
     80001108:	00007517          	auipc	a0,0x7
-    8000110c:	fe050513          	addi	a0,a0,-32 # 800080e8 <digits+0xa8>
+    8000110c:	ff050513          	addi	a0,a0,-16 # 800080f8 <digits+0xa8>
     80001110:	fffff097          	auipc	ra,0xfffff
     80001114:	42a080e7          	jalr	1066(ra) # 8000053a <panic>
       return -1;
@@ -2453,7 +2453,7 @@ mappages(pagetable_t pagetable, uint64 va, uint64 size, uint64 pa, int perm)
     80001152:	8082                	ret
     panic("kvmmap");
     80001154:	00007517          	auipc	a0,0x7
-    80001158:	fa450513          	addi	a0,a0,-92 # 800080f8 <digits+0xb8>
+    80001158:	fb450513          	addi	a0,a0,-76 # 80008108 <digits+0xb8>
     8000115c:	fffff097          	auipc	ra,0xfffff
     80001160:	3de080e7          	jalr	990(ra) # 8000053a <panic>
 
@@ -2534,7 +2534,7 @@ mappages(pagetable_t pagetable, uint64 va, uint64 size, uint64 pa, int perm)
   proc_mapstacks(kpgtbl);
     80001222:	8526                	mv	a0,s1
     80001224:	00000097          	auipc	ra,0x0
-    80001228:	600080e7          	jalr	1536(ra) # 80001824 <proc_mapstacks>
+    80001228:	6aa080e7          	jalr	1706(ra) # 800018ce <proc_mapstacks>
 }
     8000122c:	8526                	mv	a0,s1
     8000122e:	60e2                	ld	ra,24(sp)
@@ -2621,22 +2621,22 @@ uvmunmap(pagetable_t pagetable, uint64 va, uint64 npages, int do_free)
     8000129e:	8082                	ret
     panic("uvmunmap: not aligned");
     800012a0:	00007517          	auipc	a0,0x7
-    800012a4:	e6050513          	addi	a0,a0,-416 # 80008100 <digits+0xc0>
+    800012a4:	e7050513          	addi	a0,a0,-400 # 80008110 <digits+0xc0>
     800012a8:	fffff097          	auipc	ra,0xfffff
     800012ac:	292080e7          	jalr	658(ra) # 8000053a <panic>
       panic("uvmunmap: walk");
     800012b0:	00007517          	auipc	a0,0x7
-    800012b4:	e6850513          	addi	a0,a0,-408 # 80008118 <digits+0xd8>
+    800012b4:	e7850513          	addi	a0,a0,-392 # 80008128 <digits+0xd8>
     800012b8:	fffff097          	auipc	ra,0xfffff
     800012bc:	282080e7          	jalr	642(ra) # 8000053a <panic>
       panic("uvmunmap: not mapped");
     800012c0:	00007517          	auipc	a0,0x7
-    800012c4:	e6850513          	addi	a0,a0,-408 # 80008128 <digits+0xe8>
+    800012c4:	e7850513          	addi	a0,a0,-392 # 80008138 <digits+0xe8>
     800012c8:	fffff097          	auipc	ra,0xfffff
     800012cc:	272080e7          	jalr	626(ra) # 8000053a <panic>
       panic("uvmunmap: not a leaf");
     800012d0:	00007517          	auipc	a0,0x7
-    800012d4:	e7050513          	addi	a0,a0,-400 # 80008140 <digits+0x100>
+    800012d4:	e8050513          	addi	a0,a0,-384 # 80008150 <digits+0x100>
     800012d8:	fffff097          	auipc	ra,0xfffff
     800012dc:	262080e7          	jalr	610(ra) # 8000053a <panic>
     *pte = 0;
@@ -2761,7 +2761,7 @@ uvminit(pagetable_t pagetable, uchar *src, uint sz)
     800013ac:	8082                	ret
     panic("inituvm: more than a page");
     800013ae:	00007517          	auipc	a0,0x7
-    800013b2:	daa50513          	addi	a0,a0,-598 # 80008158 <digits+0x118>
+    800013b2:	dba50513          	addi	a0,a0,-582 # 80008168 <digits+0x118>
     800013b6:	fffff097          	auipc	ra,0xfffff
     800013ba:	184080e7          	jalr	388(ra) # 8000053a <panic>
 
@@ -2953,7 +2953,7 @@ freewalk(pagetable_t pagetable)
     800014f0:	d7fd                	beqz	a5,800014de <freewalk+0x2e>
       panic("freewalk: leaf");
     800014f2:	00007517          	auipc	a0,0x7
-    800014f6:	c8650513          	addi	a0,a0,-890 # 80008178 <digits+0x138>
+    800014f6:	c9650513          	addi	a0,a0,-874 # 80008188 <digits+0x138>
     800014fa:	fffff097          	auipc	ra,0xfffff
     800014fe:	040080e7          	jalr	64(ra) # 8000053a <panic>
     }
@@ -3079,12 +3079,12 @@ uvmfree(pagetable_t pagetable, uint64 sz)
     800015ce:	a081                	j	8000160e <uvmcopy+0xb8>
       panic("uvmcopy: pte should exist");
     800015d0:	00007517          	auipc	a0,0x7
-    800015d4:	bb850513          	addi	a0,a0,-1096 # 80008188 <digits+0x148>
+    800015d4:	bc850513          	addi	a0,a0,-1080 # 80008198 <digits+0x148>
     800015d8:	fffff097          	auipc	ra,0xfffff
     800015dc:	f62080e7          	jalr	-158(ra) # 8000053a <panic>
       panic("uvmcopy: page not present");
     800015e0:	00007517          	auipc	a0,0x7
-    800015e4:	bc850513          	addi	a0,a0,-1080 # 800081a8 <digits+0x168>
+    800015e4:	bd850513          	addi	a0,a0,-1064 # 800081b8 <digits+0x168>
     800015e8:	fffff097          	auipc	ra,0xfffff
     800015ec:	f52080e7          	jalr	-174(ra) # 8000053a <panic>
       kfree(mem);
@@ -3153,7 +3153,7 @@ uvmclear(pagetable_t pagetable, uint64 va)
     80001648:	8082                	ret
     panic("uvmclear");
     8000164a:	00007517          	auipc	a0,0x7
-    8000164e:	b7e50513          	addi	a0,a0,-1154 # 800081c8 <digits+0x188>
+    8000164e:	b8e50513          	addi	a0,a0,-1138 # 800081d8 <digits+0x188>
     80001652:	fffff097          	auipc	ra,0xfffff
     80001656:	ee8080e7          	jalr	-280(ra) # 8000053a <panic>
 
@@ -3457,478 +3457,467 @@ copyinstr(pagetable_t pagetable, char *dst, uint64 srcva, uint64 max)
 }
     80001822:	8082                	ret
 
-0000000080001824 <proc_mapstacks>:
+0000000080001824 <rand>:
+
+static uint32_t z1 = SEED, z2 = SEED, z3 = SEED, z4 = SEED;
+
+
+double rand (void)
+{
+    80001824:	1141                	addi	sp,sp,-16
+    80001826:	e422                	sd	s0,8(sp)
+    80001828:	0800                	addi	s0,sp,16
+   uint32_t b;
+   b  = ((z1 << 6) ^ z1) >> 13;
+    8000182a:	00007697          	auipc	a3,0x7
+    8000182e:	0fa68693          	addi	a3,a3,250 # 80008924 <z1>
+    80001832:	429c                	lw	a5,0(a3)
+    80001834:	0067971b          	slliw	a4,a5,0x6
+    80001838:	8f3d                	xor	a4,a4,a5
+    8000183a:	00d7571b          	srliw	a4,a4,0xd
+   z1 = ((z1 & 4294967294U) << 18) ^ b;
+    8000183e:	0127961b          	slliw	a2,a5,0x12
+    80001842:	fff807b7          	lui	a5,0xfff80
+    80001846:	8e7d                	and	a2,a2,a5
+    80001848:	8e39                	xor	a2,a2,a4
+    8000184a:	2601                	sext.w	a2,a2
+    8000184c:	c290                	sw	a2,0(a3)
+   b  = ((z2 << 2) ^ z2) >> 27;
+    8000184e:	00007717          	auipc	a4,0x7
+    80001852:	0d270713          	addi	a4,a4,210 # 80008920 <z2>
+    80001856:	431c                	lw	a5,0(a4)
+    80001858:	0027969b          	slliw	a3,a5,0x2
+    8000185c:	8fb5                	xor	a5,a5,a3
+    8000185e:	01b7d79b          	srliw	a5,a5,0x1b
+   z2 = ((z2 & 4294967288U) << 2) ^ b;
+    80001862:	9a81                	andi	a3,a3,-32
+    80001864:	8ebd                	xor	a3,a3,a5
+    80001866:	2681                	sext.w	a3,a3
+    80001868:	c314                	sw	a3,0(a4)
+   b  = ((z3 << 13) ^ z3) >> 21;
+    8000186a:	00007517          	auipc	a0,0x7
+    8000186e:	0b250513          	addi	a0,a0,178 # 8000891c <z3>
+    80001872:	411c                	lw	a5,0(a0)
+    80001874:	00d7959b          	slliw	a1,a5,0xd
+    80001878:	8dbd                	xor	a1,a1,a5
+    8000187a:	0155d59b          	srliw	a1,a1,0x15
+   z3 = ((z3 & 4294967280U) << 7) ^ b;
+    8000187e:	0077971b          	slliw	a4,a5,0x7
+    80001882:	80077713          	andi	a4,a4,-2048
+    80001886:	8f2d                	xor	a4,a4,a1
+    80001888:	2701                	sext.w	a4,a4
+    8000188a:	c118                	sw	a4,0(a0)
+   b  = ((z4 << 3) ^ z4) >> 12;
+    8000188c:	00007517          	auipc	a0,0x7
+    80001890:	08c50513          	addi	a0,a0,140 # 80008918 <z4>
+    80001894:	411c                	lw	a5,0(a0)
+    80001896:	0037959b          	slliw	a1,a5,0x3
+    8000189a:	8dbd                	xor	a1,a1,a5
+    8000189c:	00c5d59b          	srliw	a1,a1,0xc
+   z4 = ((z4 & 4294967168U) << 13) ^ b;
+    800018a0:	00d7979b          	slliw	a5,a5,0xd
+    800018a4:	fff00837          	lui	a6,0xfff00
+    800018a8:	0107f7b3          	and	a5,a5,a6
+    800018ac:	8fad                	xor	a5,a5,a1
+    800018ae:	2781                	sext.w	a5,a5
+    800018b0:	c11c                	sw	a5,0(a0)
+   return (z1 ^ z2 ^ z3 ^ z4) * 2.3283064365386963e-10;
+    800018b2:	8e35                	xor	a2,a2,a3
+    800018b4:	8e39                	xor	a2,a2,a4
+    800018b6:	8e3d                	xor	a2,a2,a5
+    800018b8:	d2160553          	fcvt.d.wu	fa0,a2
+    800018bc:	00006797          	auipc	a5,0x6
+    800018c0:	7447b787          	fld	fa5,1860(a5) # 80008000 <etext>
+}
+    800018c4:	12f57553          	fmul.d	fa0,fa0,fa5
+    800018c8:	6422                	ld	s0,8(sp)
+    800018ca:	0141                	addi	sp,sp,16
+    800018cc:	8082                	ret
+
+00000000800018ce <proc_mapstacks>:
 
 // Allocate a page for each process's kernel stack.
 // Map it high in memory, followed by an invalid
 // guard page.
 void
 proc_mapstacks(pagetable_t kpgtbl) {
-    80001824:	7139                	addi	sp,sp,-64
-    80001826:	fc06                	sd	ra,56(sp)
-    80001828:	f822                	sd	s0,48(sp)
-    8000182a:	f426                	sd	s1,40(sp)
-    8000182c:	f04a                	sd	s2,32(sp)
-    8000182e:	ec4e                	sd	s3,24(sp)
-    80001830:	e852                	sd	s4,16(sp)
-    80001832:	e456                	sd	s5,8(sp)
-    80001834:	e05a                	sd	s6,0(sp)
-    80001836:	0080                	addi	s0,sp,64
-    80001838:	89aa                	mv	s3,a0
+    800018ce:	7139                	addi	sp,sp,-64
+    800018d0:	fc06                	sd	ra,56(sp)
+    800018d2:	f822                	sd	s0,48(sp)
+    800018d4:	f426                	sd	s1,40(sp)
+    800018d6:	f04a                	sd	s2,32(sp)
+    800018d8:	ec4e                	sd	s3,24(sp)
+    800018da:	e852                	sd	s4,16(sp)
+    800018dc:	e456                	sd	s5,8(sp)
+    800018de:	e05a                	sd	s6,0(sp)
+    800018e0:	0080                	addi	s0,sp,64
+    800018e2:	89aa                	mv	s3,a0
   struct proc *p;
   
   for(p = proc; p < &proc[NPROC]; p++) {
-    8000183a:	00010497          	auipc	s1,0x10
-    8000183e:	e9648493          	addi	s1,s1,-362 # 800116d0 <proc>
+    800018e4:	00010497          	auipc	s1,0x10
+    800018e8:	dec48493          	addi	s1,s1,-532 # 800116d0 <proc>
     char *pa = kalloc();
     if(pa == 0)
       panic("kalloc");
     uint64 va = KSTACK((int) (p - proc));
-    80001842:	8b26                	mv	s6,s1
-    80001844:	00006a97          	auipc	s5,0x6
-    80001848:	7bca8a93          	addi	s5,s5,1980 # 80008000 <etext>
-    8000184c:	04000937          	lui	s2,0x4000
-    80001850:	197d                	addi	s2,s2,-1 # 3ffffff <_entry-0x7c000001>
-    80001852:	0932                	slli	s2,s2,0xc
+    800018ec:	8b26                	mv	s6,s1
+    800018ee:	00006a97          	auipc	s5,0x6
+    800018f2:	71aa8a93          	addi	s5,s5,1818 # 80008008 <etext+0x8>
+    800018f6:	04000937          	lui	s2,0x4000
+    800018fa:	197d                	addi	s2,s2,-1 # 3ffffff <_entry-0x7c000001>
+    800018fc:	0932                	slli	s2,s2,0xc
   for(p = proc; p < &proc[NPROC]; p++) {
-    80001854:	00016a17          	auipc	s4,0x16
-    80001858:	c7ca0a13          	addi	s4,s4,-900 # 800174d0 <tickslock>
+    800018fe:	00016a17          	auipc	s4,0x16
+    80001902:	bd2a0a13          	addi	s4,s4,-1070 # 800174d0 <tickslock>
     char *pa = kalloc();
-    8000185c:	fffff097          	auipc	ra,0xfffff
-    80001860:	284080e7          	jalr	644(ra) # 80000ae0 <kalloc>
-    80001864:	862a                	mv	a2,a0
+    80001906:	fffff097          	auipc	ra,0xfffff
+    8000190a:	1da080e7          	jalr	474(ra) # 80000ae0 <kalloc>
+    8000190e:	862a                	mv	a2,a0
     if(pa == 0)
-    80001866:	c131                	beqz	a0,800018aa <proc_mapstacks+0x86>
+    80001910:	c131                	beqz	a0,80001954 <proc_mapstacks+0x86>
     uint64 va = KSTACK((int) (p - proc));
-    80001868:	416485b3          	sub	a1,s1,s6
-    8000186c:	858d                	srai	a1,a1,0x3
-    8000186e:	000ab783          	ld	a5,0(s5)
-    80001872:	02f585b3          	mul	a1,a1,a5
-    80001876:	2585                	addiw	a1,a1,1
-    80001878:	00d5959b          	slliw	a1,a1,0xd
+    80001912:	416485b3          	sub	a1,s1,s6
+    80001916:	858d                	srai	a1,a1,0x3
+    80001918:	000ab783          	ld	a5,0(s5)
+    8000191c:	02f585b3          	mul	a1,a1,a5
+    80001920:	2585                	addiw	a1,a1,1
+    80001922:	00d5959b          	slliw	a1,a1,0xd
     kvmmap(kpgtbl, va, (uint64)pa, PGSIZE, PTE_R | PTE_W);
-    8000187c:	4719                	li	a4,6
-    8000187e:	6685                	lui	a3,0x1
-    80001880:	40b905b3          	sub	a1,s2,a1
-    80001884:	854e                	mv	a0,s3
-    80001886:	00000097          	auipc	ra,0x0
-    8000188a:	8ae080e7          	jalr	-1874(ra) # 80001134 <kvmmap>
+    80001926:	4719                	li	a4,6
+    80001928:	6685                	lui	a3,0x1
+    8000192a:	40b905b3          	sub	a1,s2,a1
+    8000192e:	854e                	mv	a0,s3
+    80001930:	00000097          	auipc	ra,0x0
+    80001934:	804080e7          	jalr	-2044(ra) # 80001134 <kvmmap>
   for(p = proc; p < &proc[NPROC]; p++) {
-    8000188e:	17848493          	addi	s1,s1,376
-    80001892:	fd4495e3          	bne	s1,s4,8000185c <proc_mapstacks+0x38>
+    80001938:	17848493          	addi	s1,s1,376
+    8000193c:	fd4495e3          	bne	s1,s4,80001906 <proc_mapstacks+0x38>
   }
 }
-    80001896:	70e2                	ld	ra,56(sp)
-    80001898:	7442                	ld	s0,48(sp)
-    8000189a:	74a2                	ld	s1,40(sp)
-    8000189c:	7902                	ld	s2,32(sp)
-    8000189e:	69e2                	ld	s3,24(sp)
-    800018a0:	6a42                	ld	s4,16(sp)
-    800018a2:	6aa2                	ld	s5,8(sp)
-    800018a4:	6b02                	ld	s6,0(sp)
-    800018a6:	6121                	addi	sp,sp,64
-    800018a8:	8082                	ret
+    80001940:	70e2                	ld	ra,56(sp)
+    80001942:	7442                	ld	s0,48(sp)
+    80001944:	74a2                	ld	s1,40(sp)
+    80001946:	7902                	ld	s2,32(sp)
+    80001948:	69e2                	ld	s3,24(sp)
+    8000194a:	6a42                	ld	s4,16(sp)
+    8000194c:	6aa2                	ld	s5,8(sp)
+    8000194e:	6b02                	ld	s6,0(sp)
+    80001950:	6121                	addi	sp,sp,64
+    80001952:	8082                	ret
       panic("kalloc");
-    800018aa:	00007517          	auipc	a0,0x7
-    800018ae:	92e50513          	addi	a0,a0,-1746 # 800081d8 <digits+0x198>
-    800018b2:	fffff097          	auipc	ra,0xfffff
-    800018b6:	c88080e7          	jalr	-888(ra) # 8000053a <panic>
+    80001954:	00007517          	auipc	a0,0x7
+    80001958:	89450513          	addi	a0,a0,-1900 # 800081e8 <digits+0x198>
+    8000195c:	fffff097          	auipc	ra,0xfffff
+    80001960:	bde080e7          	jalr	-1058(ra) # 8000053a <panic>
 
-00000000800018ba <procinit>:
+0000000080001964 <procinit>:
 
 // initialize the proc table at boot time.
 void
 procinit(void)
 {
-    800018ba:	7139                	addi	sp,sp,-64
-    800018bc:	fc06                	sd	ra,56(sp)
-    800018be:	f822                	sd	s0,48(sp)
-    800018c0:	f426                	sd	s1,40(sp)
-    800018c2:	f04a                	sd	s2,32(sp)
-    800018c4:	ec4e                	sd	s3,24(sp)
-    800018c6:	e852                	sd	s4,16(sp)
-    800018c8:	e456                	sd	s5,8(sp)
-    800018ca:	e05a                	sd	s6,0(sp)
-    800018cc:	0080                	addi	s0,sp,64
+    80001964:	7139                	addi	sp,sp,-64
+    80001966:	fc06                	sd	ra,56(sp)
+    80001968:	f822                	sd	s0,48(sp)
+    8000196a:	f426                	sd	s1,40(sp)
+    8000196c:	f04a                	sd	s2,32(sp)
+    8000196e:	ec4e                	sd	s3,24(sp)
+    80001970:	e852                	sd	s4,16(sp)
+    80001972:	e456                	sd	s5,8(sp)
+    80001974:	e05a                	sd	s6,0(sp)
+    80001976:	0080                	addi	s0,sp,64
   struct proc *p;
   
   initlock(&pid_lock, "nextpid");
-    800018ce:	00007597          	auipc	a1,0x7
-    800018d2:	91258593          	addi	a1,a1,-1774 # 800081e0 <digits+0x1a0>
-    800018d6:	00010517          	auipc	a0,0x10
-    800018da:	9ca50513          	addi	a0,a0,-1590 # 800112a0 <pid_lock>
-    800018de:	fffff097          	auipc	ra,0xfffff
-    800018e2:	262080e7          	jalr	610(ra) # 80000b40 <initlock>
+    80001978:	00007597          	auipc	a1,0x7
+    8000197c:	87858593          	addi	a1,a1,-1928 # 800081f0 <digits+0x1a0>
+    80001980:	00010517          	auipc	a0,0x10
+    80001984:	92050513          	addi	a0,a0,-1760 # 800112a0 <pid_lock>
+    80001988:	fffff097          	auipc	ra,0xfffff
+    8000198c:	1b8080e7          	jalr	440(ra) # 80000b40 <initlock>
   initlock(&wait_lock, "wait_lock");
-    800018e6:	00007597          	auipc	a1,0x7
-    800018ea:	90258593          	addi	a1,a1,-1790 # 800081e8 <digits+0x1a8>
-    800018ee:	00010517          	auipc	a0,0x10
-    800018f2:	9ca50513          	addi	a0,a0,-1590 # 800112b8 <wait_lock>
-    800018f6:	fffff097          	auipc	ra,0xfffff
-    800018fa:	24a080e7          	jalr	586(ra) # 80000b40 <initlock>
+    80001990:	00007597          	auipc	a1,0x7
+    80001994:	86858593          	addi	a1,a1,-1944 # 800081f8 <digits+0x1a8>
+    80001998:	00010517          	auipc	a0,0x10
+    8000199c:	92050513          	addi	a0,a0,-1760 # 800112b8 <wait_lock>
+    800019a0:	fffff097          	auipc	ra,0xfffff
+    800019a4:	1a0080e7          	jalr	416(ra) # 80000b40 <initlock>
   for(p = proc; p < &proc[NPROC]; p++) {
-    800018fe:	00010497          	auipc	s1,0x10
-    80001902:	dd248493          	addi	s1,s1,-558 # 800116d0 <proc>
+    800019a8:	00010497          	auipc	s1,0x10
+    800019ac:	d2848493          	addi	s1,s1,-728 # 800116d0 <proc>
       initlock(&p->lock, "proc");
-    80001906:	00007b17          	auipc	s6,0x7
-    8000190a:	8f2b0b13          	addi	s6,s6,-1806 # 800081f8 <digits+0x1b8>
+    800019b0:	00007b17          	auipc	s6,0x7
+    800019b4:	858b0b13          	addi	s6,s6,-1960 # 80008208 <digits+0x1b8>
       p->kstack = KSTACK((int) (p - proc));
-    8000190e:	8aa6                	mv	s5,s1
-    80001910:	00006a17          	auipc	s4,0x6
-    80001914:	6f0a0a13          	addi	s4,s4,1776 # 80008000 <etext>
-    80001918:	04000937          	lui	s2,0x4000
-    8000191c:	197d                	addi	s2,s2,-1 # 3ffffff <_entry-0x7c000001>
-    8000191e:	0932                	slli	s2,s2,0xc
+    800019b8:	8aa6                	mv	s5,s1
+    800019ba:	00006a17          	auipc	s4,0x6
+    800019be:	64ea0a13          	addi	s4,s4,1614 # 80008008 <etext+0x8>
+    800019c2:	04000937          	lui	s2,0x4000
+    800019c6:	197d                	addi	s2,s2,-1 # 3ffffff <_entry-0x7c000001>
+    800019c8:	0932                	slli	s2,s2,0xc
   for(p = proc; p < &proc[NPROC]; p++) {
-    80001920:	00016997          	auipc	s3,0x16
-    80001924:	bb098993          	addi	s3,s3,-1104 # 800174d0 <tickslock>
+    800019ca:	00016997          	auipc	s3,0x16
+    800019ce:	b0698993          	addi	s3,s3,-1274 # 800174d0 <tickslock>
       initlock(&p->lock, "proc");
-    80001928:	85da                	mv	a1,s6
-    8000192a:	8526                	mv	a0,s1
-    8000192c:	fffff097          	auipc	ra,0xfffff
-    80001930:	214080e7          	jalr	532(ra) # 80000b40 <initlock>
+    800019d2:	85da                	mv	a1,s6
+    800019d4:	8526                	mv	a0,s1
+    800019d6:	fffff097          	auipc	ra,0xfffff
+    800019da:	16a080e7          	jalr	362(ra) # 80000b40 <initlock>
       p->kstack = KSTACK((int) (p - proc));
-    80001934:	415487b3          	sub	a5,s1,s5
-    80001938:	878d                	srai	a5,a5,0x3
-    8000193a:	000a3703          	ld	a4,0(s4)
-    8000193e:	02e787b3          	mul	a5,a5,a4
-    80001942:	2785                	addiw	a5,a5,1
-    80001944:	00d7979b          	slliw	a5,a5,0xd
-    80001948:	40f907b3          	sub	a5,s2,a5
-    8000194c:	e0bc                	sd	a5,64(s1)
+    800019de:	415487b3          	sub	a5,s1,s5
+    800019e2:	878d                	srai	a5,a5,0x3
+    800019e4:	000a3703          	ld	a4,0(s4)
+    800019e8:	02e787b3          	mul	a5,a5,a4
+    800019ec:	2785                	addiw	a5,a5,1
+    800019ee:	00d7979b          	slliw	a5,a5,0xd
+    800019f2:	40f907b3          	sub	a5,s2,a5
+    800019f6:	e0bc                	sd	a5,64(s1)
   for(p = proc; p < &proc[NPROC]; p++) {
-    8000194e:	17848493          	addi	s1,s1,376
-    80001952:	fd349be3          	bne	s1,s3,80001928 <procinit+0x6e>
+    800019f8:	17848493          	addi	s1,s1,376
+    800019fc:	fd349be3          	bne	s1,s3,800019d2 <procinit+0x6e>
   }
 }
-    80001956:	70e2                	ld	ra,56(sp)
-    80001958:	7442                	ld	s0,48(sp)
-    8000195a:	74a2                	ld	s1,40(sp)
-    8000195c:	7902                	ld	s2,32(sp)
-    8000195e:	69e2                	ld	s3,24(sp)
-    80001960:	6a42                	ld	s4,16(sp)
-    80001962:	6aa2                	ld	s5,8(sp)
-    80001964:	6b02                	ld	s6,0(sp)
-    80001966:	6121                	addi	sp,sp,64
-    80001968:	8082                	ret
+    80001a00:	70e2                	ld	ra,56(sp)
+    80001a02:	7442                	ld	s0,48(sp)
+    80001a04:	74a2                	ld	s1,40(sp)
+    80001a06:	7902                	ld	s2,32(sp)
+    80001a08:	69e2                	ld	s3,24(sp)
+    80001a0a:	6a42                	ld	s4,16(sp)
+    80001a0c:	6aa2                	ld	s5,8(sp)
+    80001a0e:	6b02                	ld	s6,0(sp)
+    80001a10:	6121                	addi	sp,sp,64
+    80001a12:	8082                	ret
 
-000000008000196a <cpuid>:
+0000000080001a14 <cpuid>:
 // Must be called with interrupts disabled,
 // to prevent race with process being moved
 // to a different CPU.
 int
 cpuid()
 {
-    8000196a:	1141                	addi	sp,sp,-16
-    8000196c:	e422                	sd	s0,8(sp)
-    8000196e:	0800                	addi	s0,sp,16
+    80001a14:	1141                	addi	sp,sp,-16
+    80001a16:	e422                	sd	s0,8(sp)
+    80001a18:	0800                	addi	s0,sp,16
   asm volatile("mv %0, tp" : "=r" (x) );
-    80001970:	8512                	mv	a0,tp
+    80001a1a:	8512                	mv	a0,tp
   int id = r_tp();
   return id;
 }
-    80001972:	2501                	sext.w	a0,a0
-    80001974:	6422                	ld	s0,8(sp)
-    80001976:	0141                	addi	sp,sp,16
-    80001978:	8082                	ret
+    80001a1c:	2501                	sext.w	a0,a0
+    80001a1e:	6422                	ld	s0,8(sp)
+    80001a20:	0141                	addi	sp,sp,16
+    80001a22:	8082                	ret
 
-000000008000197a <mycpu>:
+0000000080001a24 <mycpu>:
 
 // Return this CPU's cpu struct.
 // Interrupts must be disabled.
 struct cpu*
 mycpu(void) {
-    8000197a:	1141                	addi	sp,sp,-16
-    8000197c:	e422                	sd	s0,8(sp)
-    8000197e:	0800                	addi	s0,sp,16
-    80001980:	8792                	mv	a5,tp
+    80001a24:	1141                	addi	sp,sp,-16
+    80001a26:	e422                	sd	s0,8(sp)
+    80001a28:	0800                	addi	s0,sp,16
+    80001a2a:	8792                	mv	a5,tp
   int id = cpuid();
   struct cpu *c = &cpus[id];
-    80001982:	2781                	sext.w	a5,a5
-    80001984:	079e                	slli	a5,a5,0x7
+    80001a2c:	2781                	sext.w	a5,a5
+    80001a2e:	079e                	slli	a5,a5,0x7
   return c;
 }
-    80001986:	00010517          	auipc	a0,0x10
-    8000198a:	94a50513          	addi	a0,a0,-1718 # 800112d0 <cpus>
-    8000198e:	953e                	add	a0,a0,a5
-    80001990:	6422                	ld	s0,8(sp)
-    80001992:	0141                	addi	sp,sp,16
-    80001994:	8082                	ret
+    80001a30:	00010517          	auipc	a0,0x10
+    80001a34:	8a050513          	addi	a0,a0,-1888 # 800112d0 <cpus>
+    80001a38:	953e                	add	a0,a0,a5
+    80001a3a:	6422                	ld	s0,8(sp)
+    80001a3c:	0141                	addi	sp,sp,16
+    80001a3e:	8082                	ret
 
-0000000080001996 <myproc>:
+0000000080001a40 <myproc>:
 
 // Return the current struct proc *, or zero if none.
 struct proc*
 myproc(void) {
-    80001996:	1101                	addi	sp,sp,-32
-    80001998:	ec06                	sd	ra,24(sp)
-    8000199a:	e822                	sd	s0,16(sp)
-    8000199c:	e426                	sd	s1,8(sp)
-    8000199e:	1000                	addi	s0,sp,32
+    80001a40:	1101                	addi	sp,sp,-32
+    80001a42:	ec06                	sd	ra,24(sp)
+    80001a44:	e822                	sd	s0,16(sp)
+    80001a46:	e426                	sd	s1,8(sp)
+    80001a48:	1000                	addi	s0,sp,32
   push_off();
-    800019a0:	fffff097          	auipc	ra,0xfffff
-    800019a4:	1e4080e7          	jalr	484(ra) # 80000b84 <push_off>
-    800019a8:	8792                	mv	a5,tp
+    80001a4a:	fffff097          	auipc	ra,0xfffff
+    80001a4e:	13a080e7          	jalr	314(ra) # 80000b84 <push_off>
+    80001a52:	8792                	mv	a5,tp
   struct cpu *c = mycpu();
   struct proc *p = c->proc;
-    800019aa:	2781                	sext.w	a5,a5
-    800019ac:	079e                	slli	a5,a5,0x7
-    800019ae:	00010717          	auipc	a4,0x10
-    800019b2:	8f270713          	addi	a4,a4,-1806 # 800112a0 <pid_lock>
-    800019b6:	97ba                	add	a5,a5,a4
-    800019b8:	7b84                	ld	s1,48(a5)
+    80001a54:	2781                	sext.w	a5,a5
+    80001a56:	079e                	slli	a5,a5,0x7
+    80001a58:	00010717          	auipc	a4,0x10
+    80001a5c:	84870713          	addi	a4,a4,-1976 # 800112a0 <pid_lock>
+    80001a60:	97ba                	add	a5,a5,a4
+    80001a62:	7b84                	ld	s1,48(a5)
   pop_off();
-    800019ba:	fffff097          	auipc	ra,0xfffff
-    800019be:	26a080e7          	jalr	618(ra) # 80000c24 <pop_off>
+    80001a64:	fffff097          	auipc	ra,0xfffff
+    80001a68:	1c0080e7          	jalr	448(ra) # 80000c24 <pop_off>
   return p;
 }
-    800019c2:	8526                	mv	a0,s1
-    800019c4:	60e2                	ld	ra,24(sp)
-    800019c6:	6442                	ld	s0,16(sp)
-    800019c8:	64a2                	ld	s1,8(sp)
-    800019ca:	6105                	addi	sp,sp,32
-    800019cc:	8082                	ret
+    80001a6c:	8526                	mv	a0,s1
+    80001a6e:	60e2                	ld	ra,24(sp)
+    80001a70:	6442                	ld	s0,16(sp)
+    80001a72:	64a2                	ld	s1,8(sp)
+    80001a74:	6105                	addi	sp,sp,32
+    80001a76:	8082                	ret
 
-00000000800019ce <forkret>:
+0000000080001a78 <forkret>:
 
 // A fork child's very first scheduling by scheduler()
 // will swtch to forkret.
 void
 forkret(void)
 {
-    800019ce:	1141                	addi	sp,sp,-16
-    800019d0:	e406                	sd	ra,8(sp)
-    800019d2:	e022                	sd	s0,0(sp)
-    800019d4:	0800                	addi	s0,sp,16
+    80001a78:	1141                	addi	sp,sp,-16
+    80001a7a:	e406                	sd	ra,8(sp)
+    80001a7c:	e022                	sd	s0,0(sp)
+    80001a7e:	0800                	addi	s0,sp,16
   static int first = 1;
 
   // Still holding p->lock from scheduler.
   release(&myproc()->lock);
-    800019d6:	00000097          	auipc	ra,0x0
-    800019da:	fc0080e7          	jalr	-64(ra) # 80001996 <myproc>
-    800019de:	fffff097          	auipc	ra,0xfffff
-    800019e2:	2a6080e7          	jalr	678(ra) # 80000c84 <release>
+    80001a80:	00000097          	auipc	ra,0x0
+    80001a84:	fc0080e7          	jalr	-64(ra) # 80001a40 <myproc>
+    80001a88:	fffff097          	auipc	ra,0xfffff
+    80001a8c:	1fc080e7          	jalr	508(ra) # 80000c84 <release>
 
   if (first) {
-    800019e6:	00007797          	auipc	a5,0x7
-    800019ea:	eba7a783          	lw	a5,-326(a5) # 800088a0 <first.2>
-    800019ee:	eb89                	bnez	a5,80001a00 <forkret+0x32>
+    80001a90:	00007797          	auipc	a5,0x7
+    80001a94:	e807a783          	lw	a5,-384(a5) # 80008910 <first.2>
+    80001a98:	eb89                	bnez	a5,80001aaa <forkret+0x32>
     // be run from main().
     first = 0;
     fsinit(ROOTDEV);
   }
 
   usertrapret();
-    800019f0:	00001097          	auipc	ra,0x1
-    800019f4:	d18080e7          	jalr	-744(ra) # 80002708 <usertrapret>
+    80001a9a:	00001097          	auipc	ra,0x1
+    80001a9e:	ebe080e7          	jalr	-322(ra) # 80002958 <usertrapret>
 }
-    800019f8:	60a2                	ld	ra,8(sp)
-    800019fa:	6402                	ld	s0,0(sp)
-    800019fc:	0141                	addi	sp,sp,16
-    800019fe:	8082                	ret
+    80001aa2:	60a2                	ld	ra,8(sp)
+    80001aa4:	6402                	ld	s0,0(sp)
+    80001aa6:	0141                	addi	sp,sp,16
+    80001aa8:	8082                	ret
     first = 0;
-    80001a00:	00007797          	auipc	a5,0x7
-    80001a04:	ea07a023          	sw	zero,-352(a5) # 800088a0 <first.2>
+    80001aaa:	00007797          	auipc	a5,0x7
+    80001aae:	e607a323          	sw	zero,-410(a5) # 80008910 <first.2>
     fsinit(ROOTDEV);
-    80001a08:	4505                	li	a0,1
-    80001a0a:	00002097          	auipc	ra,0x2
-    80001a0e:	a78080e7          	jalr	-1416(ra) # 80003482 <fsinit>
-    80001a12:	bff9                	j	800019f0 <forkret+0x22>
+    80001ab2:	4505                	li	a0,1
+    80001ab4:	00002097          	auipc	ra,0x2
+    80001ab8:	c60080e7          	jalr	-928(ra) # 80003714 <fsinit>
+    80001abc:	bff9                	j	80001a9a <forkret+0x22>
 
-0000000080001a14 <allocpid>:
+0000000080001abe <allocpid>:
 allocpid() {
-    80001a14:	1101                	addi	sp,sp,-32
-    80001a16:	ec06                	sd	ra,24(sp)
-    80001a18:	e822                	sd	s0,16(sp)
-    80001a1a:	e426                	sd	s1,8(sp)
-    80001a1c:	e04a                	sd	s2,0(sp)
-    80001a1e:	1000                	addi	s0,sp,32
+    80001abe:	1101                	addi	sp,sp,-32
+    80001ac0:	ec06                	sd	ra,24(sp)
+    80001ac2:	e822                	sd	s0,16(sp)
+    80001ac4:	e426                	sd	s1,8(sp)
+    80001ac6:	e04a                	sd	s2,0(sp)
+    80001ac8:	1000                	addi	s0,sp,32
   acquire(&pid_lock);
-    80001a20:	00010917          	auipc	s2,0x10
-    80001a24:	88090913          	addi	s2,s2,-1920 # 800112a0 <pid_lock>
-    80001a28:	854a                	mv	a0,s2
-    80001a2a:	fffff097          	auipc	ra,0xfffff
-    80001a2e:	1a6080e7          	jalr	422(ra) # 80000bd0 <acquire>
+    80001aca:	0000f917          	auipc	s2,0xf
+    80001ace:	7d690913          	addi	s2,s2,2006 # 800112a0 <pid_lock>
+    80001ad2:	854a                	mv	a0,s2
+    80001ad4:	fffff097          	auipc	ra,0xfffff
+    80001ad8:	0fc080e7          	jalr	252(ra) # 80000bd0 <acquire>
   pid = nextpid;
-    80001a32:	00007797          	auipc	a5,0x7
-    80001a36:	e7278793          	addi	a5,a5,-398 # 800088a4 <nextpid>
-    80001a3a:	4384                	lw	s1,0(a5)
+    80001adc:	00007797          	auipc	a5,0x7
+    80001ae0:	e3878793          	addi	a5,a5,-456 # 80008914 <nextpid>
+    80001ae4:	4384                	lw	s1,0(a5)
   nextpid = nextpid + 1;
-    80001a3c:	0014871b          	addiw	a4,s1,1
-    80001a40:	c398                	sw	a4,0(a5)
+    80001ae6:	0014871b          	addiw	a4,s1,1
+    80001aea:	c398                	sw	a4,0(a5)
   release(&pid_lock);
-    80001a42:	854a                	mv	a0,s2
-    80001a44:	fffff097          	auipc	ra,0xfffff
-    80001a48:	240080e7          	jalr	576(ra) # 80000c84 <release>
+    80001aec:	854a                	mv	a0,s2
+    80001aee:	fffff097          	auipc	ra,0xfffff
+    80001af2:	196080e7          	jalr	406(ra) # 80000c84 <release>
 }
-    80001a4c:	8526                	mv	a0,s1
-    80001a4e:	60e2                	ld	ra,24(sp)
-    80001a50:	6442                	ld	s0,16(sp)
-    80001a52:	64a2                	ld	s1,8(sp)
-    80001a54:	6902                	ld	s2,0(sp)
-    80001a56:	6105                	addi	sp,sp,32
-    80001a58:	8082                	ret
+    80001af6:	8526                	mv	a0,s1
+    80001af8:	60e2                	ld	ra,24(sp)
+    80001afa:	6442                	ld	s0,16(sp)
+    80001afc:	64a2                	ld	s1,8(sp)
+    80001afe:	6902                	ld	s2,0(sp)
+    80001b00:	6105                	addi	sp,sp,32
+    80001b02:	8082                	ret
 
-0000000080001a5a <proc_pagetable>:
+0000000080001b04 <proc_pagetable>:
 {
-    80001a5a:	1101                	addi	sp,sp,-32
-    80001a5c:	ec06                	sd	ra,24(sp)
-    80001a5e:	e822                	sd	s0,16(sp)
-    80001a60:	e426                	sd	s1,8(sp)
-    80001a62:	e04a                	sd	s2,0(sp)
-    80001a64:	1000                	addi	s0,sp,32
-    80001a66:	892a                	mv	s2,a0
+    80001b04:	1101                	addi	sp,sp,-32
+    80001b06:	ec06                	sd	ra,24(sp)
+    80001b08:	e822                	sd	s0,16(sp)
+    80001b0a:	e426                	sd	s1,8(sp)
+    80001b0c:	e04a                	sd	s2,0(sp)
+    80001b0e:	1000                	addi	s0,sp,32
+    80001b10:	892a                	mv	s2,a0
   pagetable = uvmcreate();
-    80001a68:	00000097          	auipc	ra,0x0
-    80001a6c:	8b6080e7          	jalr	-1866(ra) # 8000131e <uvmcreate>
-    80001a70:	84aa                	mv	s1,a0
+    80001b12:	00000097          	auipc	ra,0x0
+    80001b16:	80c080e7          	jalr	-2036(ra) # 8000131e <uvmcreate>
+    80001b1a:	84aa                	mv	s1,a0
   if(pagetable == 0)
-    80001a72:	c121                	beqz	a0,80001ab2 <proc_pagetable+0x58>
+    80001b1c:	c121                	beqz	a0,80001b5c <proc_pagetable+0x58>
   if(mappages(pagetable, TRAMPOLINE, PGSIZE,
-    80001a74:	4729                	li	a4,10
-    80001a76:	00005697          	auipc	a3,0x5
-    80001a7a:	58a68693          	addi	a3,a3,1418 # 80007000 <_trampoline>
-    80001a7e:	6605                	lui	a2,0x1
-    80001a80:	040005b7          	lui	a1,0x4000
-    80001a84:	15fd                	addi	a1,a1,-1 # 3ffffff <_entry-0x7c000001>
-    80001a86:	05b2                	slli	a1,a1,0xc
-    80001a88:	fffff097          	auipc	ra,0xfffff
-    80001a8c:	60c080e7          	jalr	1548(ra) # 80001094 <mappages>
-    80001a90:	02054863          	bltz	a0,80001ac0 <proc_pagetable+0x66>
+    80001b1e:	4729                	li	a4,10
+    80001b20:	00005697          	auipc	a3,0x5
+    80001b24:	4e068693          	addi	a3,a3,1248 # 80007000 <_trampoline>
+    80001b28:	6605                	lui	a2,0x1
+    80001b2a:	040005b7          	lui	a1,0x4000
+    80001b2e:	15fd                	addi	a1,a1,-1 # 3ffffff <_entry-0x7c000001>
+    80001b30:	05b2                	slli	a1,a1,0xc
+    80001b32:	fffff097          	auipc	ra,0xfffff
+    80001b36:	562080e7          	jalr	1378(ra) # 80001094 <mappages>
+    80001b3a:	02054863          	bltz	a0,80001b6a <proc_pagetable+0x66>
   if(mappages(pagetable, TRAPFRAME, PGSIZE,
-    80001a94:	4719                	li	a4,6
-    80001a96:	05893683          	ld	a3,88(s2)
-    80001a9a:	6605                	lui	a2,0x1
-    80001a9c:	020005b7          	lui	a1,0x2000
-    80001aa0:	15fd                	addi	a1,a1,-1 # 1ffffff <_entry-0x7e000001>
-    80001aa2:	05b6                	slli	a1,a1,0xd
-    80001aa4:	8526                	mv	a0,s1
-    80001aa6:	fffff097          	auipc	ra,0xfffff
-    80001aaa:	5ee080e7          	jalr	1518(ra) # 80001094 <mappages>
-    80001aae:	02054163          	bltz	a0,80001ad0 <proc_pagetable+0x76>
+    80001b3e:	4719                	li	a4,6
+    80001b40:	05893683          	ld	a3,88(s2)
+    80001b44:	6605                	lui	a2,0x1
+    80001b46:	020005b7          	lui	a1,0x2000
+    80001b4a:	15fd                	addi	a1,a1,-1 # 1ffffff <_entry-0x7e000001>
+    80001b4c:	05b6                	slli	a1,a1,0xd
+    80001b4e:	8526                	mv	a0,s1
+    80001b50:	fffff097          	auipc	ra,0xfffff
+    80001b54:	544080e7          	jalr	1348(ra) # 80001094 <mappages>
+    80001b58:	02054163          	bltz	a0,80001b7a <proc_pagetable+0x76>
 }
-    80001ab2:	8526                	mv	a0,s1
-    80001ab4:	60e2                	ld	ra,24(sp)
-    80001ab6:	6442                	ld	s0,16(sp)
-    80001ab8:	64a2                	ld	s1,8(sp)
-    80001aba:	6902                	ld	s2,0(sp)
-    80001abc:	6105                	addi	sp,sp,32
-    80001abe:	8082                	ret
+    80001b5c:	8526                	mv	a0,s1
+    80001b5e:	60e2                	ld	ra,24(sp)
+    80001b60:	6442                	ld	s0,16(sp)
+    80001b62:	64a2                	ld	s1,8(sp)
+    80001b64:	6902                	ld	s2,0(sp)
+    80001b66:	6105                	addi	sp,sp,32
+    80001b68:	8082                	ret
     uvmfree(pagetable, 0);
-    80001ac0:	4581                	li	a1,0
-    80001ac2:	8526                	mv	a0,s1
-    80001ac4:	00000097          	auipc	ra,0x0
-    80001ac8:	a58080e7          	jalr	-1448(ra) # 8000151c <uvmfree>
+    80001b6a:	4581                	li	a1,0
+    80001b6c:	8526                	mv	a0,s1
+    80001b6e:	00000097          	auipc	ra,0x0
+    80001b72:	9ae080e7          	jalr	-1618(ra) # 8000151c <uvmfree>
     return 0;
-    80001acc:	4481                	li	s1,0
-    80001ace:	b7d5                	j	80001ab2 <proc_pagetable+0x58>
+    80001b76:	4481                	li	s1,0
+    80001b78:	b7d5                	j	80001b5c <proc_pagetable+0x58>
     uvmunmap(pagetable, TRAMPOLINE, 1, 0);
-    80001ad0:	4681                	li	a3,0
-    80001ad2:	4605                	li	a2,1
-    80001ad4:	040005b7          	lui	a1,0x4000
-    80001ad8:	15fd                	addi	a1,a1,-1 # 3ffffff <_entry-0x7c000001>
-    80001ada:	05b2                	slli	a1,a1,0xc
-    80001adc:	8526                	mv	a0,s1
-    80001ade:	fffff097          	auipc	ra,0xfffff
-    80001ae2:	77c080e7          	jalr	1916(ra) # 8000125a <uvmunmap>
+    80001b7a:	4681                	li	a3,0
+    80001b7c:	4605                	li	a2,1
+    80001b7e:	040005b7          	lui	a1,0x4000
+    80001b82:	15fd                	addi	a1,a1,-1 # 3ffffff <_entry-0x7c000001>
+    80001b84:	05b2                	slli	a1,a1,0xc
+    80001b86:	8526                	mv	a0,s1
+    80001b88:	fffff097          	auipc	ra,0xfffff
+    80001b8c:	6d2080e7          	jalr	1746(ra) # 8000125a <uvmunmap>
     uvmfree(pagetable, 0);
-    80001ae6:	4581                	li	a1,0
-    80001ae8:	8526                	mv	a0,s1
-    80001aea:	00000097          	auipc	ra,0x0
-    80001aee:	a32080e7          	jalr	-1486(ra) # 8000151c <uvmfree>
+    80001b90:	4581                	li	a1,0
+    80001b92:	8526                	mv	a0,s1
+    80001b94:	00000097          	auipc	ra,0x0
+    80001b98:	988080e7          	jalr	-1656(ra) # 8000151c <uvmfree>
     return 0;
-    80001af2:	4481                	li	s1,0
-    80001af4:	bf7d                	j	80001ab2 <proc_pagetable+0x58>
+    80001b9c:	4481                	li	s1,0
+    80001b9e:	bf7d                	j	80001b5c <proc_pagetable+0x58>
 
-0000000080001af6 <proc_freepagetable>:
-{
-    80001af6:	1101                	addi	sp,sp,-32
-    80001af8:	ec06                	sd	ra,24(sp)
-    80001afa:	e822                	sd	s0,16(sp)
-    80001afc:	e426                	sd	s1,8(sp)
-    80001afe:	e04a                	sd	s2,0(sp)
-    80001b00:	1000                	addi	s0,sp,32
-    80001b02:	84aa                	mv	s1,a0
-    80001b04:	892e                	mv	s2,a1
-  uvmunmap(pagetable, TRAMPOLINE, 1, 0);
-    80001b06:	4681                	li	a3,0
-    80001b08:	4605                	li	a2,1
-    80001b0a:	040005b7          	lui	a1,0x4000
-    80001b0e:	15fd                	addi	a1,a1,-1 # 3ffffff <_entry-0x7c000001>
-    80001b10:	05b2                	slli	a1,a1,0xc
-    80001b12:	fffff097          	auipc	ra,0xfffff
-    80001b16:	748080e7          	jalr	1864(ra) # 8000125a <uvmunmap>
-  uvmunmap(pagetable, TRAPFRAME, 1, 0);
-    80001b1a:	4681                	li	a3,0
-    80001b1c:	4605                	li	a2,1
-    80001b1e:	020005b7          	lui	a1,0x2000
-    80001b22:	15fd                	addi	a1,a1,-1 # 1ffffff <_entry-0x7e000001>
-    80001b24:	05b6                	slli	a1,a1,0xd
-    80001b26:	8526                	mv	a0,s1
-    80001b28:	fffff097          	auipc	ra,0xfffff
-    80001b2c:	732080e7          	jalr	1842(ra) # 8000125a <uvmunmap>
-  uvmfree(pagetable, sz);
-    80001b30:	85ca                	mv	a1,s2
-    80001b32:	8526                	mv	a0,s1
-    80001b34:	00000097          	auipc	ra,0x0
-    80001b38:	9e8080e7          	jalr	-1560(ra) # 8000151c <uvmfree>
-}
-    80001b3c:	60e2                	ld	ra,24(sp)
-    80001b3e:	6442                	ld	s0,16(sp)
-    80001b40:	64a2                	ld	s1,8(sp)
-    80001b42:	6902                	ld	s2,0(sp)
-    80001b44:	6105                	addi	sp,sp,32
-    80001b46:	8082                	ret
-
-0000000080001b48 <freeproc>:
-{
-    80001b48:	1101                	addi	sp,sp,-32
-    80001b4a:	ec06                	sd	ra,24(sp)
-    80001b4c:	e822                	sd	s0,16(sp)
-    80001b4e:	e426                	sd	s1,8(sp)
-    80001b50:	1000                	addi	s0,sp,32
-    80001b52:	84aa                	mv	s1,a0
-  if(p->trapframe)
-    80001b54:	6d28                	ld	a0,88(a0)
-    80001b56:	c509                	beqz	a0,80001b60 <freeproc+0x18>
-    kfree((void*)p->trapframe);
-    80001b58:	fffff097          	auipc	ra,0xfffff
-    80001b5c:	e8a080e7          	jalr	-374(ra) # 800009e2 <kfree>
-  p->trapframe = 0;
-    80001b60:	0404bc23          	sd	zero,88(s1)
-  if(p->pagetable)
-    80001b64:	68a8                	ld	a0,80(s1)
-    80001b66:	c511                	beqz	a0,80001b72 <freeproc+0x2a>
-    proc_freepagetable(p->pagetable, p->sz);
-    80001b68:	64ac                	ld	a1,72(s1)
-    80001b6a:	00000097          	auipc	ra,0x0
-    80001b6e:	f8c080e7          	jalr	-116(ra) # 80001af6 <proc_freepagetable>
-  p->pagetable = 0;
-    80001b72:	0404b823          	sd	zero,80(s1)
-  p->sz = 0;
-    80001b76:	0404b423          	sd	zero,72(s1)
-  p->pid = 0;
-    80001b7a:	0204a823          	sw	zero,48(s1)
-  p->parent = 0;
-    80001b7e:	0204bc23          	sd	zero,56(s1)
-  p->name[0] = 0;
-    80001b82:	14048c23          	sb	zero,344(s1)
-  p->chan = 0;
-    80001b86:	0204b023          	sd	zero,32(s1)
-  p->killed = 0;
-    80001b8a:	0204a423          	sw	zero,40(s1)
-  p->xstate = 0;
-    80001b8e:	0204a623          	sw	zero,44(s1)
-  p->state = UNUSED;
-    80001b92:	0004ac23          	sw	zero,24(s1)
-}
-    80001b96:	60e2                	ld	ra,24(sp)
-    80001b98:	6442                	ld	s0,16(sp)
-    80001b9a:	64a2                	ld	s1,8(sp)
-    80001b9c:	6105                	addi	sp,sp,32
-    80001b9e:	8082                	ret
-
-0000000080001ba0 <allocproc>:
+0000000080001ba0 <proc_freepagetable>:
 {
     80001ba0:	1101                	addi	sp,sp,-32
     80001ba2:	ec06                	sd	ra,24(sp)
@@ -3936,9011 +3925,9339 @@ allocpid() {
     80001ba6:	e426                	sd	s1,8(sp)
     80001ba8:	e04a                	sd	s2,0(sp)
     80001baa:	1000                	addi	s0,sp,32
-  for(p = proc; p < &proc[NPROC]; p++) {
-    80001bac:	00010497          	auipc	s1,0x10
-    80001bb0:	b2448493          	addi	s1,s1,-1244 # 800116d0 <proc>
-    80001bb4:	00016917          	auipc	s2,0x16
-    80001bb8:	91c90913          	addi	s2,s2,-1764 # 800174d0 <tickslock>
-    acquire(&p->lock);
-    80001bbc:	8526                	mv	a0,s1
-    80001bbe:	fffff097          	auipc	ra,0xfffff
-    80001bc2:	012080e7          	jalr	18(ra) # 80000bd0 <acquire>
-    if(p->state == UNUSED) {
-    80001bc6:	4c9c                	lw	a5,24(s1)
-    80001bc8:	cf81                	beqz	a5,80001be0 <allocproc+0x40>
-      release(&p->lock);
-    80001bca:	8526                	mv	a0,s1
-    80001bcc:	fffff097          	auipc	ra,0xfffff
-    80001bd0:	0b8080e7          	jalr	184(ra) # 80000c84 <release>
-  for(p = proc; p < &proc[NPROC]; p++) {
-    80001bd4:	17848493          	addi	s1,s1,376
-    80001bd8:	ff2492e3          	bne	s1,s2,80001bbc <allocproc+0x1c>
-  return 0;
-    80001bdc:	4481                	li	s1,0
-    80001bde:	a8b9                	j	80001c3c <allocproc+0x9c>
-  p->pid = allocpid();
-    80001be0:	00000097          	auipc	ra,0x0
-    80001be4:	e34080e7          	jalr	-460(ra) # 80001a14 <allocpid>
-    80001be8:	d888                	sw	a0,48(s1)
-  p->state = USED;
-    80001bea:	4785                	li	a5,1
-    80001bec:	cc9c                	sw	a5,24(s1)
-  p->in_queue = HIGH;
-    80001bee:	1604a823          	sw	zero,368(s1)
-  p->hticks = 0;
-    80001bf2:	1604a423          	sw	zero,360(s1)
-  p->lticks = 0;
-    80001bf6:	1604a623          	sw	zero,364(s1)
-  if((p->trapframe = (struct trapframe *)kalloc()) == 0){
-    80001bfa:	fffff097          	auipc	ra,0xfffff
-    80001bfe:	ee6080e7          	jalr	-282(ra) # 80000ae0 <kalloc>
-    80001c02:	892a                	mv	s2,a0
-    80001c04:	eca8                	sd	a0,88(s1)
-    80001c06:	c131                	beqz	a0,80001c4a <allocproc+0xaa>
-  p->pagetable = proc_pagetable(p);
-    80001c08:	8526                	mv	a0,s1
-    80001c0a:	00000097          	auipc	ra,0x0
-    80001c0e:	e50080e7          	jalr	-432(ra) # 80001a5a <proc_pagetable>
-    80001c12:	892a                	mv	s2,a0
-    80001c14:	e8a8                	sd	a0,80(s1)
-  if(p->pagetable == 0){
-    80001c16:	c531                	beqz	a0,80001c62 <allocproc+0xc2>
-  memset(&p->context, 0, sizeof(p->context));
-    80001c18:	07000613          	li	a2,112
-    80001c1c:	4581                	li	a1,0
-    80001c1e:	06048513          	addi	a0,s1,96
-    80001c22:	fffff097          	auipc	ra,0xfffff
-    80001c26:	0aa080e7          	jalr	170(ra) # 80000ccc <memset>
-  p->context.ra = (uint64)forkret;
-    80001c2a:	00000797          	auipc	a5,0x0
-    80001c2e:	da478793          	addi	a5,a5,-604 # 800019ce <forkret>
-    80001c32:	f0bc                	sd	a5,96(s1)
-  p->context.sp = p->kstack + PGSIZE;
-    80001c34:	60bc                	ld	a5,64(s1)
-    80001c36:	6705                	lui	a4,0x1
-    80001c38:	97ba                	add	a5,a5,a4
-    80001c3a:	f4bc                	sd	a5,104(s1)
+    80001bac:	84aa                	mv	s1,a0
+    80001bae:	892e                	mv	s2,a1
+  uvmunmap(pagetable, TRAMPOLINE, 1, 0);
+    80001bb0:	4681                	li	a3,0
+    80001bb2:	4605                	li	a2,1
+    80001bb4:	040005b7          	lui	a1,0x4000
+    80001bb8:	15fd                	addi	a1,a1,-1 # 3ffffff <_entry-0x7c000001>
+    80001bba:	05b2                	slli	a1,a1,0xc
+    80001bbc:	fffff097          	auipc	ra,0xfffff
+    80001bc0:	69e080e7          	jalr	1694(ra) # 8000125a <uvmunmap>
+  uvmunmap(pagetable, TRAPFRAME, 1, 0);
+    80001bc4:	4681                	li	a3,0
+    80001bc6:	4605                	li	a2,1
+    80001bc8:	020005b7          	lui	a1,0x2000
+    80001bcc:	15fd                	addi	a1,a1,-1 # 1ffffff <_entry-0x7e000001>
+    80001bce:	05b6                	slli	a1,a1,0xd
+    80001bd0:	8526                	mv	a0,s1
+    80001bd2:	fffff097          	auipc	ra,0xfffff
+    80001bd6:	688080e7          	jalr	1672(ra) # 8000125a <uvmunmap>
+  uvmfree(pagetable, sz);
+    80001bda:	85ca                	mv	a1,s2
+    80001bdc:	8526                	mv	a0,s1
+    80001bde:	00000097          	auipc	ra,0x0
+    80001be2:	93e080e7          	jalr	-1730(ra) # 8000151c <uvmfree>
 }
-    80001c3c:	8526                	mv	a0,s1
-    80001c3e:	60e2                	ld	ra,24(sp)
-    80001c40:	6442                	ld	s0,16(sp)
-    80001c42:	64a2                	ld	s1,8(sp)
-    80001c44:	6902                	ld	s2,0(sp)
+    80001be6:	60e2                	ld	ra,24(sp)
+    80001be8:	6442                	ld	s0,16(sp)
+    80001bea:	64a2                	ld	s1,8(sp)
+    80001bec:	6902                	ld	s2,0(sp)
+    80001bee:	6105                	addi	sp,sp,32
+    80001bf0:	8082                	ret
+
+0000000080001bf2 <freeproc>:
+{
+    80001bf2:	1101                	addi	sp,sp,-32
+    80001bf4:	ec06                	sd	ra,24(sp)
+    80001bf6:	e822                	sd	s0,16(sp)
+    80001bf8:	e426                	sd	s1,8(sp)
+    80001bfa:	1000                	addi	s0,sp,32
+    80001bfc:	84aa                	mv	s1,a0
+  if(p->trapframe)
+    80001bfe:	6d28                	ld	a0,88(a0)
+    80001c00:	c509                	beqz	a0,80001c0a <freeproc+0x18>
+    kfree((void*)p->trapframe);
+    80001c02:	fffff097          	auipc	ra,0xfffff
+    80001c06:	de0080e7          	jalr	-544(ra) # 800009e2 <kfree>
+  p->trapframe = 0;
+    80001c0a:	0404bc23          	sd	zero,88(s1)
+  if(p->pagetable)
+    80001c0e:	68a8                	ld	a0,80(s1)
+    80001c10:	c511                	beqz	a0,80001c1c <freeproc+0x2a>
+    proc_freepagetable(p->pagetable, p->sz);
+    80001c12:	64ac                	ld	a1,72(s1)
+    80001c14:	00000097          	auipc	ra,0x0
+    80001c18:	f8c080e7          	jalr	-116(ra) # 80001ba0 <proc_freepagetable>
+  p->pagetable = 0;
+    80001c1c:	0404b823          	sd	zero,80(s1)
+  p->sz = 0;
+    80001c20:	0404b423          	sd	zero,72(s1)
+  p->pid = 0;
+    80001c24:	0204a823          	sw	zero,48(s1)
+  p->parent = 0;
+    80001c28:	0204bc23          	sd	zero,56(s1)
+  p->name[0] = 0;
+    80001c2c:	14048c23          	sb	zero,344(s1)
+  p->chan = 0;
+    80001c30:	0204b023          	sd	zero,32(s1)
+  p->killed = 0;
+    80001c34:	0204a423          	sw	zero,40(s1)
+  p->xstate = 0;
+    80001c38:	0204a623          	sw	zero,44(s1)
+  p->state = UNUSED;
+    80001c3c:	0004ac23          	sw	zero,24(s1)
+}
+    80001c40:	60e2                	ld	ra,24(sp)
+    80001c42:	6442                	ld	s0,16(sp)
+    80001c44:	64a2                	ld	s1,8(sp)
     80001c46:	6105                	addi	sp,sp,32
     80001c48:	8082                	ret
-    freeproc(p);
-    80001c4a:	8526                	mv	a0,s1
-    80001c4c:	00000097          	auipc	ra,0x0
-    80001c50:	efc080e7          	jalr	-260(ra) # 80001b48 <freeproc>
-    release(&p->lock);
-    80001c54:	8526                	mv	a0,s1
-    80001c56:	fffff097          	auipc	ra,0xfffff
-    80001c5a:	02e080e7          	jalr	46(ra) # 80000c84 <release>
-    return 0;
-    80001c5e:	84ca                	mv	s1,s2
-    80001c60:	bff1                	j	80001c3c <allocproc+0x9c>
-    freeproc(p);
-    80001c62:	8526                	mv	a0,s1
-    80001c64:	00000097          	auipc	ra,0x0
-    80001c68:	ee4080e7          	jalr	-284(ra) # 80001b48 <freeproc>
-    release(&p->lock);
-    80001c6c:	8526                	mv	a0,s1
-    80001c6e:	fffff097          	auipc	ra,0xfffff
-    80001c72:	016080e7          	jalr	22(ra) # 80000c84 <release>
-    return 0;
-    80001c76:	84ca                	mv	s1,s2
-    80001c78:	b7d1                	j	80001c3c <allocproc+0x9c>
 
-0000000080001c7a <userinit>:
+0000000080001c4a <allocproc>:
 {
-    80001c7a:	1101                	addi	sp,sp,-32
-    80001c7c:	ec06                	sd	ra,24(sp)
-    80001c7e:	e822                	sd	s0,16(sp)
-    80001c80:	e426                	sd	s1,8(sp)
-    80001c82:	1000                	addi	s0,sp,32
-  p = allocproc();
-    80001c84:	00000097          	auipc	ra,0x0
-    80001c88:	f1c080e7          	jalr	-228(ra) # 80001ba0 <allocproc>
-    80001c8c:	84aa                	mv	s1,a0
-  initproc = p;
-    80001c8e:	00007797          	auipc	a5,0x7
-    80001c92:	38a7bd23          	sd	a0,922(a5) # 80009028 <initproc>
-  uvminit(p->pagetable, initcode, sizeof(initcode));
-    80001c96:	03400613          	li	a2,52
-    80001c9a:	00007597          	auipc	a1,0x7
-    80001c9e:	c1658593          	addi	a1,a1,-1002 # 800088b0 <initcode>
-    80001ca2:	6928                	ld	a0,80(a0)
-    80001ca4:	fffff097          	auipc	ra,0xfffff
-    80001ca8:	6a8080e7          	jalr	1704(ra) # 8000134c <uvminit>
-  p->sz = PGSIZE;
-    80001cac:	6785                	lui	a5,0x1
-    80001cae:	e4bc                	sd	a5,72(s1)
-  p->trapframe->epc = 0;      // user program counter
-    80001cb0:	6cb8                	ld	a4,88(s1)
-    80001cb2:	00073c23          	sd	zero,24(a4) # 1018 <_entry-0x7fffefe8>
-  p->trapframe->sp = PGSIZE;  // user stack pointer
-    80001cb6:	6cb8                	ld	a4,88(s1)
-    80001cb8:	fb1c                	sd	a5,48(a4)
-  safestrcpy(p->name, "initcode", sizeof(p->name));
-    80001cba:	4641                	li	a2,16
-    80001cbc:	00006597          	auipc	a1,0x6
-    80001cc0:	54458593          	addi	a1,a1,1348 # 80008200 <digits+0x1c0>
-    80001cc4:	15848513          	addi	a0,s1,344
-    80001cc8:	fffff097          	auipc	ra,0xfffff
-    80001ccc:	14e080e7          	jalr	334(ra) # 80000e16 <safestrcpy>
-  p->cwd = namei("/");
-    80001cd0:	00006517          	auipc	a0,0x6
-    80001cd4:	54050513          	addi	a0,a0,1344 # 80008210 <digits+0x1d0>
-    80001cd8:	00002097          	auipc	ra,0x2
-    80001cdc:	1e0080e7          	jalr	480(ra) # 80003eb8 <namei>
-    80001ce0:	14a4b823          	sd	a0,336(s1)
-  p->state = RUNNABLE;
-    80001ce4:	478d                	li	a5,3
-    80001ce6:	cc9c                	sw	a5,24(s1)
-  release(&p->lock);
-    80001ce8:	8526                	mv	a0,s1
-    80001cea:	fffff097          	auipc	ra,0xfffff
-    80001cee:	f9a080e7          	jalr	-102(ra) # 80000c84 <release>
-}
-    80001cf2:	60e2                	ld	ra,24(sp)
-    80001cf4:	6442                	ld	s0,16(sp)
-    80001cf6:	64a2                	ld	s1,8(sp)
-    80001cf8:	6105                	addi	sp,sp,32
-    80001cfa:	8082                	ret
-
-0000000080001cfc <growproc>:
-{
-    80001cfc:	1101                	addi	sp,sp,-32
-    80001cfe:	ec06                	sd	ra,24(sp)
-    80001d00:	e822                	sd	s0,16(sp)
-    80001d02:	e426                	sd	s1,8(sp)
-    80001d04:	e04a                	sd	s2,0(sp)
-    80001d06:	1000                	addi	s0,sp,32
-    80001d08:	84aa                	mv	s1,a0
-  struct proc *p = myproc();
-    80001d0a:	00000097          	auipc	ra,0x0
-    80001d0e:	c8c080e7          	jalr	-884(ra) # 80001996 <myproc>
-    80001d12:	892a                	mv	s2,a0
-  sz = p->sz;
-    80001d14:	652c                	ld	a1,72(a0)
-    80001d16:	0005879b          	sext.w	a5,a1
-  if(n > 0){
-    80001d1a:	00904f63          	bgtz	s1,80001d38 <growproc+0x3c>
-  } else if(n < 0){
-    80001d1e:	0204cd63          	bltz	s1,80001d58 <growproc+0x5c>
-  p->sz = sz;
-    80001d22:	1782                	slli	a5,a5,0x20
-    80001d24:	9381                	srli	a5,a5,0x20
-    80001d26:	04f93423          	sd	a5,72(s2)
-  return 0;
-    80001d2a:	4501                	li	a0,0
-}
-    80001d2c:	60e2                	ld	ra,24(sp)
-    80001d2e:	6442                	ld	s0,16(sp)
-    80001d30:	64a2                	ld	s1,8(sp)
-    80001d32:	6902                	ld	s2,0(sp)
-    80001d34:	6105                	addi	sp,sp,32
-    80001d36:	8082                	ret
-    if((sz = uvmalloc(p->pagetable, sz, sz + n)) == 0) {
-    80001d38:	00f4863b          	addw	a2,s1,a5
-    80001d3c:	1602                	slli	a2,a2,0x20
-    80001d3e:	9201                	srli	a2,a2,0x20
-    80001d40:	1582                	slli	a1,a1,0x20
-    80001d42:	9181                	srli	a1,a1,0x20
-    80001d44:	6928                	ld	a0,80(a0)
-    80001d46:	fffff097          	auipc	ra,0xfffff
-    80001d4a:	6c0080e7          	jalr	1728(ra) # 80001406 <uvmalloc>
-    80001d4e:	0005079b          	sext.w	a5,a0
-    80001d52:	fbe1                	bnez	a5,80001d22 <growproc+0x26>
-      return -1;
-    80001d54:	557d                	li	a0,-1
-    80001d56:	bfd9                	j	80001d2c <growproc+0x30>
-    sz = uvmdealloc(p->pagetable, sz, sz + n);
-    80001d58:	00f4863b          	addw	a2,s1,a5
-    80001d5c:	1602                	slli	a2,a2,0x20
-    80001d5e:	9201                	srli	a2,a2,0x20
-    80001d60:	1582                	slli	a1,a1,0x20
-    80001d62:	9181                	srli	a1,a1,0x20
-    80001d64:	6928                	ld	a0,80(a0)
-    80001d66:	fffff097          	auipc	ra,0xfffff
-    80001d6a:	658080e7          	jalr	1624(ra) # 800013be <uvmdealloc>
-    80001d6e:	0005079b          	sext.w	a5,a0
-    80001d72:	bf45                	j	80001d22 <growproc+0x26>
-
-0000000080001d74 <fork>:
-{
-    80001d74:	7139                	addi	sp,sp,-64
-    80001d76:	fc06                	sd	ra,56(sp)
-    80001d78:	f822                	sd	s0,48(sp)
-    80001d7a:	f426                	sd	s1,40(sp)
-    80001d7c:	f04a                	sd	s2,32(sp)
-    80001d7e:	ec4e                	sd	s3,24(sp)
-    80001d80:	e852                	sd	s4,16(sp)
-    80001d82:	e456                	sd	s5,8(sp)
-    80001d84:	0080                	addi	s0,sp,64
-  struct proc *p = myproc();
-    80001d86:	00000097          	auipc	ra,0x0
-    80001d8a:	c10080e7          	jalr	-1008(ra) # 80001996 <myproc>
-    80001d8e:	8aaa                	mv	s5,a0
-  if((np = allocproc()) == 0){
-    80001d90:	00000097          	auipc	ra,0x0
-    80001d94:	e10080e7          	jalr	-496(ra) # 80001ba0 <allocproc>
-    80001d98:	10050c63          	beqz	a0,80001eb0 <fork+0x13c>
-    80001d9c:	8a2a                	mv	s4,a0
-  if(uvmcopy(p->pagetable, np->pagetable, p->sz) < 0){
-    80001d9e:	048ab603          	ld	a2,72(s5)
-    80001da2:	692c                	ld	a1,80(a0)
-    80001da4:	050ab503          	ld	a0,80(s5)
-    80001da8:	fffff097          	auipc	ra,0xfffff
-    80001dac:	7ae080e7          	jalr	1966(ra) # 80001556 <uvmcopy>
-    80001db0:	04054863          	bltz	a0,80001e00 <fork+0x8c>
-  np->sz = p->sz;
-    80001db4:	048ab783          	ld	a5,72(s5)
-    80001db8:	04fa3423          	sd	a5,72(s4)
-  *(np->trapframe) = *(p->trapframe);
-    80001dbc:	058ab683          	ld	a3,88(s5)
-    80001dc0:	87b6                	mv	a5,a3
-    80001dc2:	058a3703          	ld	a4,88(s4)
-    80001dc6:	12068693          	addi	a3,a3,288
-    80001dca:	0007b803          	ld	a6,0(a5) # 1000 <_entry-0x7ffff000>
-    80001dce:	6788                	ld	a0,8(a5)
-    80001dd0:	6b8c                	ld	a1,16(a5)
-    80001dd2:	6f90                	ld	a2,24(a5)
-    80001dd4:	01073023          	sd	a6,0(a4)
-    80001dd8:	e708                	sd	a0,8(a4)
-    80001dda:	eb0c                	sd	a1,16(a4)
-    80001ddc:	ef10                	sd	a2,24(a4)
-    80001dde:	02078793          	addi	a5,a5,32
-    80001de2:	02070713          	addi	a4,a4,32
-    80001de6:	fed792e3          	bne	a5,a3,80001dca <fork+0x56>
-  np->trapframe->a0 = 0;
-    80001dea:	058a3783          	ld	a5,88(s4)
-    80001dee:	0607b823          	sd	zero,112(a5)
-  for(i = 0; i < NOFILE; i++)
-    80001df2:	0d0a8493          	addi	s1,s5,208
-    80001df6:	0d0a0913          	addi	s2,s4,208
-    80001dfa:	150a8993          	addi	s3,s5,336
-    80001dfe:	a00d                	j	80001e20 <fork+0xac>
-    freeproc(np);
-    80001e00:	8552                	mv	a0,s4
-    80001e02:	00000097          	auipc	ra,0x0
-    80001e06:	d46080e7          	jalr	-698(ra) # 80001b48 <freeproc>
-    release(&np->lock);
-    80001e0a:	8552                	mv	a0,s4
-    80001e0c:	fffff097          	auipc	ra,0xfffff
-    80001e10:	e78080e7          	jalr	-392(ra) # 80000c84 <release>
-    return -1;
-    80001e14:	597d                	li	s2,-1
-    80001e16:	a059                	j	80001e9c <fork+0x128>
-  for(i = 0; i < NOFILE; i++)
-    80001e18:	04a1                	addi	s1,s1,8
-    80001e1a:	0921                	addi	s2,s2,8
-    80001e1c:	01348b63          	beq	s1,s3,80001e32 <fork+0xbe>
-    if(p->ofile[i])
-    80001e20:	6088                	ld	a0,0(s1)
-    80001e22:	d97d                	beqz	a0,80001e18 <fork+0xa4>
-      np->ofile[i] = filedup(p->ofile[i]);
-    80001e24:	00002097          	auipc	ra,0x2
-    80001e28:	72a080e7          	jalr	1834(ra) # 8000454e <filedup>
-    80001e2c:	00a93023          	sd	a0,0(s2)
-    80001e30:	b7e5                	j	80001e18 <fork+0xa4>
-  np->cwd = idup(p->cwd);
-    80001e32:	150ab503          	ld	a0,336(s5)
-    80001e36:	00002097          	auipc	ra,0x2
-    80001e3a:	888080e7          	jalr	-1912(ra) # 800036be <idup>
-    80001e3e:	14aa3823          	sd	a0,336(s4)
-  safestrcpy(np->name, p->name, sizeof(p->name));
-    80001e42:	4641                	li	a2,16
-    80001e44:	158a8593          	addi	a1,s5,344
-    80001e48:	158a0513          	addi	a0,s4,344
-    80001e4c:	fffff097          	auipc	ra,0xfffff
-    80001e50:	fca080e7          	jalr	-54(ra) # 80000e16 <safestrcpy>
-  pid = np->pid;
-    80001e54:	030a2903          	lw	s2,48(s4)
-  release(&np->lock);
-    80001e58:	8552                	mv	a0,s4
-    80001e5a:	fffff097          	auipc	ra,0xfffff
-    80001e5e:	e2a080e7          	jalr	-470(ra) # 80000c84 <release>
-  acquire(&wait_lock);
-    80001e62:	0000f497          	auipc	s1,0xf
-    80001e66:	45648493          	addi	s1,s1,1110 # 800112b8 <wait_lock>
-    80001e6a:	8526                	mv	a0,s1
-    80001e6c:	fffff097          	auipc	ra,0xfffff
-    80001e70:	d64080e7          	jalr	-668(ra) # 80000bd0 <acquire>
-  np->parent = p;
-    80001e74:	035a3c23          	sd	s5,56(s4)
-  release(&wait_lock);
-    80001e78:	8526                	mv	a0,s1
-    80001e7a:	fffff097          	auipc	ra,0xfffff
-    80001e7e:	e0a080e7          	jalr	-502(ra) # 80000c84 <release>
-  acquire(&np->lock);
-    80001e82:	8552                	mv	a0,s4
-    80001e84:	fffff097          	auipc	ra,0xfffff
-    80001e88:	d4c080e7          	jalr	-692(ra) # 80000bd0 <acquire>
-  np->state = RUNNABLE;
-    80001e8c:	478d                	li	a5,3
-    80001e8e:	00fa2c23          	sw	a5,24(s4)
-  release(&np->lock);
-    80001e92:	8552                	mv	a0,s4
-    80001e94:	fffff097          	auipc	ra,0xfffff
-    80001e98:	df0080e7          	jalr	-528(ra) # 80000c84 <release>
-}
-    80001e9c:	854a                	mv	a0,s2
-    80001e9e:	70e2                	ld	ra,56(sp)
-    80001ea0:	7442                	ld	s0,48(sp)
-    80001ea2:	74a2                	ld	s1,40(sp)
-    80001ea4:	7902                	ld	s2,32(sp)
-    80001ea6:	69e2                	ld	s3,24(sp)
-    80001ea8:	6a42                	ld	s4,16(sp)
-    80001eaa:	6aa2                	ld	s5,8(sp)
-    80001eac:	6121                	addi	sp,sp,64
-    80001eae:	8082                	ret
-    return -1;
-    80001eb0:	597d                	li	s2,-1
-    80001eb2:	b7ed                	j	80001e9c <fork+0x128>
-
-0000000080001eb4 <scheduler>:
-{
-    80001eb4:	7139                	addi	sp,sp,-64
-    80001eb6:	fc06                	sd	ra,56(sp)
-    80001eb8:	f822                	sd	s0,48(sp)
-    80001eba:	f426                	sd	s1,40(sp)
-    80001ebc:	f04a                	sd	s2,32(sp)
-    80001ebe:	ec4e                	sd	s3,24(sp)
-    80001ec0:	e852                	sd	s4,16(sp)
-    80001ec2:	e456                	sd	s5,8(sp)
-    80001ec4:	e05a                	sd	s6,0(sp)
-    80001ec6:	0080                	addi	s0,sp,64
-    80001ec8:	8792                	mv	a5,tp
-  int id = r_tp();
-    80001eca:	2781                	sext.w	a5,a5
-  c->proc = 0;
-    80001ecc:	00779a93          	slli	s5,a5,0x7
-    80001ed0:	0000f717          	auipc	a4,0xf
-    80001ed4:	3d070713          	addi	a4,a4,976 # 800112a0 <pid_lock>
-    80001ed8:	9756                	add	a4,a4,s5
-    80001eda:	02073823          	sd	zero,48(a4)
-        swtch(&c->context, &p->context);
-    80001ede:	0000f717          	auipc	a4,0xf
-    80001ee2:	3fa70713          	addi	a4,a4,1018 # 800112d8 <cpus+0x8>
-    80001ee6:	9aba                	add	s5,s5,a4
-      if(p->state == RUNNABLE) {
-    80001ee8:	498d                	li	s3,3
-        p->state = RUNNING;
-    80001eea:	4b11                	li	s6,4
-        c->proc = p;
-    80001eec:	079e                	slli	a5,a5,0x7
-    80001eee:	0000fa17          	auipc	s4,0xf
-    80001ef2:	3b2a0a13          	addi	s4,s4,946 # 800112a0 <pid_lock>
-    80001ef6:	9a3e                	add	s4,s4,a5
-    for(p = proc; p < &proc[NPROC]; p++) {
-    80001ef8:	00015917          	auipc	s2,0x15
-    80001efc:	5d890913          	addi	s2,s2,1496 # 800174d0 <tickslock>
-  asm volatile("csrr %0, sstatus" : "=r" (x) );
-    80001f00:	100027f3          	csrr	a5,sstatus
-  w_sstatus(r_sstatus() | SSTATUS_SIE);
-    80001f04:	0027e793          	ori	a5,a5,2
-  asm volatile("csrw sstatus, %0" : : "r" (x));
-    80001f08:	10079073          	csrw	sstatus,a5
-    80001f0c:	0000f497          	auipc	s1,0xf
-    80001f10:	7c448493          	addi	s1,s1,1988 # 800116d0 <proc>
-    80001f14:	a811                	j	80001f28 <scheduler+0x74>
+    80001c4a:	1101                	addi	sp,sp,-32
+    80001c4c:	ec06                	sd	ra,24(sp)
+    80001c4e:	e822                	sd	s0,16(sp)
+    80001c50:	e426                	sd	s1,8(sp)
+    80001c52:	e04a                	sd	s2,0(sp)
+    80001c54:	1000                	addi	s0,sp,32
+  for(p = proc; p < &proc[NPROC]; p++) {
+    80001c56:	00010497          	auipc	s1,0x10
+    80001c5a:	a7a48493          	addi	s1,s1,-1414 # 800116d0 <proc>
+    80001c5e:	00016917          	auipc	s2,0x16
+    80001c62:	87290913          	addi	s2,s2,-1934 # 800174d0 <tickslock>
+    acquire(&p->lock);
+    80001c66:	8526                	mv	a0,s1
+    80001c68:	fffff097          	auipc	ra,0xfffff
+    80001c6c:	f68080e7          	jalr	-152(ra) # 80000bd0 <acquire>
+    if(p->state == UNUSED) {
+    80001c70:	4c9c                	lw	a5,24(s1)
+    80001c72:	cf81                	beqz	a5,80001c8a <allocproc+0x40>
       release(&p->lock);
-    80001f16:	8526                	mv	a0,s1
-    80001f18:	fffff097          	auipc	ra,0xfffff
-    80001f1c:	d6c080e7          	jalr	-660(ra) # 80000c84 <release>
-    for(p = proc; p < &proc[NPROC]; p++) {
-    80001f20:	17848493          	addi	s1,s1,376
-    80001f24:	fd248ee3          	beq	s1,s2,80001f00 <scheduler+0x4c>
-      acquire(&p->lock);
-    80001f28:	8526                	mv	a0,s1
-    80001f2a:	fffff097          	auipc	ra,0xfffff
-    80001f2e:	ca6080e7          	jalr	-858(ra) # 80000bd0 <acquire>
-      if(p->state == RUNNABLE) {
-    80001f32:	4c9c                	lw	a5,24(s1)
-    80001f34:	ff3791e3          	bne	a5,s3,80001f16 <scheduler+0x62>
-        p->state = RUNNING;
-    80001f38:	0164ac23          	sw	s6,24(s1)
-        c->proc = p;
-    80001f3c:	029a3823          	sd	s1,48(s4)
-        swtch(&c->context, &p->context);
-    80001f40:	06048593          	addi	a1,s1,96
-    80001f44:	8556                	mv	a0,s5
-    80001f46:	00000097          	auipc	ra,0x0
-    80001f4a:	718080e7          	jalr	1816(ra) # 8000265e <swtch>
-        c->proc = 0;
-    80001f4e:	020a3823          	sd	zero,48(s4)
-    80001f52:	b7d1                	j	80001f16 <scheduler+0x62>
-
-0000000080001f54 <sched>:
-{
-    80001f54:	7179                	addi	sp,sp,-48
-    80001f56:	f406                	sd	ra,40(sp)
-    80001f58:	f022                	sd	s0,32(sp)
-    80001f5a:	ec26                	sd	s1,24(sp)
-    80001f5c:	e84a                	sd	s2,16(sp)
-    80001f5e:	e44e                	sd	s3,8(sp)
-    80001f60:	1800                	addi	s0,sp,48
-  struct proc *p = myproc();
-    80001f62:	00000097          	auipc	ra,0x0
-    80001f66:	a34080e7          	jalr	-1484(ra) # 80001996 <myproc>
-    80001f6a:	84aa                	mv	s1,a0
-  if(!holding(&p->lock))
-    80001f6c:	fffff097          	auipc	ra,0xfffff
-    80001f70:	bea080e7          	jalr	-1046(ra) # 80000b56 <holding>
-    80001f74:	c93d                	beqz	a0,80001fea <sched+0x96>
-  asm volatile("mv %0, tp" : "=r" (x) );
-    80001f76:	8792                	mv	a5,tp
-  if(mycpu()->noff != 1)
-    80001f78:	2781                	sext.w	a5,a5
-    80001f7a:	079e                	slli	a5,a5,0x7
-    80001f7c:	0000f717          	auipc	a4,0xf
-    80001f80:	32470713          	addi	a4,a4,804 # 800112a0 <pid_lock>
-    80001f84:	97ba                	add	a5,a5,a4
-    80001f86:	0a87a703          	lw	a4,168(a5)
-    80001f8a:	4785                	li	a5,1
-    80001f8c:	06f71763          	bne	a4,a5,80001ffa <sched+0xa6>
-  if(p->state == RUNNING)
-    80001f90:	4c98                	lw	a4,24(s1)
-    80001f92:	4791                	li	a5,4
-    80001f94:	06f70b63          	beq	a4,a5,8000200a <sched+0xb6>
-  asm volatile("csrr %0, sstatus" : "=r" (x) );
-    80001f98:	100027f3          	csrr	a5,sstatus
-  return (x & SSTATUS_SIE) != 0;
-    80001f9c:	8b89                	andi	a5,a5,2
-  if(intr_get())
-    80001f9e:	efb5                	bnez	a5,8000201a <sched+0xc6>
-  asm volatile("mv %0, tp" : "=r" (x) );
-    80001fa0:	8792                	mv	a5,tp
-  intena = mycpu()->intena;
-    80001fa2:	0000f917          	auipc	s2,0xf
-    80001fa6:	2fe90913          	addi	s2,s2,766 # 800112a0 <pid_lock>
-    80001faa:	2781                	sext.w	a5,a5
-    80001fac:	079e                	slli	a5,a5,0x7
-    80001fae:	97ca                	add	a5,a5,s2
-    80001fb0:	0ac7a983          	lw	s3,172(a5)
-    80001fb4:	8792                	mv	a5,tp
-  swtch(&p->context, &mycpu()->context);
-    80001fb6:	2781                	sext.w	a5,a5
-    80001fb8:	079e                	slli	a5,a5,0x7
-    80001fba:	0000f597          	auipc	a1,0xf
-    80001fbe:	31e58593          	addi	a1,a1,798 # 800112d8 <cpus+0x8>
-    80001fc2:	95be                	add	a1,a1,a5
-    80001fc4:	06048513          	addi	a0,s1,96
-    80001fc8:	00000097          	auipc	ra,0x0
-    80001fcc:	696080e7          	jalr	1686(ra) # 8000265e <swtch>
-    80001fd0:	8792                	mv	a5,tp
-  mycpu()->intena = intena;
-    80001fd2:	2781                	sext.w	a5,a5
-    80001fd4:	079e                	slli	a5,a5,0x7
-    80001fd6:	993e                	add	s2,s2,a5
-    80001fd8:	0b392623          	sw	s3,172(s2)
+    80001c74:	8526                	mv	a0,s1
+    80001c76:	fffff097          	auipc	ra,0xfffff
+    80001c7a:	00e080e7          	jalr	14(ra) # 80000c84 <release>
+  for(p = proc; p < &proc[NPROC]; p++) {
+    80001c7e:	17848493          	addi	s1,s1,376
+    80001c82:	ff2492e3          	bne	s1,s2,80001c66 <allocproc+0x1c>
+  return 0;
+    80001c86:	4481                	li	s1,0
+    80001c88:	a08d                	j	80001cea <allocproc+0xa0>
+  p->pid = allocpid();
+    80001c8a:	00000097          	auipc	ra,0x0
+    80001c8e:	e34080e7          	jalr	-460(ra) # 80001abe <allocpid>
+    80001c92:	d888                	sw	a0,48(s1)
+  p->state = USED;
+    80001c94:	4785                	li	a5,1
+    80001c96:	cc9c                	sw	a5,24(s1)
+  p->in_queue = HIGH;
+    80001c98:	1604aa23          	sw	zero,372(s1)
+  p->hticks = 0;
+    80001c9c:	1604a423          	sw	zero,360(s1)
+  p->lticks = 0;
+    80001ca0:	1604a623          	sw	zero,364(s1)
+  p->ticket = 0;
+    80001ca4:	1604a823          	sw	zero,368(s1)
+  if((p->trapframe = (struct trapframe *)kalloc()) == 0){
+    80001ca8:	fffff097          	auipc	ra,0xfffff
+    80001cac:	e38080e7          	jalr	-456(ra) # 80000ae0 <kalloc>
+    80001cb0:	892a                	mv	s2,a0
+    80001cb2:	eca8                	sd	a0,88(s1)
+    80001cb4:	c131                	beqz	a0,80001cf8 <allocproc+0xae>
+  p->pagetable = proc_pagetable(p);
+    80001cb6:	8526                	mv	a0,s1
+    80001cb8:	00000097          	auipc	ra,0x0
+    80001cbc:	e4c080e7          	jalr	-436(ra) # 80001b04 <proc_pagetable>
+    80001cc0:	892a                	mv	s2,a0
+    80001cc2:	e8a8                	sd	a0,80(s1)
+  if(p->pagetable == 0){
+    80001cc4:	c531                	beqz	a0,80001d10 <allocproc+0xc6>
+  memset(&p->context, 0, sizeof(p->context));
+    80001cc6:	07000613          	li	a2,112
+    80001cca:	4581                	li	a1,0
+    80001ccc:	06048513          	addi	a0,s1,96
+    80001cd0:	fffff097          	auipc	ra,0xfffff
+    80001cd4:	ffc080e7          	jalr	-4(ra) # 80000ccc <memset>
+  p->context.ra = (uint64)forkret;
+    80001cd8:	00000797          	auipc	a5,0x0
+    80001cdc:	da078793          	addi	a5,a5,-608 # 80001a78 <forkret>
+    80001ce0:	f0bc                	sd	a5,96(s1)
+  p->context.sp = p->kstack + PGSIZE;
+    80001ce2:	60bc                	ld	a5,64(s1)
+    80001ce4:	6705                	lui	a4,0x1
+    80001ce6:	97ba                	add	a5,a5,a4
+    80001ce8:	f4bc                	sd	a5,104(s1)
 }
-    80001fdc:	70a2                	ld	ra,40(sp)
-    80001fde:	7402                	ld	s0,32(sp)
-    80001fe0:	64e2                	ld	s1,24(sp)
-    80001fe2:	6942                	ld	s2,16(sp)
-    80001fe4:	69a2                	ld	s3,8(sp)
-    80001fe6:	6145                	addi	sp,sp,48
-    80001fe8:	8082                	ret
-    panic("sched p->lock");
-    80001fea:	00006517          	auipc	a0,0x6
-    80001fee:	22e50513          	addi	a0,a0,558 # 80008218 <digits+0x1d8>
-    80001ff2:	ffffe097          	auipc	ra,0xffffe
-    80001ff6:	548080e7          	jalr	1352(ra) # 8000053a <panic>
-    panic("sched locks");
-    80001ffa:	00006517          	auipc	a0,0x6
-    80001ffe:	22e50513          	addi	a0,a0,558 # 80008228 <digits+0x1e8>
-    80002002:	ffffe097          	auipc	ra,0xffffe
-    80002006:	538080e7          	jalr	1336(ra) # 8000053a <panic>
-    panic("sched running");
-    8000200a:	00006517          	auipc	a0,0x6
-    8000200e:	22e50513          	addi	a0,a0,558 # 80008238 <digits+0x1f8>
-    80002012:	ffffe097          	auipc	ra,0xffffe
-    80002016:	528080e7          	jalr	1320(ra) # 8000053a <panic>
-    panic("sched interruptible");
-    8000201a:	00006517          	auipc	a0,0x6
-    8000201e:	22e50513          	addi	a0,a0,558 # 80008248 <digits+0x208>
-    80002022:	ffffe097          	auipc	ra,0xffffe
-    80002026:	518080e7          	jalr	1304(ra) # 8000053a <panic>
+    80001cea:	8526                	mv	a0,s1
+    80001cec:	60e2                	ld	ra,24(sp)
+    80001cee:	6442                	ld	s0,16(sp)
+    80001cf0:	64a2                	ld	s1,8(sp)
+    80001cf2:	6902                	ld	s2,0(sp)
+    80001cf4:	6105                	addi	sp,sp,32
+    80001cf6:	8082                	ret
+    freeproc(p);
+    80001cf8:	8526                	mv	a0,s1
+    80001cfa:	00000097          	auipc	ra,0x0
+    80001cfe:	ef8080e7          	jalr	-264(ra) # 80001bf2 <freeproc>
+    release(&p->lock);
+    80001d02:	8526                	mv	a0,s1
+    80001d04:	fffff097          	auipc	ra,0xfffff
+    80001d08:	f80080e7          	jalr	-128(ra) # 80000c84 <release>
+    return 0;
+    80001d0c:	84ca                	mv	s1,s2
+    80001d0e:	bff1                	j	80001cea <allocproc+0xa0>
+    freeproc(p);
+    80001d10:	8526                	mv	a0,s1
+    80001d12:	00000097          	auipc	ra,0x0
+    80001d16:	ee0080e7          	jalr	-288(ra) # 80001bf2 <freeproc>
+    release(&p->lock);
+    80001d1a:	8526                	mv	a0,s1
+    80001d1c:	fffff097          	auipc	ra,0xfffff
+    80001d20:	f68080e7          	jalr	-152(ra) # 80000c84 <release>
+    return 0;
+    80001d24:	84ca                	mv	s1,s2
+    80001d26:	b7d1                	j	80001cea <allocproc+0xa0>
 
-000000008000202a <yield>:
+0000000080001d28 <userinit>:
 {
-    8000202a:	1101                	addi	sp,sp,-32
-    8000202c:	ec06                	sd	ra,24(sp)
-    8000202e:	e822                	sd	s0,16(sp)
-    80002030:	e426                	sd	s1,8(sp)
-    80002032:	1000                	addi	s0,sp,32
-  struct proc *p = myproc();
-    80002034:	00000097          	auipc	ra,0x0
-    80002038:	962080e7          	jalr	-1694(ra) # 80001996 <myproc>
-    8000203c:	84aa                	mv	s1,a0
-  acquire(&p->lock);
-    8000203e:	fffff097          	auipc	ra,0xfffff
-    80002042:	b92080e7          	jalr	-1134(ra) # 80000bd0 <acquire>
+    80001d28:	1101                	addi	sp,sp,-32
+    80001d2a:	ec06                	sd	ra,24(sp)
+    80001d2c:	e822                	sd	s0,16(sp)
+    80001d2e:	e426                	sd	s1,8(sp)
+    80001d30:	1000                	addi	s0,sp,32
+  p = allocproc();
+    80001d32:	00000097          	auipc	ra,0x0
+    80001d36:	f18080e7          	jalr	-232(ra) # 80001c4a <allocproc>
+    80001d3a:	84aa                	mv	s1,a0
+  initproc = p;
+    80001d3c:	00007797          	auipc	a5,0x7
+    80001d40:	2ea7b623          	sd	a0,748(a5) # 80009028 <initproc>
+  uvminit(p->pagetable, initcode, sizeof(initcode));
+    80001d44:	03400613          	li	a2,52
+    80001d48:	00007597          	auipc	a1,0x7
+    80001d4c:	be858593          	addi	a1,a1,-1048 # 80008930 <initcode>
+    80001d50:	6928                	ld	a0,80(a0)
+    80001d52:	fffff097          	auipc	ra,0xfffff
+    80001d56:	5fa080e7          	jalr	1530(ra) # 8000134c <uvminit>
+  p->sz = PGSIZE;
+    80001d5a:	6785                	lui	a5,0x1
+    80001d5c:	e4bc                	sd	a5,72(s1)
+  p->trapframe->epc = 0;      // user program counter
+    80001d5e:	6cb8                	ld	a4,88(s1)
+    80001d60:	00073c23          	sd	zero,24(a4) # 1018 <_entry-0x7fffefe8>
+  p->trapframe->sp = PGSIZE;  // user stack pointer
+    80001d64:	6cb8                	ld	a4,88(s1)
+    80001d66:	fb1c                	sd	a5,48(a4)
+  safestrcpy(p->name, "initcode", sizeof(p->name));
+    80001d68:	4641                	li	a2,16
+    80001d6a:	00006597          	auipc	a1,0x6
+    80001d6e:	4a658593          	addi	a1,a1,1190 # 80008210 <digits+0x1c0>
+    80001d72:	15848513          	addi	a0,s1,344
+    80001d76:	fffff097          	auipc	ra,0xfffff
+    80001d7a:	0a0080e7          	jalr	160(ra) # 80000e16 <safestrcpy>
+  p->cwd = namei("/");
+    80001d7e:	00006517          	auipc	a0,0x6
+    80001d82:	4a250513          	addi	a0,a0,1186 # 80008220 <digits+0x1d0>
+    80001d86:	00002097          	auipc	ra,0x2
+    80001d8a:	3c4080e7          	jalr	964(ra) # 8000414a <namei>
+    80001d8e:	14a4b823          	sd	a0,336(s1)
   p->state = RUNNABLE;
-    80002046:	478d                	li	a5,3
-    80002048:	cc9c                	sw	a5,24(s1)
-  sched();
-    8000204a:	00000097          	auipc	ra,0x0
-    8000204e:	f0a080e7          	jalr	-246(ra) # 80001f54 <sched>
+    80001d92:	478d                	li	a5,3
+    80001d94:	cc9c                	sw	a5,24(s1)
   release(&p->lock);
-    80002052:	8526                	mv	a0,s1
-    80002054:	fffff097          	auipc	ra,0xfffff
-    80002058:	c30080e7          	jalr	-976(ra) # 80000c84 <release>
+    80001d96:	8526                	mv	a0,s1
+    80001d98:	fffff097          	auipc	ra,0xfffff
+    80001d9c:	eec080e7          	jalr	-276(ra) # 80000c84 <release>
 }
-    8000205c:	60e2                	ld	ra,24(sp)
-    8000205e:	6442                	ld	s0,16(sp)
-    80002060:	64a2                	ld	s1,8(sp)
-    80002062:	6105                	addi	sp,sp,32
-    80002064:	8082                	ret
+    80001da0:	60e2                	ld	ra,24(sp)
+    80001da2:	6442                	ld	s0,16(sp)
+    80001da4:	64a2                	ld	s1,8(sp)
+    80001da6:	6105                	addi	sp,sp,32
+    80001da8:	8082                	ret
 
-0000000080002066 <sleep>:
+0000000080001daa <growproc>:
+{
+    80001daa:	1101                	addi	sp,sp,-32
+    80001dac:	ec06                	sd	ra,24(sp)
+    80001dae:	e822                	sd	s0,16(sp)
+    80001db0:	e426                	sd	s1,8(sp)
+    80001db2:	e04a                	sd	s2,0(sp)
+    80001db4:	1000                	addi	s0,sp,32
+    80001db6:	84aa                	mv	s1,a0
+  struct proc *p = myproc();
+    80001db8:	00000097          	auipc	ra,0x0
+    80001dbc:	c88080e7          	jalr	-888(ra) # 80001a40 <myproc>
+    80001dc0:	892a                	mv	s2,a0
+  sz = p->sz;
+    80001dc2:	652c                	ld	a1,72(a0)
+    80001dc4:	0005879b          	sext.w	a5,a1
+  if(n > 0){
+    80001dc8:	00904f63          	bgtz	s1,80001de6 <growproc+0x3c>
+  } else if(n < 0){
+    80001dcc:	0204cd63          	bltz	s1,80001e06 <growproc+0x5c>
+  p->sz = sz;
+    80001dd0:	1782                	slli	a5,a5,0x20
+    80001dd2:	9381                	srli	a5,a5,0x20
+    80001dd4:	04f93423          	sd	a5,72(s2)
+  return 0;
+    80001dd8:	4501                	li	a0,0
+}
+    80001dda:	60e2                	ld	ra,24(sp)
+    80001ddc:	6442                	ld	s0,16(sp)
+    80001dde:	64a2                	ld	s1,8(sp)
+    80001de0:	6902                	ld	s2,0(sp)
+    80001de2:	6105                	addi	sp,sp,32
+    80001de4:	8082                	ret
+    if((sz = uvmalloc(p->pagetable, sz, sz + n)) == 0) {
+    80001de6:	00f4863b          	addw	a2,s1,a5
+    80001dea:	1602                	slli	a2,a2,0x20
+    80001dec:	9201                	srli	a2,a2,0x20
+    80001dee:	1582                	slli	a1,a1,0x20
+    80001df0:	9181                	srli	a1,a1,0x20
+    80001df2:	6928                	ld	a0,80(a0)
+    80001df4:	fffff097          	auipc	ra,0xfffff
+    80001df8:	612080e7          	jalr	1554(ra) # 80001406 <uvmalloc>
+    80001dfc:	0005079b          	sext.w	a5,a0
+    80001e00:	fbe1                	bnez	a5,80001dd0 <growproc+0x26>
+      return -1;
+    80001e02:	557d                	li	a0,-1
+    80001e04:	bfd9                	j	80001dda <growproc+0x30>
+    sz = uvmdealloc(p->pagetable, sz, sz + n);
+    80001e06:	00f4863b          	addw	a2,s1,a5
+    80001e0a:	1602                	slli	a2,a2,0x20
+    80001e0c:	9201                	srli	a2,a2,0x20
+    80001e0e:	1582                	slli	a1,a1,0x20
+    80001e10:	9181                	srli	a1,a1,0x20
+    80001e12:	6928                	ld	a0,80(a0)
+    80001e14:	fffff097          	auipc	ra,0xfffff
+    80001e18:	5aa080e7          	jalr	1450(ra) # 800013be <uvmdealloc>
+    80001e1c:	0005079b          	sext.w	a5,a0
+    80001e20:	bf45                	j	80001dd0 <growproc+0x26>
+
+0000000080001e22 <fork>:
+{
+    80001e22:	7139                	addi	sp,sp,-64
+    80001e24:	fc06                	sd	ra,56(sp)
+    80001e26:	f822                	sd	s0,48(sp)
+    80001e28:	f426                	sd	s1,40(sp)
+    80001e2a:	f04a                	sd	s2,32(sp)
+    80001e2c:	ec4e                	sd	s3,24(sp)
+    80001e2e:	e852                	sd	s4,16(sp)
+    80001e30:	e456                	sd	s5,8(sp)
+    80001e32:	0080                	addi	s0,sp,64
+  struct proc *p = myproc();
+    80001e34:	00000097          	auipc	ra,0x0
+    80001e38:	c0c080e7          	jalr	-1012(ra) # 80001a40 <myproc>
+    80001e3c:	8aaa                	mv	s5,a0
+  if((np = allocproc()) == 0){
+    80001e3e:	00000097          	auipc	ra,0x0
+    80001e42:	e0c080e7          	jalr	-500(ra) # 80001c4a <allocproc>
+    80001e46:	10050c63          	beqz	a0,80001f5e <fork+0x13c>
+    80001e4a:	8a2a                	mv	s4,a0
+  if(uvmcopy(p->pagetable, np->pagetable, p->sz) < 0){
+    80001e4c:	048ab603          	ld	a2,72(s5)
+    80001e50:	692c                	ld	a1,80(a0)
+    80001e52:	050ab503          	ld	a0,80(s5)
+    80001e56:	fffff097          	auipc	ra,0xfffff
+    80001e5a:	700080e7          	jalr	1792(ra) # 80001556 <uvmcopy>
+    80001e5e:	04054863          	bltz	a0,80001eae <fork+0x8c>
+  np->sz = p->sz;
+    80001e62:	048ab783          	ld	a5,72(s5)
+    80001e66:	04fa3423          	sd	a5,72(s4)
+  *(np->trapframe) = *(p->trapframe);
+    80001e6a:	058ab683          	ld	a3,88(s5)
+    80001e6e:	87b6                	mv	a5,a3
+    80001e70:	058a3703          	ld	a4,88(s4)
+    80001e74:	12068693          	addi	a3,a3,288
+    80001e78:	0007b803          	ld	a6,0(a5) # 1000 <_entry-0x7ffff000>
+    80001e7c:	6788                	ld	a0,8(a5)
+    80001e7e:	6b8c                	ld	a1,16(a5)
+    80001e80:	6f90                	ld	a2,24(a5)
+    80001e82:	01073023          	sd	a6,0(a4)
+    80001e86:	e708                	sd	a0,8(a4)
+    80001e88:	eb0c                	sd	a1,16(a4)
+    80001e8a:	ef10                	sd	a2,24(a4)
+    80001e8c:	02078793          	addi	a5,a5,32
+    80001e90:	02070713          	addi	a4,a4,32
+    80001e94:	fed792e3          	bne	a5,a3,80001e78 <fork+0x56>
+  np->trapframe->a0 = 0;
+    80001e98:	058a3783          	ld	a5,88(s4)
+    80001e9c:	0607b823          	sd	zero,112(a5)
+  for(i = 0; i < NOFILE; i++)
+    80001ea0:	0d0a8493          	addi	s1,s5,208
+    80001ea4:	0d0a0913          	addi	s2,s4,208
+    80001ea8:	150a8993          	addi	s3,s5,336
+    80001eac:	a00d                	j	80001ece <fork+0xac>
+    freeproc(np);
+    80001eae:	8552                	mv	a0,s4
+    80001eb0:	00000097          	auipc	ra,0x0
+    80001eb4:	d42080e7          	jalr	-702(ra) # 80001bf2 <freeproc>
+    release(&np->lock);
+    80001eb8:	8552                	mv	a0,s4
+    80001eba:	fffff097          	auipc	ra,0xfffff
+    80001ebe:	dca080e7          	jalr	-566(ra) # 80000c84 <release>
+    return -1;
+    80001ec2:	597d                	li	s2,-1
+    80001ec4:	a059                	j	80001f4a <fork+0x128>
+  for(i = 0; i < NOFILE; i++)
+    80001ec6:	04a1                	addi	s1,s1,8
+    80001ec8:	0921                	addi	s2,s2,8
+    80001eca:	01348b63          	beq	s1,s3,80001ee0 <fork+0xbe>
+    if(p->ofile[i])
+    80001ece:	6088                	ld	a0,0(s1)
+    80001ed0:	d97d                	beqz	a0,80001ec6 <fork+0xa4>
+      np->ofile[i] = filedup(p->ofile[i]);
+    80001ed2:	00003097          	auipc	ra,0x3
+    80001ed6:	90e080e7          	jalr	-1778(ra) # 800047e0 <filedup>
+    80001eda:	00a93023          	sd	a0,0(s2)
+    80001ede:	b7e5                	j	80001ec6 <fork+0xa4>
+  np->cwd = idup(p->cwd);
+    80001ee0:	150ab503          	ld	a0,336(s5)
+    80001ee4:	00002097          	auipc	ra,0x2
+    80001ee8:	a6c080e7          	jalr	-1428(ra) # 80003950 <idup>
+    80001eec:	14aa3823          	sd	a0,336(s4)
+  safestrcpy(np->name, p->name, sizeof(p->name));
+    80001ef0:	4641                	li	a2,16
+    80001ef2:	158a8593          	addi	a1,s5,344
+    80001ef6:	158a0513          	addi	a0,s4,344
+    80001efa:	fffff097          	auipc	ra,0xfffff
+    80001efe:	f1c080e7          	jalr	-228(ra) # 80000e16 <safestrcpy>
+  pid = np->pid;
+    80001f02:	030a2903          	lw	s2,48(s4)
+  release(&np->lock);
+    80001f06:	8552                	mv	a0,s4
+    80001f08:	fffff097          	auipc	ra,0xfffff
+    80001f0c:	d7c080e7          	jalr	-644(ra) # 80000c84 <release>
+  acquire(&wait_lock);
+    80001f10:	0000f497          	auipc	s1,0xf
+    80001f14:	3a848493          	addi	s1,s1,936 # 800112b8 <wait_lock>
+    80001f18:	8526                	mv	a0,s1
+    80001f1a:	fffff097          	auipc	ra,0xfffff
+    80001f1e:	cb6080e7          	jalr	-842(ra) # 80000bd0 <acquire>
+  np->parent = p;
+    80001f22:	035a3c23          	sd	s5,56(s4)
+  release(&wait_lock);
+    80001f26:	8526                	mv	a0,s1
+    80001f28:	fffff097          	auipc	ra,0xfffff
+    80001f2c:	d5c080e7          	jalr	-676(ra) # 80000c84 <release>
+  acquire(&np->lock);
+    80001f30:	8552                	mv	a0,s4
+    80001f32:	fffff097          	auipc	ra,0xfffff
+    80001f36:	c9e080e7          	jalr	-866(ra) # 80000bd0 <acquire>
+  np->state = RUNNABLE;
+    80001f3a:	478d                	li	a5,3
+    80001f3c:	00fa2c23          	sw	a5,24(s4)
+  release(&np->lock);
+    80001f40:	8552                	mv	a0,s4
+    80001f42:	fffff097          	auipc	ra,0xfffff
+    80001f46:	d42080e7          	jalr	-702(ra) # 80000c84 <release>
+}
+    80001f4a:	854a                	mv	a0,s2
+    80001f4c:	70e2                	ld	ra,56(sp)
+    80001f4e:	7442                	ld	s0,48(sp)
+    80001f50:	74a2                	ld	s1,40(sp)
+    80001f52:	7902                	ld	s2,32(sp)
+    80001f54:	69e2                	ld	s3,24(sp)
+    80001f56:	6a42                	ld	s4,16(sp)
+    80001f58:	6aa2                	ld	s5,8(sp)
+    80001f5a:	6121                	addi	sp,sp,64
+    80001f5c:	8082                	ret
+    return -1;
+    80001f5e:	597d                	li	s2,-1
+    80001f60:	b7ed                	j	80001f4a <fork+0x128>
+
+0000000080001f62 <scheduler>:
+{
+    80001f62:	7159                	addi	sp,sp,-112
+    80001f64:	f486                	sd	ra,104(sp)
+    80001f66:	f0a2                	sd	s0,96(sp)
+    80001f68:	eca6                	sd	s1,88(sp)
+    80001f6a:	e8ca                	sd	s2,80(sp)
+    80001f6c:	e4ce                	sd	s3,72(sp)
+    80001f6e:	e0d2                	sd	s4,64(sp)
+    80001f70:	fc56                	sd	s5,56(sp)
+    80001f72:	f85a                	sd	s6,48(sp)
+    80001f74:	f45e                	sd	s7,40(sp)
+    80001f76:	f062                	sd	s8,32(sp)
+    80001f78:	ec66                	sd	s9,24(sp)
+    80001f7a:	e86a                	sd	s10,16(sp)
+    80001f7c:	e46e                	sd	s11,8(sp)
+    80001f7e:	1880                	addi	s0,sp,112
+    80001f80:	8792                	mv	a5,tp
+  int id = r_tp();
+    80001f82:	2781                	sext.w	a5,a5
+  c->proc = 0;
+    80001f84:	00779d13          	slli	s10,a5,0x7
+    80001f88:	0000f717          	auipc	a4,0xf
+    80001f8c:	31870713          	addi	a4,a4,792 # 800112a0 <pid_lock>
+    80001f90:	976a                	add	a4,a4,s10
+    80001f92:	02073823          	sd	zero,48(a4)
+	        swtch(&c->context, &p->context);
+    80001f96:	0000f717          	auipc	a4,0xf
+    80001f9a:	34270713          	addi	a4,a4,834 # 800112d8 <cpus+0x8>
+    80001f9e:	9d3a                	add	s10,s10,a4
+	        c->proc = p;
+    80001fa0:	079e                	slli	a5,a5,0x7
+    80001fa2:	0000fc17          	auipc	s8,0xf
+    80001fa6:	2fec0c13          	addi	s8,s8,766 # 800112a0 <pid_lock>
+    80001faa:	9c3e                	add	s8,s8,a5
+	        total_tickets ++;
+    80001fac:	00007b97          	auipc	s7,0x7
+    80001fb0:	084b8b93          	addi	s7,s7,132 # 80009030 <total_tickets>
+    for(p = proc; p < &proc[NPROC]; p++) {
+    80001fb4:	00015a17          	auipc	s4,0x15
+    80001fb8:	51ca0a13          	addi	s4,s4,1308 # 800174d0 <tickslock>
+    80001fbc:	aa09                	j	800020ce <scheduler+0x16c>
+		release(&p->lock);
+    80001fbe:	8526                	mv	a0,s1
+    80001fc0:	fffff097          	auipc	ra,0xfffff
+    80001fc4:	cc4080e7          	jalr	-828(ra) # 80000c84 <release>
+    for(p = proc; p < &proc[NPROC]; p++) {
+    80001fc8:	17848493          	addi	s1,s1,376
+    80001fcc:	05448a63          	beq	s1,s4,80002020 <scheduler+0xbe>
+    	acquire(&p->lock);
+    80001fd0:	8526                	mv	a0,s1
+    80001fd2:	fffff097          	auipc	ra,0xfffff
+    80001fd6:	bfe080e7          	jalr	-1026(ra) # 80000bd0 <acquire>
+    	if ((p->state == RUNNABLE) && (p->in_queue == HIGH)) {
+    80001fda:	4c9c                	lw	a5,24(s1)
+    80001fdc:	ff3791e3          	bne	a5,s3,80001fbe <scheduler+0x5c>
+    80001fe0:	1744a783          	lw	a5,372(s1)
+    80001fe4:	ffe9                	bnez	a5,80001fbe <scheduler+0x5c>
+	        p->state = RUNNING;
+    80001fe6:	0194ac23          	sw	s9,24(s1)
+	        p->hticks++;
+    80001fea:	1684a783          	lw	a5,360(s1)
+    80001fee:	2785                	addiw	a5,a5,1
+    80001ff0:	16f4a423          	sw	a5,360(s1)
+	        c->proc = p;
+    80001ff4:	029c3823          	sd	s1,48(s8)
+	        high_p_count++;
+    80001ff8:	2a85                	addiw	s5,s5,1
+	        swtch(&c->context, &p->context);
+    80001ffa:	06048593          	addi	a1,s1,96
+    80001ffe:	856a                	mv	a0,s10
+    80002000:	00001097          	auipc	ra,0x1
+    80002004:	8ae080e7          	jalr	-1874(ra) # 800028ae <swtch>
+	        c->proc = 0;
+    80002008:	020c3823          	sd	zero,48(s8)
+	        p->in_queue = LOW;
+    8000200c:	1764aa23          	sw	s6,372(s1)
+	        p->ticket = 1;
+    80002010:	1764a823          	sw	s6,368(s1)
+	        total_tickets ++;
+    80002014:	000ba783          	lw	a5,0(s7)
+    80002018:	2785                	addiw	a5,a5,1
+    8000201a:	00fba023          	sw	a5,0(s7)
+    8000201e:	b745                	j	80001fbe <scheduler+0x5c>
+	if (high_p_count == 0) {
+    80002020:	0a0a9863          	bnez	s5,800020d0 <scheduler+0x16e>
+		int winner = (rand() * total_tickets * 10)/10 + 1;
+    80002024:	00000097          	auipc	ra,0x0
+    80002028:	800080e7          	jalr	-2048(ra) # 80001824 <rand>
+    8000202c:	000ba783          	lw	a5,0(s7)
+    80002030:	d20787d3          	fcvt.d.w	fa5,a5
+    80002034:	12a7f7d3          	fmul.d	fa5,fa5,fa0
+    80002038:	00006797          	auipc	a5,0x6
+    8000203c:	fd87b707          	fld	fa4,-40(a5) # 80008010 <etext+0x10>
+    80002040:	12e7f7d3          	fmul.d	fa5,fa5,fa4
+    80002044:	1ae7f7d3          	fdiv.d	fa5,fa5,fa4
+    80002048:	00006797          	auipc	a5,0x6
+    8000204c:	fd07b707          	fld	fa4,-48(a5) # 80008018 <etext+0x18>
+    80002050:	02e7f7d3          	fadd.d	fa5,fa5,fa4
+    80002054:	c20797d3          	fcvt.w.d	a5,fa5,rtz
+    80002058:	0007899b          	sext.w	s3,a5
+	    for(p = proc; p < &proc[NPROC]; p++) {
+    8000205c:	0000f497          	auipc	s1,0xf
+    80002060:	67448493          	addi	s1,s1,1652 # 800116d0 <proc>
+			if ((p->state == RUNNABLE) && (p->in_queue == LOW) && (counter >= winner)) {
+    80002064:	490d                	li	s2,3
+    80002066:	4b05                	li	s6,1
+	    	acquire(&p->lock);
+    80002068:	8526                	mv	a0,s1
+    8000206a:	fffff097          	auipc	ra,0xfffff
+    8000206e:	b66080e7          	jalr	-1178(ra) # 80000bd0 <acquire>
+	    	counter += p->ticket;
+    80002072:	1704a783          	lw	a5,368(s1)
+    80002076:	01578abb          	addw	s5,a5,s5
+			if ((p->state == RUNNABLE) && (p->in_queue == LOW) && (counter >= winner)) {
+    8000207a:	4c9c                	lw	a5,24(s1)
+    8000207c:	01278c63          	beq	a5,s2,80002094 <scheduler+0x132>
+			release(&p->lock);
+    80002080:	8526                	mv	a0,s1
+    80002082:	fffff097          	auipc	ra,0xfffff
+    80002086:	c02080e7          	jalr	-1022(ra) # 80000c84 <release>
+	    for(p = proc; p < &proc[NPROC]; p++) {
+    8000208a:	17848493          	addi	s1,s1,376
+    8000208e:	fd449de3          	bne	s1,s4,80002068 <scheduler+0x106>
+    80002092:	a835                	j	800020ce <scheduler+0x16c>
+			if ((p->state == RUNNABLE) && (p->in_queue == LOW) && (counter >= winner)) {
+    80002094:	1744a783          	lw	a5,372(s1)
+    80002098:	ff6794e3          	bne	a5,s6,80002080 <scheduler+0x11e>
+    8000209c:	ff3ac2e3          	blt	s5,s3,80002080 <scheduler+0x11e>
+		        p->state = RUNNING;
+    800020a0:	4791                	li	a5,4
+    800020a2:	cc9c                	sw	a5,24(s1)
+		        p->lticks++;
+    800020a4:	16c4a783          	lw	a5,364(s1)
+    800020a8:	2785                	addiw	a5,a5,1
+    800020aa:	16f4a623          	sw	a5,364(s1)
+		        c->proc = p;
+    800020ae:	029c3823          	sd	s1,48(s8)
+		        swtch(&c->context, &p->context);
+    800020b2:	06048593          	addi	a1,s1,96
+    800020b6:	856a                	mv	a0,s10
+    800020b8:	00000097          	auipc	ra,0x0
+    800020bc:	7f6080e7          	jalr	2038(ra) # 800028ae <swtch>
+		        c->proc = 0;
+    800020c0:	020c3823          	sd	zero,48(s8)
+			release(&p->lock);
+    800020c4:	8526                	mv	a0,s1
+    800020c6:	fffff097          	auipc	ra,0xfffff
+    800020ca:	bbe080e7          	jalr	-1090(ra) # 80000c84 <release>
+    int high_p_count = 0;
+    800020ce:	4d81                	li	s11,0
+  asm volatile("csrr %0, sstatus" : "=r" (x) );
+    800020d0:	100027f3          	csrr	a5,sstatus
+  w_sstatus(r_sstatus() | SSTATUS_SIE);
+    800020d4:	0027e793          	ori	a5,a5,2
+  asm volatile("csrw sstatus, %0" : : "r" (x));
+    800020d8:	10079073          	csrw	sstatus,a5
+    800020dc:	8aee                	mv	s5,s11
+    for(p = proc; p < &proc[NPROC]; p++) {
+    800020de:	0000f497          	auipc	s1,0xf
+    800020e2:	5f248493          	addi	s1,s1,1522 # 800116d0 <proc>
+    	if ((p->state == RUNNABLE) && (p->in_queue == HIGH)) {
+    800020e6:	498d                	li	s3,3
+	        p->state = RUNNING;
+    800020e8:	4c91                	li	s9,4
+	        p->in_queue = LOW;
+    800020ea:	4b05                	li	s6,1
+    800020ec:	b5d5                	j	80001fd0 <scheduler+0x6e>
+
+00000000800020ee <sched>:
+{
+    800020ee:	7179                	addi	sp,sp,-48
+    800020f0:	f406                	sd	ra,40(sp)
+    800020f2:	f022                	sd	s0,32(sp)
+    800020f4:	ec26                	sd	s1,24(sp)
+    800020f6:	e84a                	sd	s2,16(sp)
+    800020f8:	e44e                	sd	s3,8(sp)
+    800020fa:	1800                	addi	s0,sp,48
+  struct proc *p = myproc();
+    800020fc:	00000097          	auipc	ra,0x0
+    80002100:	944080e7          	jalr	-1724(ra) # 80001a40 <myproc>
+    80002104:	84aa                	mv	s1,a0
+  if(!holding(&p->lock))
+    80002106:	fffff097          	auipc	ra,0xfffff
+    8000210a:	a50080e7          	jalr	-1456(ra) # 80000b56 <holding>
+    8000210e:	c93d                	beqz	a0,80002184 <sched+0x96>
+  asm volatile("mv %0, tp" : "=r" (x) );
+    80002110:	8792                	mv	a5,tp
+  if(mycpu()->noff != 1)
+    80002112:	2781                	sext.w	a5,a5
+    80002114:	079e                	slli	a5,a5,0x7
+    80002116:	0000f717          	auipc	a4,0xf
+    8000211a:	18a70713          	addi	a4,a4,394 # 800112a0 <pid_lock>
+    8000211e:	97ba                	add	a5,a5,a4
+    80002120:	0a87a703          	lw	a4,168(a5)
+    80002124:	4785                	li	a5,1
+    80002126:	06f71763          	bne	a4,a5,80002194 <sched+0xa6>
+  if(p->state == RUNNING)
+    8000212a:	4c98                	lw	a4,24(s1)
+    8000212c:	4791                	li	a5,4
+    8000212e:	06f70b63          	beq	a4,a5,800021a4 <sched+0xb6>
+  asm volatile("csrr %0, sstatus" : "=r" (x) );
+    80002132:	100027f3          	csrr	a5,sstatus
+  return (x & SSTATUS_SIE) != 0;
+    80002136:	8b89                	andi	a5,a5,2
+  if(intr_get())
+    80002138:	efb5                	bnez	a5,800021b4 <sched+0xc6>
+  asm volatile("mv %0, tp" : "=r" (x) );
+    8000213a:	8792                	mv	a5,tp
+  intena = mycpu()->intena;
+    8000213c:	0000f917          	auipc	s2,0xf
+    80002140:	16490913          	addi	s2,s2,356 # 800112a0 <pid_lock>
+    80002144:	2781                	sext.w	a5,a5
+    80002146:	079e                	slli	a5,a5,0x7
+    80002148:	97ca                	add	a5,a5,s2
+    8000214a:	0ac7a983          	lw	s3,172(a5)
+    8000214e:	8792                	mv	a5,tp
+  swtch(&p->context, &mycpu()->context);
+    80002150:	2781                	sext.w	a5,a5
+    80002152:	079e                	slli	a5,a5,0x7
+    80002154:	0000f597          	auipc	a1,0xf
+    80002158:	18458593          	addi	a1,a1,388 # 800112d8 <cpus+0x8>
+    8000215c:	95be                	add	a1,a1,a5
+    8000215e:	06048513          	addi	a0,s1,96
+    80002162:	00000097          	auipc	ra,0x0
+    80002166:	74c080e7          	jalr	1868(ra) # 800028ae <swtch>
+    8000216a:	8792                	mv	a5,tp
+  mycpu()->intena = intena;
+    8000216c:	2781                	sext.w	a5,a5
+    8000216e:	079e                	slli	a5,a5,0x7
+    80002170:	993e                	add	s2,s2,a5
+    80002172:	0b392623          	sw	s3,172(s2)
+}
+    80002176:	70a2                	ld	ra,40(sp)
+    80002178:	7402                	ld	s0,32(sp)
+    8000217a:	64e2                	ld	s1,24(sp)
+    8000217c:	6942                	ld	s2,16(sp)
+    8000217e:	69a2                	ld	s3,8(sp)
+    80002180:	6145                	addi	sp,sp,48
+    80002182:	8082                	ret
+    panic("sched p->lock");
+    80002184:	00006517          	auipc	a0,0x6
+    80002188:	0a450513          	addi	a0,a0,164 # 80008228 <digits+0x1d8>
+    8000218c:	ffffe097          	auipc	ra,0xffffe
+    80002190:	3ae080e7          	jalr	942(ra) # 8000053a <panic>
+    panic("sched locks");
+    80002194:	00006517          	auipc	a0,0x6
+    80002198:	0a450513          	addi	a0,a0,164 # 80008238 <digits+0x1e8>
+    8000219c:	ffffe097          	auipc	ra,0xffffe
+    800021a0:	39e080e7          	jalr	926(ra) # 8000053a <panic>
+    panic("sched running");
+    800021a4:	00006517          	auipc	a0,0x6
+    800021a8:	0a450513          	addi	a0,a0,164 # 80008248 <digits+0x1f8>
+    800021ac:	ffffe097          	auipc	ra,0xffffe
+    800021b0:	38e080e7          	jalr	910(ra) # 8000053a <panic>
+    panic("sched interruptible");
+    800021b4:	00006517          	auipc	a0,0x6
+    800021b8:	0a450513          	addi	a0,a0,164 # 80008258 <digits+0x208>
+    800021bc:	ffffe097          	auipc	ra,0xffffe
+    800021c0:	37e080e7          	jalr	894(ra) # 8000053a <panic>
+
+00000000800021c4 <yield>:
+{
+    800021c4:	1101                	addi	sp,sp,-32
+    800021c6:	ec06                	sd	ra,24(sp)
+    800021c8:	e822                	sd	s0,16(sp)
+    800021ca:	e426                	sd	s1,8(sp)
+    800021cc:	1000                	addi	s0,sp,32
+  struct proc *p = myproc();
+    800021ce:	00000097          	auipc	ra,0x0
+    800021d2:	872080e7          	jalr	-1934(ra) # 80001a40 <myproc>
+    800021d6:	84aa                	mv	s1,a0
+  acquire(&p->lock);
+    800021d8:	fffff097          	auipc	ra,0xfffff
+    800021dc:	9f8080e7          	jalr	-1544(ra) # 80000bd0 <acquire>
+  p->state = RUNNABLE;
+    800021e0:	478d                	li	a5,3
+    800021e2:	cc9c                	sw	a5,24(s1)
+  sched();
+    800021e4:	00000097          	auipc	ra,0x0
+    800021e8:	f0a080e7          	jalr	-246(ra) # 800020ee <sched>
+  release(&p->lock);
+    800021ec:	8526                	mv	a0,s1
+    800021ee:	fffff097          	auipc	ra,0xfffff
+    800021f2:	a96080e7          	jalr	-1386(ra) # 80000c84 <release>
+}
+    800021f6:	60e2                	ld	ra,24(sp)
+    800021f8:	6442                	ld	s0,16(sp)
+    800021fa:	64a2                	ld	s1,8(sp)
+    800021fc:	6105                	addi	sp,sp,32
+    800021fe:	8082                	ret
+
+0000000080002200 <sleep>:
 
 // Atomically release lock and sleep on chan.
 // Reacquires lock when awakened.
 void
 sleep(void *chan, struct spinlock *lk)
 {
-    80002066:	7179                	addi	sp,sp,-48
-    80002068:	f406                	sd	ra,40(sp)
-    8000206a:	f022                	sd	s0,32(sp)
-    8000206c:	ec26                	sd	s1,24(sp)
-    8000206e:	e84a                	sd	s2,16(sp)
-    80002070:	e44e                	sd	s3,8(sp)
-    80002072:	1800                	addi	s0,sp,48
-    80002074:	89aa                	mv	s3,a0
-    80002076:	892e                	mv	s2,a1
+    80002200:	7179                	addi	sp,sp,-48
+    80002202:	f406                	sd	ra,40(sp)
+    80002204:	f022                	sd	s0,32(sp)
+    80002206:	ec26                	sd	s1,24(sp)
+    80002208:	e84a                	sd	s2,16(sp)
+    8000220a:	e44e                	sd	s3,8(sp)
+    8000220c:	1800                	addi	s0,sp,48
+    8000220e:	89aa                	mv	s3,a0
+    80002210:	892e                	mv	s2,a1
   struct proc *p = myproc();
-    80002078:	00000097          	auipc	ra,0x0
-    8000207c:	91e080e7          	jalr	-1762(ra) # 80001996 <myproc>
-    80002080:	84aa                	mv	s1,a0
+    80002212:	00000097          	auipc	ra,0x0
+    80002216:	82e080e7          	jalr	-2002(ra) # 80001a40 <myproc>
+    8000221a:	84aa                	mv	s1,a0
   // Once we hold p->lock, we can be
   // guaranteed that we won't miss any wakeup
   // (wakeup locks p->lock),
   // so it's okay to release lk.
 
   acquire(&p->lock);  //DOC: sleeplock1
-    80002082:	fffff097          	auipc	ra,0xfffff
-    80002086:	b4e080e7          	jalr	-1202(ra) # 80000bd0 <acquire>
+    8000221c:	fffff097          	auipc	ra,0xfffff
+    80002220:	9b4080e7          	jalr	-1612(ra) # 80000bd0 <acquire>
   release(lk);
-    8000208a:	854a                	mv	a0,s2
-    8000208c:	fffff097          	auipc	ra,0xfffff
-    80002090:	bf8080e7          	jalr	-1032(ra) # 80000c84 <release>
+    80002224:	854a                	mv	a0,s2
+    80002226:	fffff097          	auipc	ra,0xfffff
+    8000222a:	a5e080e7          	jalr	-1442(ra) # 80000c84 <release>
 
   // Go to sleep.
   p->chan = chan;
-    80002094:	0334b023          	sd	s3,32(s1)
+    8000222e:	0334b023          	sd	s3,32(s1)
   p->state = SLEEPING;
-    80002098:	4789                	li	a5,2
-    8000209a:	cc9c                	sw	a5,24(s1)
+    80002232:	4789                	li	a5,2
+    80002234:	cc9c                	sw	a5,24(s1)
 
   sched();
-    8000209c:	00000097          	auipc	ra,0x0
-    800020a0:	eb8080e7          	jalr	-328(ra) # 80001f54 <sched>
+    80002236:	00000097          	auipc	ra,0x0
+    8000223a:	eb8080e7          	jalr	-328(ra) # 800020ee <sched>
 
   // Tidy up.
   p->chan = 0;
-    800020a4:	0204b023          	sd	zero,32(s1)
+    8000223e:	0204b023          	sd	zero,32(s1)
 
   // Reacquire original lock.
   release(&p->lock);
-    800020a8:	8526                	mv	a0,s1
-    800020aa:	fffff097          	auipc	ra,0xfffff
-    800020ae:	bda080e7          	jalr	-1062(ra) # 80000c84 <release>
+    80002242:	8526                	mv	a0,s1
+    80002244:	fffff097          	auipc	ra,0xfffff
+    80002248:	a40080e7          	jalr	-1472(ra) # 80000c84 <release>
   acquire(lk);
-    800020b2:	854a                	mv	a0,s2
-    800020b4:	fffff097          	auipc	ra,0xfffff
-    800020b8:	b1c080e7          	jalr	-1252(ra) # 80000bd0 <acquire>
+    8000224c:	854a                	mv	a0,s2
+    8000224e:	fffff097          	auipc	ra,0xfffff
+    80002252:	982080e7          	jalr	-1662(ra) # 80000bd0 <acquire>
 }
-    800020bc:	70a2                	ld	ra,40(sp)
-    800020be:	7402                	ld	s0,32(sp)
-    800020c0:	64e2                	ld	s1,24(sp)
-    800020c2:	6942                	ld	s2,16(sp)
-    800020c4:	69a2                	ld	s3,8(sp)
-    800020c6:	6145                	addi	sp,sp,48
-    800020c8:	8082                	ret
+    80002256:	70a2                	ld	ra,40(sp)
+    80002258:	7402                	ld	s0,32(sp)
+    8000225a:	64e2                	ld	s1,24(sp)
+    8000225c:	6942                	ld	s2,16(sp)
+    8000225e:	69a2                	ld	s3,8(sp)
+    80002260:	6145                	addi	sp,sp,48
+    80002262:	8082                	ret
 
-00000000800020ca <wait>:
+0000000080002264 <wait>:
 {
-    800020ca:	715d                	addi	sp,sp,-80
-    800020cc:	e486                	sd	ra,72(sp)
-    800020ce:	e0a2                	sd	s0,64(sp)
-    800020d0:	fc26                	sd	s1,56(sp)
-    800020d2:	f84a                	sd	s2,48(sp)
-    800020d4:	f44e                	sd	s3,40(sp)
-    800020d6:	f052                	sd	s4,32(sp)
-    800020d8:	ec56                	sd	s5,24(sp)
-    800020da:	e85a                	sd	s6,16(sp)
-    800020dc:	e45e                	sd	s7,8(sp)
-    800020de:	e062                	sd	s8,0(sp)
-    800020e0:	0880                	addi	s0,sp,80
-    800020e2:	8b2a                	mv	s6,a0
+    80002264:	715d                	addi	sp,sp,-80
+    80002266:	e486                	sd	ra,72(sp)
+    80002268:	e0a2                	sd	s0,64(sp)
+    8000226a:	fc26                	sd	s1,56(sp)
+    8000226c:	f84a                	sd	s2,48(sp)
+    8000226e:	f44e                	sd	s3,40(sp)
+    80002270:	f052                	sd	s4,32(sp)
+    80002272:	ec56                	sd	s5,24(sp)
+    80002274:	e85a                	sd	s6,16(sp)
+    80002276:	e45e                	sd	s7,8(sp)
+    80002278:	e062                	sd	s8,0(sp)
+    8000227a:	0880                	addi	s0,sp,80
+    8000227c:	8b2a                	mv	s6,a0
   struct proc *p = myproc();
-    800020e4:	00000097          	auipc	ra,0x0
-    800020e8:	8b2080e7          	jalr	-1870(ra) # 80001996 <myproc>
-    800020ec:	892a                	mv	s2,a0
+    8000227e:	fffff097          	auipc	ra,0xfffff
+    80002282:	7c2080e7          	jalr	1986(ra) # 80001a40 <myproc>
+    80002286:	892a                	mv	s2,a0
   acquire(&wait_lock);
-    800020ee:	0000f517          	auipc	a0,0xf
-    800020f2:	1ca50513          	addi	a0,a0,458 # 800112b8 <wait_lock>
-    800020f6:	fffff097          	auipc	ra,0xfffff
-    800020fa:	ada080e7          	jalr	-1318(ra) # 80000bd0 <acquire>
+    80002288:	0000f517          	auipc	a0,0xf
+    8000228c:	03050513          	addi	a0,a0,48 # 800112b8 <wait_lock>
+    80002290:	fffff097          	auipc	ra,0xfffff
+    80002294:	940080e7          	jalr	-1728(ra) # 80000bd0 <acquire>
     havekids = 0;
-    800020fe:	4b81                	li	s7,0
+    80002298:	4b81                	li	s7,0
         if(np->state == ZOMBIE){
-    80002100:	4a15                	li	s4,5
+    8000229a:	4a15                	li	s4,5
         havekids = 1;
-    80002102:	4a85                	li	s5,1
+    8000229c:	4a85                	li	s5,1
     for(np = proc; np < &proc[NPROC]; np++){
-    80002104:	00015997          	auipc	s3,0x15
-    80002108:	3cc98993          	addi	s3,s3,972 # 800174d0 <tickslock>
+    8000229e:	00015997          	auipc	s3,0x15
+    800022a2:	23298993          	addi	s3,s3,562 # 800174d0 <tickslock>
     sleep(p, &wait_lock);  //DOC: wait-sleep
-    8000210c:	0000fc17          	auipc	s8,0xf
-    80002110:	1acc0c13          	addi	s8,s8,428 # 800112b8 <wait_lock>
+    800022a6:	0000fc17          	auipc	s8,0xf
+    800022aa:	012c0c13          	addi	s8,s8,18 # 800112b8 <wait_lock>
     havekids = 0;
-    80002114:	875e                	mv	a4,s7
+    800022ae:	875e                	mv	a4,s7
     for(np = proc; np < &proc[NPROC]; np++){
-    80002116:	0000f497          	auipc	s1,0xf
-    8000211a:	5ba48493          	addi	s1,s1,1466 # 800116d0 <proc>
-    8000211e:	a0bd                	j	8000218c <wait+0xc2>
+    800022b0:	0000f497          	auipc	s1,0xf
+    800022b4:	42048493          	addi	s1,s1,1056 # 800116d0 <proc>
+    800022b8:	a0bd                	j	80002326 <wait+0xc2>
           pid = np->pid;
-    80002120:	0304a983          	lw	s3,48(s1)
+    800022ba:	0304a983          	lw	s3,48(s1)
           if(addr != 0 && copyout(p->pagetable, addr, (char *)&np->xstate,
-    80002124:	000b0e63          	beqz	s6,80002140 <wait+0x76>
-    80002128:	4691                	li	a3,4
-    8000212a:	02c48613          	addi	a2,s1,44
-    8000212e:	85da                	mv	a1,s6
-    80002130:	05093503          	ld	a0,80(s2)
-    80002134:	fffff097          	auipc	ra,0xfffff
-    80002138:	526080e7          	jalr	1318(ra) # 8000165a <copyout>
-    8000213c:	02054563          	bltz	a0,80002166 <wait+0x9c>
+    800022be:	000b0e63          	beqz	s6,800022da <wait+0x76>
+    800022c2:	4691                	li	a3,4
+    800022c4:	02c48613          	addi	a2,s1,44
+    800022c8:	85da                	mv	a1,s6
+    800022ca:	05093503          	ld	a0,80(s2)
+    800022ce:	fffff097          	auipc	ra,0xfffff
+    800022d2:	38c080e7          	jalr	908(ra) # 8000165a <copyout>
+    800022d6:	02054563          	bltz	a0,80002300 <wait+0x9c>
           freeproc(np);
-    80002140:	8526                	mv	a0,s1
-    80002142:	00000097          	auipc	ra,0x0
-    80002146:	a06080e7          	jalr	-1530(ra) # 80001b48 <freeproc>
+    800022da:	8526                	mv	a0,s1
+    800022dc:	00000097          	auipc	ra,0x0
+    800022e0:	916080e7          	jalr	-1770(ra) # 80001bf2 <freeproc>
           release(&np->lock);
-    8000214a:	8526                	mv	a0,s1
-    8000214c:	fffff097          	auipc	ra,0xfffff
-    80002150:	b38080e7          	jalr	-1224(ra) # 80000c84 <release>
+    800022e4:	8526                	mv	a0,s1
+    800022e6:	fffff097          	auipc	ra,0xfffff
+    800022ea:	99e080e7          	jalr	-1634(ra) # 80000c84 <release>
           release(&wait_lock);
-    80002154:	0000f517          	auipc	a0,0xf
-    80002158:	16450513          	addi	a0,a0,356 # 800112b8 <wait_lock>
-    8000215c:	fffff097          	auipc	ra,0xfffff
-    80002160:	b28080e7          	jalr	-1240(ra) # 80000c84 <release>
+    800022ee:	0000f517          	auipc	a0,0xf
+    800022f2:	fca50513          	addi	a0,a0,-54 # 800112b8 <wait_lock>
+    800022f6:	fffff097          	auipc	ra,0xfffff
+    800022fa:	98e080e7          	jalr	-1650(ra) # 80000c84 <release>
           return pid;
-    80002164:	a09d                	j	800021ca <wait+0x100>
+    800022fe:	a09d                	j	80002364 <wait+0x100>
             release(&np->lock);
-    80002166:	8526                	mv	a0,s1
-    80002168:	fffff097          	auipc	ra,0xfffff
-    8000216c:	b1c080e7          	jalr	-1252(ra) # 80000c84 <release>
+    80002300:	8526                	mv	a0,s1
+    80002302:	fffff097          	auipc	ra,0xfffff
+    80002306:	982080e7          	jalr	-1662(ra) # 80000c84 <release>
             release(&wait_lock);
-    80002170:	0000f517          	auipc	a0,0xf
-    80002174:	14850513          	addi	a0,a0,328 # 800112b8 <wait_lock>
-    80002178:	fffff097          	auipc	ra,0xfffff
-    8000217c:	b0c080e7          	jalr	-1268(ra) # 80000c84 <release>
+    8000230a:	0000f517          	auipc	a0,0xf
+    8000230e:	fae50513          	addi	a0,a0,-82 # 800112b8 <wait_lock>
+    80002312:	fffff097          	auipc	ra,0xfffff
+    80002316:	972080e7          	jalr	-1678(ra) # 80000c84 <release>
             return -1;
-    80002180:	59fd                	li	s3,-1
-    80002182:	a0a1                	j	800021ca <wait+0x100>
+    8000231a:	59fd                	li	s3,-1
+    8000231c:	a0a1                	j	80002364 <wait+0x100>
     for(np = proc; np < &proc[NPROC]; np++){
-    80002184:	17848493          	addi	s1,s1,376
-    80002188:	03348463          	beq	s1,s3,800021b0 <wait+0xe6>
+    8000231e:	17848493          	addi	s1,s1,376
+    80002322:	03348463          	beq	s1,s3,8000234a <wait+0xe6>
       if(np->parent == p){
-    8000218c:	7c9c                	ld	a5,56(s1)
-    8000218e:	ff279be3          	bne	a5,s2,80002184 <wait+0xba>
+    80002326:	7c9c                	ld	a5,56(s1)
+    80002328:	ff279be3          	bne	a5,s2,8000231e <wait+0xba>
         acquire(&np->lock);
-    80002192:	8526                	mv	a0,s1
-    80002194:	fffff097          	auipc	ra,0xfffff
-    80002198:	a3c080e7          	jalr	-1476(ra) # 80000bd0 <acquire>
+    8000232c:	8526                	mv	a0,s1
+    8000232e:	fffff097          	auipc	ra,0xfffff
+    80002332:	8a2080e7          	jalr	-1886(ra) # 80000bd0 <acquire>
         if(np->state == ZOMBIE){
-    8000219c:	4c9c                	lw	a5,24(s1)
-    8000219e:	f94781e3          	beq	a5,s4,80002120 <wait+0x56>
+    80002336:	4c9c                	lw	a5,24(s1)
+    80002338:	f94781e3          	beq	a5,s4,800022ba <wait+0x56>
         release(&np->lock);
-    800021a2:	8526                	mv	a0,s1
-    800021a4:	fffff097          	auipc	ra,0xfffff
-    800021a8:	ae0080e7          	jalr	-1312(ra) # 80000c84 <release>
+    8000233c:	8526                	mv	a0,s1
+    8000233e:	fffff097          	auipc	ra,0xfffff
+    80002342:	946080e7          	jalr	-1722(ra) # 80000c84 <release>
         havekids = 1;
-    800021ac:	8756                	mv	a4,s5
-    800021ae:	bfd9                	j	80002184 <wait+0xba>
+    80002346:	8756                	mv	a4,s5
+    80002348:	bfd9                	j	8000231e <wait+0xba>
     if(!havekids || p->killed){
-    800021b0:	c701                	beqz	a4,800021b8 <wait+0xee>
-    800021b2:	02892783          	lw	a5,40(s2)
-    800021b6:	c79d                	beqz	a5,800021e4 <wait+0x11a>
+    8000234a:	c701                	beqz	a4,80002352 <wait+0xee>
+    8000234c:	02892783          	lw	a5,40(s2)
+    80002350:	c79d                	beqz	a5,8000237e <wait+0x11a>
       release(&wait_lock);
-    800021b8:	0000f517          	auipc	a0,0xf
-    800021bc:	10050513          	addi	a0,a0,256 # 800112b8 <wait_lock>
-    800021c0:	fffff097          	auipc	ra,0xfffff
-    800021c4:	ac4080e7          	jalr	-1340(ra) # 80000c84 <release>
+    80002352:	0000f517          	auipc	a0,0xf
+    80002356:	f6650513          	addi	a0,a0,-154 # 800112b8 <wait_lock>
+    8000235a:	fffff097          	auipc	ra,0xfffff
+    8000235e:	92a080e7          	jalr	-1750(ra) # 80000c84 <release>
       return -1;
-    800021c8:	59fd                	li	s3,-1
+    80002362:	59fd                	li	s3,-1
 }
-    800021ca:	854e                	mv	a0,s3
-    800021cc:	60a6                	ld	ra,72(sp)
-    800021ce:	6406                	ld	s0,64(sp)
-    800021d0:	74e2                	ld	s1,56(sp)
-    800021d2:	7942                	ld	s2,48(sp)
-    800021d4:	79a2                	ld	s3,40(sp)
-    800021d6:	7a02                	ld	s4,32(sp)
-    800021d8:	6ae2                	ld	s5,24(sp)
-    800021da:	6b42                	ld	s6,16(sp)
-    800021dc:	6ba2                	ld	s7,8(sp)
-    800021de:	6c02                	ld	s8,0(sp)
-    800021e0:	6161                	addi	sp,sp,80
-    800021e2:	8082                	ret
+    80002364:	854e                	mv	a0,s3
+    80002366:	60a6                	ld	ra,72(sp)
+    80002368:	6406                	ld	s0,64(sp)
+    8000236a:	74e2                	ld	s1,56(sp)
+    8000236c:	7942                	ld	s2,48(sp)
+    8000236e:	79a2                	ld	s3,40(sp)
+    80002370:	7a02                	ld	s4,32(sp)
+    80002372:	6ae2                	ld	s5,24(sp)
+    80002374:	6b42                	ld	s6,16(sp)
+    80002376:	6ba2                	ld	s7,8(sp)
+    80002378:	6c02                	ld	s8,0(sp)
+    8000237a:	6161                	addi	sp,sp,80
+    8000237c:	8082                	ret
     sleep(p, &wait_lock);  //DOC: wait-sleep
-    800021e4:	85e2                	mv	a1,s8
-    800021e6:	854a                	mv	a0,s2
-    800021e8:	00000097          	auipc	ra,0x0
-    800021ec:	e7e080e7          	jalr	-386(ra) # 80002066 <sleep>
+    8000237e:	85e2                	mv	a1,s8
+    80002380:	854a                	mv	a0,s2
+    80002382:	00000097          	auipc	ra,0x0
+    80002386:	e7e080e7          	jalr	-386(ra) # 80002200 <sleep>
     havekids = 0;
-    800021f0:	b715                	j	80002114 <wait+0x4a>
+    8000238a:	b715                	j	800022ae <wait+0x4a>
 
-00000000800021f2 <wakeup>:
+000000008000238c <wakeup>:
 
 // Wake up all processes sleeping on chan.
 // Must be called without any p->lock.
 void
 wakeup(void *chan)
 {
-    800021f2:	7139                	addi	sp,sp,-64
-    800021f4:	fc06                	sd	ra,56(sp)
-    800021f6:	f822                	sd	s0,48(sp)
-    800021f8:	f426                	sd	s1,40(sp)
-    800021fa:	f04a                	sd	s2,32(sp)
-    800021fc:	ec4e                	sd	s3,24(sp)
-    800021fe:	e852                	sd	s4,16(sp)
-    80002200:	e456                	sd	s5,8(sp)
-    80002202:	0080                	addi	s0,sp,64
-    80002204:	8a2a                	mv	s4,a0
+    8000238c:	7139                	addi	sp,sp,-64
+    8000238e:	fc06                	sd	ra,56(sp)
+    80002390:	f822                	sd	s0,48(sp)
+    80002392:	f426                	sd	s1,40(sp)
+    80002394:	f04a                	sd	s2,32(sp)
+    80002396:	ec4e                	sd	s3,24(sp)
+    80002398:	e852                	sd	s4,16(sp)
+    8000239a:	e456                	sd	s5,8(sp)
+    8000239c:	0080                	addi	s0,sp,64
+    8000239e:	8a2a                	mv	s4,a0
   struct proc *p;
 
   for(p = proc; p < &proc[NPROC]; p++) {
-    80002206:	0000f497          	auipc	s1,0xf
-    8000220a:	4ca48493          	addi	s1,s1,1226 # 800116d0 <proc>
+    800023a0:	0000f497          	auipc	s1,0xf
+    800023a4:	33048493          	addi	s1,s1,816 # 800116d0 <proc>
     if(p != myproc()){
       acquire(&p->lock);
       if(p->state == SLEEPING && p->chan == chan) {
-    8000220e:	4989                	li	s3,2
+    800023a8:	4989                	li	s3,2
         p->state = RUNNABLE;
-    80002210:	4a8d                	li	s5,3
+    800023aa:	4a8d                	li	s5,3
   for(p = proc; p < &proc[NPROC]; p++) {
-    80002212:	00015917          	auipc	s2,0x15
-    80002216:	2be90913          	addi	s2,s2,702 # 800174d0 <tickslock>
-    8000221a:	a811                	j	8000222e <wakeup+0x3c>
+    800023ac:	00015917          	auipc	s2,0x15
+    800023b0:	12490913          	addi	s2,s2,292 # 800174d0 <tickslock>
+    800023b4:	a811                	j	800023c8 <wakeup+0x3c>
       }
       release(&p->lock);
-    8000221c:	8526                	mv	a0,s1
-    8000221e:	fffff097          	auipc	ra,0xfffff
-    80002222:	a66080e7          	jalr	-1434(ra) # 80000c84 <release>
+    800023b6:	8526                	mv	a0,s1
+    800023b8:	fffff097          	auipc	ra,0xfffff
+    800023bc:	8cc080e7          	jalr	-1844(ra) # 80000c84 <release>
   for(p = proc; p < &proc[NPROC]; p++) {
-    80002226:	17848493          	addi	s1,s1,376
-    8000222a:	03248663          	beq	s1,s2,80002256 <wakeup+0x64>
+    800023c0:	17848493          	addi	s1,s1,376
+    800023c4:	03248663          	beq	s1,s2,800023f0 <wakeup+0x64>
     if(p != myproc()){
-    8000222e:	fffff097          	auipc	ra,0xfffff
-    80002232:	768080e7          	jalr	1896(ra) # 80001996 <myproc>
-    80002236:	fea488e3          	beq	s1,a0,80002226 <wakeup+0x34>
+    800023c8:	fffff097          	auipc	ra,0xfffff
+    800023cc:	678080e7          	jalr	1656(ra) # 80001a40 <myproc>
+    800023d0:	fea488e3          	beq	s1,a0,800023c0 <wakeup+0x34>
       acquire(&p->lock);
-    8000223a:	8526                	mv	a0,s1
-    8000223c:	fffff097          	auipc	ra,0xfffff
-    80002240:	994080e7          	jalr	-1644(ra) # 80000bd0 <acquire>
+    800023d4:	8526                	mv	a0,s1
+    800023d6:	ffffe097          	auipc	ra,0xffffe
+    800023da:	7fa080e7          	jalr	2042(ra) # 80000bd0 <acquire>
       if(p->state == SLEEPING && p->chan == chan) {
-    80002244:	4c9c                	lw	a5,24(s1)
-    80002246:	fd379be3          	bne	a5,s3,8000221c <wakeup+0x2a>
-    8000224a:	709c                	ld	a5,32(s1)
-    8000224c:	fd4798e3          	bne	a5,s4,8000221c <wakeup+0x2a>
+    800023de:	4c9c                	lw	a5,24(s1)
+    800023e0:	fd379be3          	bne	a5,s3,800023b6 <wakeup+0x2a>
+    800023e4:	709c                	ld	a5,32(s1)
+    800023e6:	fd4798e3          	bne	a5,s4,800023b6 <wakeup+0x2a>
         p->state = RUNNABLE;
-    80002250:	0154ac23          	sw	s5,24(s1)
-    80002254:	b7e1                	j	8000221c <wakeup+0x2a>
+    800023ea:	0154ac23          	sw	s5,24(s1)
+    800023ee:	b7e1                	j	800023b6 <wakeup+0x2a>
     }
   }
 }
-    80002256:	70e2                	ld	ra,56(sp)
-    80002258:	7442                	ld	s0,48(sp)
-    8000225a:	74a2                	ld	s1,40(sp)
-    8000225c:	7902                	ld	s2,32(sp)
-    8000225e:	69e2                	ld	s3,24(sp)
-    80002260:	6a42                	ld	s4,16(sp)
-    80002262:	6aa2                	ld	s5,8(sp)
-    80002264:	6121                	addi	sp,sp,64
-    80002266:	8082                	ret
+    800023f0:	70e2                	ld	ra,56(sp)
+    800023f2:	7442                	ld	s0,48(sp)
+    800023f4:	74a2                	ld	s1,40(sp)
+    800023f6:	7902                	ld	s2,32(sp)
+    800023f8:	69e2                	ld	s3,24(sp)
+    800023fa:	6a42                	ld	s4,16(sp)
+    800023fc:	6aa2                	ld	s5,8(sp)
+    800023fe:	6121                	addi	sp,sp,64
+    80002400:	8082                	ret
 
-0000000080002268 <reparent>:
+0000000080002402 <reparent>:
 {
-    80002268:	7179                	addi	sp,sp,-48
-    8000226a:	f406                	sd	ra,40(sp)
-    8000226c:	f022                	sd	s0,32(sp)
-    8000226e:	ec26                	sd	s1,24(sp)
-    80002270:	e84a                	sd	s2,16(sp)
-    80002272:	e44e                	sd	s3,8(sp)
-    80002274:	e052                	sd	s4,0(sp)
-    80002276:	1800                	addi	s0,sp,48
-    80002278:	892a                	mv	s2,a0
+    80002402:	7179                	addi	sp,sp,-48
+    80002404:	f406                	sd	ra,40(sp)
+    80002406:	f022                	sd	s0,32(sp)
+    80002408:	ec26                	sd	s1,24(sp)
+    8000240a:	e84a                	sd	s2,16(sp)
+    8000240c:	e44e                	sd	s3,8(sp)
+    8000240e:	e052                	sd	s4,0(sp)
+    80002410:	1800                	addi	s0,sp,48
+    80002412:	892a                	mv	s2,a0
   for(pp = proc; pp < &proc[NPROC]; pp++){
-    8000227a:	0000f497          	auipc	s1,0xf
-    8000227e:	45648493          	addi	s1,s1,1110 # 800116d0 <proc>
+    80002414:	0000f497          	auipc	s1,0xf
+    80002418:	2bc48493          	addi	s1,s1,700 # 800116d0 <proc>
       pp->parent = initproc;
-    80002282:	00007a17          	auipc	s4,0x7
-    80002286:	da6a0a13          	addi	s4,s4,-602 # 80009028 <initproc>
+    8000241c:	00007a17          	auipc	s4,0x7
+    80002420:	c0ca0a13          	addi	s4,s4,-1012 # 80009028 <initproc>
   for(pp = proc; pp < &proc[NPROC]; pp++){
-    8000228a:	00015997          	auipc	s3,0x15
-    8000228e:	24698993          	addi	s3,s3,582 # 800174d0 <tickslock>
-    80002292:	a029                	j	8000229c <reparent+0x34>
-    80002294:	17848493          	addi	s1,s1,376
-    80002298:	01348d63          	beq	s1,s3,800022b2 <reparent+0x4a>
+    80002424:	00015997          	auipc	s3,0x15
+    80002428:	0ac98993          	addi	s3,s3,172 # 800174d0 <tickslock>
+    8000242c:	a029                	j	80002436 <reparent+0x34>
+    8000242e:	17848493          	addi	s1,s1,376
+    80002432:	01348d63          	beq	s1,s3,8000244c <reparent+0x4a>
     if(pp->parent == p){
-    8000229c:	7c9c                	ld	a5,56(s1)
-    8000229e:	ff279be3          	bne	a5,s2,80002294 <reparent+0x2c>
+    80002436:	7c9c                	ld	a5,56(s1)
+    80002438:	ff279be3          	bne	a5,s2,8000242e <reparent+0x2c>
       pp->parent = initproc;
-    800022a2:	000a3503          	ld	a0,0(s4)
-    800022a6:	fc88                	sd	a0,56(s1)
+    8000243c:	000a3503          	ld	a0,0(s4)
+    80002440:	fc88                	sd	a0,56(s1)
       wakeup(initproc);
-    800022a8:	00000097          	auipc	ra,0x0
-    800022ac:	f4a080e7          	jalr	-182(ra) # 800021f2 <wakeup>
-    800022b0:	b7d5                	j	80002294 <reparent+0x2c>
+    80002442:	00000097          	auipc	ra,0x0
+    80002446:	f4a080e7          	jalr	-182(ra) # 8000238c <wakeup>
+    8000244a:	b7d5                	j	8000242e <reparent+0x2c>
 }
-    800022b2:	70a2                	ld	ra,40(sp)
-    800022b4:	7402                	ld	s0,32(sp)
-    800022b6:	64e2                	ld	s1,24(sp)
-    800022b8:	6942                	ld	s2,16(sp)
-    800022ba:	69a2                	ld	s3,8(sp)
-    800022bc:	6a02                	ld	s4,0(sp)
-    800022be:	6145                	addi	sp,sp,48
-    800022c0:	8082                	ret
+    8000244c:	70a2                	ld	ra,40(sp)
+    8000244e:	7402                	ld	s0,32(sp)
+    80002450:	64e2                	ld	s1,24(sp)
+    80002452:	6942                	ld	s2,16(sp)
+    80002454:	69a2                	ld	s3,8(sp)
+    80002456:	6a02                	ld	s4,0(sp)
+    80002458:	6145                	addi	sp,sp,48
+    8000245a:	8082                	ret
 
-00000000800022c2 <exit>:
+000000008000245c <exit>:
 {
-    800022c2:	7179                	addi	sp,sp,-48
-    800022c4:	f406                	sd	ra,40(sp)
-    800022c6:	f022                	sd	s0,32(sp)
-    800022c8:	ec26                	sd	s1,24(sp)
-    800022ca:	e84a                	sd	s2,16(sp)
-    800022cc:	e44e                	sd	s3,8(sp)
-    800022ce:	e052                	sd	s4,0(sp)
-    800022d0:	1800                	addi	s0,sp,48
-    800022d2:	8a2a                	mv	s4,a0
+    8000245c:	7179                	addi	sp,sp,-48
+    8000245e:	f406                	sd	ra,40(sp)
+    80002460:	f022                	sd	s0,32(sp)
+    80002462:	ec26                	sd	s1,24(sp)
+    80002464:	e84a                	sd	s2,16(sp)
+    80002466:	e44e                	sd	s3,8(sp)
+    80002468:	e052                	sd	s4,0(sp)
+    8000246a:	1800                	addi	s0,sp,48
+    8000246c:	8a2a                	mv	s4,a0
   struct proc *p = myproc();
-    800022d4:	fffff097          	auipc	ra,0xfffff
-    800022d8:	6c2080e7          	jalr	1730(ra) # 80001996 <myproc>
-    800022dc:	89aa                	mv	s3,a0
+    8000246e:	fffff097          	auipc	ra,0xfffff
+    80002472:	5d2080e7          	jalr	1490(ra) # 80001a40 <myproc>
+    80002476:	89aa                	mv	s3,a0
   if(p == initproc)
-    800022de:	00007797          	auipc	a5,0x7
-    800022e2:	d4a7b783          	ld	a5,-694(a5) # 80009028 <initproc>
-    800022e6:	0d050493          	addi	s1,a0,208
-    800022ea:	15050913          	addi	s2,a0,336
-    800022ee:	02a79363          	bne	a5,a0,80002314 <exit+0x52>
+    80002478:	00007797          	auipc	a5,0x7
+    8000247c:	bb07b783          	ld	a5,-1104(a5) # 80009028 <initproc>
+    80002480:	0d050493          	addi	s1,a0,208
+    80002484:	15050913          	addi	s2,a0,336
+    80002488:	02a79363          	bne	a5,a0,800024ae <exit+0x52>
     panic("init exiting");
-    800022f2:	00006517          	auipc	a0,0x6
-    800022f6:	f6e50513          	addi	a0,a0,-146 # 80008260 <digits+0x220>
-    800022fa:	ffffe097          	auipc	ra,0xffffe
-    800022fe:	240080e7          	jalr	576(ra) # 8000053a <panic>
+    8000248c:	00006517          	auipc	a0,0x6
+    80002490:	de450513          	addi	a0,a0,-540 # 80008270 <digits+0x220>
+    80002494:	ffffe097          	auipc	ra,0xffffe
+    80002498:	0a6080e7          	jalr	166(ra) # 8000053a <panic>
       fileclose(f);
-    80002302:	00002097          	auipc	ra,0x2
-    80002306:	29e080e7          	jalr	670(ra) # 800045a0 <fileclose>
+    8000249c:	00002097          	auipc	ra,0x2
+    800024a0:	396080e7          	jalr	918(ra) # 80004832 <fileclose>
       p->ofile[fd] = 0;
-    8000230a:	0004b023          	sd	zero,0(s1)
+    800024a4:	0004b023          	sd	zero,0(s1)
   for(int fd = 0; fd < NOFILE; fd++){
-    8000230e:	04a1                	addi	s1,s1,8
-    80002310:	01248563          	beq	s1,s2,8000231a <exit+0x58>
+    800024a8:	04a1                	addi	s1,s1,8
+    800024aa:	01248563          	beq	s1,s2,800024b4 <exit+0x58>
     if(p->ofile[fd]){
-    80002314:	6088                	ld	a0,0(s1)
-    80002316:	f575                	bnez	a0,80002302 <exit+0x40>
-    80002318:	bfdd                	j	8000230e <exit+0x4c>
+    800024ae:	6088                	ld	a0,0(s1)
+    800024b0:	f575                	bnez	a0,8000249c <exit+0x40>
+    800024b2:	bfdd                	j	800024a8 <exit+0x4c>
   begin_op();
-    8000231a:	00002097          	auipc	ra,0x2
-    8000231e:	dbe080e7          	jalr	-578(ra) # 800040d8 <begin_op>
+    800024b4:	00002097          	auipc	ra,0x2
+    800024b8:	eb6080e7          	jalr	-330(ra) # 8000436a <begin_op>
   iput(p->cwd);
-    80002322:	1509b503          	ld	a0,336(s3)
-    80002326:	00001097          	auipc	ra,0x1
-    8000232a:	590080e7          	jalr	1424(ra) # 800038b6 <iput>
+    800024bc:	1509b503          	ld	a0,336(s3)
+    800024c0:	00001097          	auipc	ra,0x1
+    800024c4:	688080e7          	jalr	1672(ra) # 80003b48 <iput>
   end_op();
-    8000232e:	00002097          	auipc	ra,0x2
-    80002332:	e28080e7          	jalr	-472(ra) # 80004156 <end_op>
+    800024c8:	00002097          	auipc	ra,0x2
+    800024cc:	f20080e7          	jalr	-224(ra) # 800043e8 <end_op>
   p->cwd = 0;
-    80002336:	1409b823          	sd	zero,336(s3)
+    800024d0:	1409b823          	sd	zero,336(s3)
   acquire(&wait_lock);
-    8000233a:	0000f497          	auipc	s1,0xf
-    8000233e:	f7e48493          	addi	s1,s1,-130 # 800112b8 <wait_lock>
-    80002342:	8526                	mv	a0,s1
-    80002344:	fffff097          	auipc	ra,0xfffff
-    80002348:	88c080e7          	jalr	-1908(ra) # 80000bd0 <acquire>
+    800024d4:	0000f497          	auipc	s1,0xf
+    800024d8:	de448493          	addi	s1,s1,-540 # 800112b8 <wait_lock>
+    800024dc:	8526                	mv	a0,s1
+    800024de:	ffffe097          	auipc	ra,0xffffe
+    800024e2:	6f2080e7          	jalr	1778(ra) # 80000bd0 <acquire>
   reparent(p);
-    8000234c:	854e                	mv	a0,s3
-    8000234e:	00000097          	auipc	ra,0x0
-    80002352:	f1a080e7          	jalr	-230(ra) # 80002268 <reparent>
+    800024e6:	854e                	mv	a0,s3
+    800024e8:	00000097          	auipc	ra,0x0
+    800024ec:	f1a080e7          	jalr	-230(ra) # 80002402 <reparent>
   wakeup(p->parent);
-    80002356:	0389b503          	ld	a0,56(s3)
-    8000235a:	00000097          	auipc	ra,0x0
-    8000235e:	e98080e7          	jalr	-360(ra) # 800021f2 <wakeup>
+    800024f0:	0389b503          	ld	a0,56(s3)
+    800024f4:	00000097          	auipc	ra,0x0
+    800024f8:	e98080e7          	jalr	-360(ra) # 8000238c <wakeup>
   acquire(&p->lock);
-    80002362:	854e                	mv	a0,s3
-    80002364:	fffff097          	auipc	ra,0xfffff
-    80002368:	86c080e7          	jalr	-1940(ra) # 80000bd0 <acquire>
+    800024fc:	854e                	mv	a0,s3
+    800024fe:	ffffe097          	auipc	ra,0xffffe
+    80002502:	6d2080e7          	jalr	1746(ra) # 80000bd0 <acquire>
   p->xstate = status;
-    8000236c:	0349a623          	sw	s4,44(s3)
+    80002506:	0349a623          	sw	s4,44(s3)
   p->state = ZOMBIE;
-    80002370:	4795                	li	a5,5
-    80002372:	00f9ac23          	sw	a5,24(s3)
+    8000250a:	4795                	li	a5,5
+    8000250c:	00f9ac23          	sw	a5,24(s3)
   release(&wait_lock);
-    80002376:	8526                	mv	a0,s1
-    80002378:	fffff097          	auipc	ra,0xfffff
-    8000237c:	90c080e7          	jalr	-1780(ra) # 80000c84 <release>
+    80002510:	8526                	mv	a0,s1
+    80002512:	ffffe097          	auipc	ra,0xffffe
+    80002516:	772080e7          	jalr	1906(ra) # 80000c84 <release>
   sched();
-    80002380:	00000097          	auipc	ra,0x0
-    80002384:	bd4080e7          	jalr	-1068(ra) # 80001f54 <sched>
+    8000251a:	00000097          	auipc	ra,0x0
+    8000251e:	bd4080e7          	jalr	-1068(ra) # 800020ee <sched>
   panic("zombie exit");
-    80002388:	00006517          	auipc	a0,0x6
-    8000238c:	ee850513          	addi	a0,a0,-280 # 80008270 <digits+0x230>
-    80002390:	ffffe097          	auipc	ra,0xffffe
-    80002394:	1aa080e7          	jalr	426(ra) # 8000053a <panic>
+    80002522:	00006517          	auipc	a0,0x6
+    80002526:	d5e50513          	addi	a0,a0,-674 # 80008280 <digits+0x230>
+    8000252a:	ffffe097          	auipc	ra,0xffffe
+    8000252e:	010080e7          	jalr	16(ra) # 8000053a <panic>
 
-0000000080002398 <kill>:
+0000000080002532 <kill>:
 // Kill the process with the given pid.
 // The victim won't exit until it tries to return
 // to user space (see usertrap() in trap.c).
 int
 kill(int pid)
 {
-    80002398:	7179                	addi	sp,sp,-48
-    8000239a:	f406                	sd	ra,40(sp)
-    8000239c:	f022                	sd	s0,32(sp)
-    8000239e:	ec26                	sd	s1,24(sp)
-    800023a0:	e84a                	sd	s2,16(sp)
-    800023a2:	e44e                	sd	s3,8(sp)
-    800023a4:	1800                	addi	s0,sp,48
-    800023a6:	892a                	mv	s2,a0
+    80002532:	7179                	addi	sp,sp,-48
+    80002534:	f406                	sd	ra,40(sp)
+    80002536:	f022                	sd	s0,32(sp)
+    80002538:	ec26                	sd	s1,24(sp)
+    8000253a:	e84a                	sd	s2,16(sp)
+    8000253c:	e44e                	sd	s3,8(sp)
+    8000253e:	1800                	addi	s0,sp,48
+    80002540:	892a                	mv	s2,a0
   struct proc *p;
 
   for(p = proc; p < &proc[NPROC]; p++){
-    800023a8:	0000f497          	auipc	s1,0xf
-    800023ac:	32848493          	addi	s1,s1,808 # 800116d0 <proc>
-    800023b0:	00015997          	auipc	s3,0x15
-    800023b4:	12098993          	addi	s3,s3,288 # 800174d0 <tickslock>
+    80002542:	0000f497          	auipc	s1,0xf
+    80002546:	18e48493          	addi	s1,s1,398 # 800116d0 <proc>
+    8000254a:	00015997          	auipc	s3,0x15
+    8000254e:	f8698993          	addi	s3,s3,-122 # 800174d0 <tickslock>
     acquire(&p->lock);
-    800023b8:	8526                	mv	a0,s1
-    800023ba:	fffff097          	auipc	ra,0xfffff
-    800023be:	816080e7          	jalr	-2026(ra) # 80000bd0 <acquire>
+    80002552:	8526                	mv	a0,s1
+    80002554:	ffffe097          	auipc	ra,0xffffe
+    80002558:	67c080e7          	jalr	1660(ra) # 80000bd0 <acquire>
     if(p->pid == pid){
-    800023c2:	589c                	lw	a5,48(s1)
-    800023c4:	01278d63          	beq	a5,s2,800023de <kill+0x46>
+    8000255c:	589c                	lw	a5,48(s1)
+    8000255e:	01278d63          	beq	a5,s2,80002578 <kill+0x46>
         p->state = RUNNABLE;
       }
       release(&p->lock);
       return 0;
     }
     release(&p->lock);
-    800023c8:	8526                	mv	a0,s1
-    800023ca:	fffff097          	auipc	ra,0xfffff
-    800023ce:	8ba080e7          	jalr	-1862(ra) # 80000c84 <release>
+    80002562:	8526                	mv	a0,s1
+    80002564:	ffffe097          	auipc	ra,0xffffe
+    80002568:	720080e7          	jalr	1824(ra) # 80000c84 <release>
   for(p = proc; p < &proc[NPROC]; p++){
-    800023d2:	17848493          	addi	s1,s1,376
-    800023d6:	ff3491e3          	bne	s1,s3,800023b8 <kill+0x20>
+    8000256c:	17848493          	addi	s1,s1,376
+    80002570:	ff3491e3          	bne	s1,s3,80002552 <kill+0x20>
   }
   return -1;
-    800023da:	557d                	li	a0,-1
-    800023dc:	a829                	j	800023f6 <kill+0x5e>
+    80002574:	557d                	li	a0,-1
+    80002576:	a829                	j	80002590 <kill+0x5e>
       p->killed = 1;
-    800023de:	4785                	li	a5,1
-    800023e0:	d49c                	sw	a5,40(s1)
+    80002578:	4785                	li	a5,1
+    8000257a:	d49c                	sw	a5,40(s1)
       if(p->state == SLEEPING){
-    800023e2:	4c98                	lw	a4,24(s1)
-    800023e4:	4789                	li	a5,2
-    800023e6:	00f70f63          	beq	a4,a5,80002404 <kill+0x6c>
+    8000257c:	4c98                	lw	a4,24(s1)
+    8000257e:	4789                	li	a5,2
+    80002580:	00f70f63          	beq	a4,a5,8000259e <kill+0x6c>
       release(&p->lock);
-    800023ea:	8526                	mv	a0,s1
-    800023ec:	fffff097          	auipc	ra,0xfffff
-    800023f0:	898080e7          	jalr	-1896(ra) # 80000c84 <release>
+    80002584:	8526                	mv	a0,s1
+    80002586:	ffffe097          	auipc	ra,0xffffe
+    8000258a:	6fe080e7          	jalr	1790(ra) # 80000c84 <release>
       return 0;
-    800023f4:	4501                	li	a0,0
+    8000258e:	4501                	li	a0,0
 }
-    800023f6:	70a2                	ld	ra,40(sp)
-    800023f8:	7402                	ld	s0,32(sp)
-    800023fa:	64e2                	ld	s1,24(sp)
-    800023fc:	6942                	ld	s2,16(sp)
-    800023fe:	69a2                	ld	s3,8(sp)
-    80002400:	6145                	addi	sp,sp,48
-    80002402:	8082                	ret
+    80002590:	70a2                	ld	ra,40(sp)
+    80002592:	7402                	ld	s0,32(sp)
+    80002594:	64e2                	ld	s1,24(sp)
+    80002596:	6942                	ld	s2,16(sp)
+    80002598:	69a2                	ld	s3,8(sp)
+    8000259a:	6145                	addi	sp,sp,48
+    8000259c:	8082                	ret
         p->state = RUNNABLE;
-    80002404:	478d                	li	a5,3
-    80002406:	cc9c                	sw	a5,24(s1)
-    80002408:	b7cd                	j	800023ea <kill+0x52>
+    8000259e:	478d                	li	a5,3
+    800025a0:	cc9c                	sw	a5,24(s1)
+    800025a2:	b7cd                	j	80002584 <kill+0x52>
 
-000000008000240a <either_copyout>:
+00000000800025a4 <either_copyout>:
 // Copy to either a user address, or kernel address,
 // depending on usr_dst.
 // Returns 0 on success, -1 on error.
 int
 either_copyout(int user_dst, uint64 dst, void *src, uint64 len)
 {
-    8000240a:	7179                	addi	sp,sp,-48
-    8000240c:	f406                	sd	ra,40(sp)
-    8000240e:	f022                	sd	s0,32(sp)
-    80002410:	ec26                	sd	s1,24(sp)
-    80002412:	e84a                	sd	s2,16(sp)
-    80002414:	e44e                	sd	s3,8(sp)
-    80002416:	e052                	sd	s4,0(sp)
-    80002418:	1800                	addi	s0,sp,48
-    8000241a:	84aa                	mv	s1,a0
-    8000241c:	892e                	mv	s2,a1
-    8000241e:	89b2                	mv	s3,a2
-    80002420:	8a36                	mv	s4,a3
+    800025a4:	7179                	addi	sp,sp,-48
+    800025a6:	f406                	sd	ra,40(sp)
+    800025a8:	f022                	sd	s0,32(sp)
+    800025aa:	ec26                	sd	s1,24(sp)
+    800025ac:	e84a                	sd	s2,16(sp)
+    800025ae:	e44e                	sd	s3,8(sp)
+    800025b0:	e052                	sd	s4,0(sp)
+    800025b2:	1800                	addi	s0,sp,48
+    800025b4:	84aa                	mv	s1,a0
+    800025b6:	892e                	mv	s2,a1
+    800025b8:	89b2                	mv	s3,a2
+    800025ba:	8a36                	mv	s4,a3
   struct proc *p = myproc();
-    80002422:	fffff097          	auipc	ra,0xfffff
-    80002426:	574080e7          	jalr	1396(ra) # 80001996 <myproc>
+    800025bc:	fffff097          	auipc	ra,0xfffff
+    800025c0:	484080e7          	jalr	1156(ra) # 80001a40 <myproc>
   if(user_dst){
-    8000242a:	c08d                	beqz	s1,8000244c <either_copyout+0x42>
+    800025c4:	c08d                	beqz	s1,800025e6 <either_copyout+0x42>
     return copyout(p->pagetable, dst, src, len);
-    8000242c:	86d2                	mv	a3,s4
-    8000242e:	864e                	mv	a2,s3
-    80002430:	85ca                	mv	a1,s2
-    80002432:	6928                	ld	a0,80(a0)
-    80002434:	fffff097          	auipc	ra,0xfffff
-    80002438:	226080e7          	jalr	550(ra) # 8000165a <copyout>
+    800025c6:	86d2                	mv	a3,s4
+    800025c8:	864e                	mv	a2,s3
+    800025ca:	85ca                	mv	a1,s2
+    800025cc:	6928                	ld	a0,80(a0)
+    800025ce:	fffff097          	auipc	ra,0xfffff
+    800025d2:	08c080e7          	jalr	140(ra) # 8000165a <copyout>
   } else {
     memmove((char *)dst, src, len);
     return 0;
   }
 }
-    8000243c:	70a2                	ld	ra,40(sp)
-    8000243e:	7402                	ld	s0,32(sp)
-    80002440:	64e2                	ld	s1,24(sp)
-    80002442:	6942                	ld	s2,16(sp)
-    80002444:	69a2                	ld	s3,8(sp)
-    80002446:	6a02                	ld	s4,0(sp)
-    80002448:	6145                	addi	sp,sp,48
-    8000244a:	8082                	ret
+    800025d6:	70a2                	ld	ra,40(sp)
+    800025d8:	7402                	ld	s0,32(sp)
+    800025da:	64e2                	ld	s1,24(sp)
+    800025dc:	6942                	ld	s2,16(sp)
+    800025de:	69a2                	ld	s3,8(sp)
+    800025e0:	6a02                	ld	s4,0(sp)
+    800025e2:	6145                	addi	sp,sp,48
+    800025e4:	8082                	ret
     memmove((char *)dst, src, len);
-    8000244c:	000a061b          	sext.w	a2,s4
-    80002450:	85ce                	mv	a1,s3
-    80002452:	854a                	mv	a0,s2
-    80002454:	fffff097          	auipc	ra,0xfffff
-    80002458:	8d4080e7          	jalr	-1836(ra) # 80000d28 <memmove>
+    800025e6:	000a061b          	sext.w	a2,s4
+    800025ea:	85ce                	mv	a1,s3
+    800025ec:	854a                	mv	a0,s2
+    800025ee:	ffffe097          	auipc	ra,0xffffe
+    800025f2:	73a080e7          	jalr	1850(ra) # 80000d28 <memmove>
     return 0;
-    8000245c:	8526                	mv	a0,s1
-    8000245e:	bff9                	j	8000243c <either_copyout+0x32>
+    800025f6:	8526                	mv	a0,s1
+    800025f8:	bff9                	j	800025d6 <either_copyout+0x32>
 
-0000000080002460 <either_copyin>:
+00000000800025fa <either_copyin>:
 // Copy from either a user address, or kernel address,
 // depending on usr_src.
 // Returns 0 on success, -1 on error.
 int
 either_copyin(void *dst, int user_src, uint64 src, uint64 len)
 {
-    80002460:	7179                	addi	sp,sp,-48
-    80002462:	f406                	sd	ra,40(sp)
-    80002464:	f022                	sd	s0,32(sp)
-    80002466:	ec26                	sd	s1,24(sp)
-    80002468:	e84a                	sd	s2,16(sp)
-    8000246a:	e44e                	sd	s3,8(sp)
-    8000246c:	e052                	sd	s4,0(sp)
-    8000246e:	1800                	addi	s0,sp,48
-    80002470:	892a                	mv	s2,a0
-    80002472:	84ae                	mv	s1,a1
-    80002474:	89b2                	mv	s3,a2
-    80002476:	8a36                	mv	s4,a3
+    800025fa:	7179                	addi	sp,sp,-48
+    800025fc:	f406                	sd	ra,40(sp)
+    800025fe:	f022                	sd	s0,32(sp)
+    80002600:	ec26                	sd	s1,24(sp)
+    80002602:	e84a                	sd	s2,16(sp)
+    80002604:	e44e                	sd	s3,8(sp)
+    80002606:	e052                	sd	s4,0(sp)
+    80002608:	1800                	addi	s0,sp,48
+    8000260a:	892a                	mv	s2,a0
+    8000260c:	84ae                	mv	s1,a1
+    8000260e:	89b2                	mv	s3,a2
+    80002610:	8a36                	mv	s4,a3
   struct proc *p = myproc();
-    80002478:	fffff097          	auipc	ra,0xfffff
-    8000247c:	51e080e7          	jalr	1310(ra) # 80001996 <myproc>
+    80002612:	fffff097          	auipc	ra,0xfffff
+    80002616:	42e080e7          	jalr	1070(ra) # 80001a40 <myproc>
   if(user_src){
-    80002480:	c08d                	beqz	s1,800024a2 <either_copyin+0x42>
+    8000261a:	c08d                	beqz	s1,8000263c <either_copyin+0x42>
     return copyin(p->pagetable, dst, src, len);
-    80002482:	86d2                	mv	a3,s4
-    80002484:	864e                	mv	a2,s3
-    80002486:	85ca                	mv	a1,s2
-    80002488:	6928                	ld	a0,80(a0)
-    8000248a:	fffff097          	auipc	ra,0xfffff
-    8000248e:	25c080e7          	jalr	604(ra) # 800016e6 <copyin>
+    8000261c:	86d2                	mv	a3,s4
+    8000261e:	864e                	mv	a2,s3
+    80002620:	85ca                	mv	a1,s2
+    80002622:	6928                	ld	a0,80(a0)
+    80002624:	fffff097          	auipc	ra,0xfffff
+    80002628:	0c2080e7          	jalr	194(ra) # 800016e6 <copyin>
   } else {
     memmove(dst, (char*)src, len);
     return 0;
   }
 }
-    80002492:	70a2                	ld	ra,40(sp)
-    80002494:	7402                	ld	s0,32(sp)
-    80002496:	64e2                	ld	s1,24(sp)
-    80002498:	6942                	ld	s2,16(sp)
-    8000249a:	69a2                	ld	s3,8(sp)
-    8000249c:	6a02                	ld	s4,0(sp)
-    8000249e:	6145                	addi	sp,sp,48
-    800024a0:	8082                	ret
+    8000262c:	70a2                	ld	ra,40(sp)
+    8000262e:	7402                	ld	s0,32(sp)
+    80002630:	64e2                	ld	s1,24(sp)
+    80002632:	6942                	ld	s2,16(sp)
+    80002634:	69a2                	ld	s3,8(sp)
+    80002636:	6a02                	ld	s4,0(sp)
+    80002638:	6145                	addi	sp,sp,48
+    8000263a:	8082                	ret
     memmove(dst, (char*)src, len);
-    800024a2:	000a061b          	sext.w	a2,s4
-    800024a6:	85ce                	mv	a1,s3
-    800024a8:	854a                	mv	a0,s2
-    800024aa:	fffff097          	auipc	ra,0xfffff
-    800024ae:	87e080e7          	jalr	-1922(ra) # 80000d28 <memmove>
+    8000263c:	000a061b          	sext.w	a2,s4
+    80002640:	85ce                	mv	a1,s3
+    80002642:	854a                	mv	a0,s2
+    80002644:	ffffe097          	auipc	ra,0xffffe
+    80002648:	6e4080e7          	jalr	1764(ra) # 80000d28 <memmove>
     return 0;
-    800024b2:	8526                	mv	a0,s1
-    800024b4:	bff9                	j	80002492 <either_copyin+0x32>
+    8000264c:	8526                	mv	a0,s1
+    8000264e:	bff9                	j	8000262c <either_copyin+0x32>
 
-00000000800024b6 <procdump>:
+0000000080002650 <procdump>:
 // Print a process listing to console.  For debugging.
 // Runs when user types ^P on console.
 // No lock to avoid wedging a stuck machine further.
 void
 procdump(void)
 {
-    800024b6:	715d                	addi	sp,sp,-80
-    800024b8:	e486                	sd	ra,72(sp)
-    800024ba:	e0a2                	sd	s0,64(sp)
-    800024bc:	fc26                	sd	s1,56(sp)
-    800024be:	f84a                	sd	s2,48(sp)
-    800024c0:	f44e                	sd	s3,40(sp)
-    800024c2:	f052                	sd	s4,32(sp)
-    800024c4:	ec56                	sd	s5,24(sp)
-    800024c6:	e85a                	sd	s6,16(sp)
-    800024c8:	e45e                	sd	s7,8(sp)
-    800024ca:	0880                	addi	s0,sp,80
+    80002650:	715d                	addi	sp,sp,-80
+    80002652:	e486                	sd	ra,72(sp)
+    80002654:	e0a2                	sd	s0,64(sp)
+    80002656:	fc26                	sd	s1,56(sp)
+    80002658:	f84a                	sd	s2,48(sp)
+    8000265a:	f44e                	sd	s3,40(sp)
+    8000265c:	f052                	sd	s4,32(sp)
+    8000265e:	ec56                	sd	s5,24(sp)
+    80002660:	e85a                	sd	s6,16(sp)
+    80002662:	e45e                	sd	s7,8(sp)
+    80002664:	0880                	addi	s0,sp,80
   [ZOMBIE]    "zombie"
   };
   struct proc *p;
   char *state;
 
   printf("\n");
-    800024cc:	00006517          	auipc	a0,0x6
-    800024d0:	bfc50513          	addi	a0,a0,-1028 # 800080c8 <digits+0x88>
-    800024d4:	ffffe097          	auipc	ra,0xffffe
-    800024d8:	0b0080e7          	jalr	176(ra) # 80000584 <printf>
+    80002666:	00006517          	auipc	a0,0x6
+    8000266a:	a7250513          	addi	a0,a0,-1422 # 800080d8 <digits+0x88>
+    8000266e:	ffffe097          	auipc	ra,0xffffe
+    80002672:	f16080e7          	jalr	-234(ra) # 80000584 <printf>
   for(p = proc; p < &proc[NPROC]; p++){
-    800024dc:	0000f497          	auipc	s1,0xf
-    800024e0:	34c48493          	addi	s1,s1,844 # 80011828 <proc+0x158>
-    800024e4:	00015917          	auipc	s2,0x15
-    800024e8:	14490913          	addi	s2,s2,324 # 80017628 <bcache+0x140>
+    80002676:	0000f497          	auipc	s1,0xf
+    8000267a:	1b248493          	addi	s1,s1,434 # 80011828 <proc+0x158>
+    8000267e:	00015917          	auipc	s2,0x15
+    80002682:	faa90913          	addi	s2,s2,-86 # 80017628 <bcache+0x140>
     if(p->state == UNUSED)
       continue;
     if(p->state >= 0 && p->state < NELEM(states) && states[p->state])
-    800024ec:	4b15                	li	s6,5
+    80002686:	4b15                	li	s6,5
       state = states[p->state];
     else
       state = "???";
-    800024ee:	00006997          	auipc	s3,0x6
-    800024f2:	d9298993          	addi	s3,s3,-622 # 80008280 <digits+0x240>
+    80002688:	00006997          	auipc	s3,0x6
+    8000268c:	c0898993          	addi	s3,s3,-1016 # 80008290 <digits+0x240>
     printf("%d %s %s", p->pid, state, p->name);
-    800024f6:	00006a97          	auipc	s5,0x6
-    800024fa:	d92a8a93          	addi	s5,s5,-622 # 80008288 <digits+0x248>
+    80002690:	00006a97          	auipc	s5,0x6
+    80002694:	c08a8a93          	addi	s5,s5,-1016 # 80008298 <digits+0x248>
     printf("\n");
-    800024fe:	00006a17          	auipc	s4,0x6
-    80002502:	bcaa0a13          	addi	s4,s4,-1078 # 800080c8 <digits+0x88>
+    80002698:	00006a17          	auipc	s4,0x6
+    8000269c:	a40a0a13          	addi	s4,s4,-1472 # 800080d8 <digits+0x88>
     if(p->state >= 0 && p->state < NELEM(states) && states[p->state])
-    80002506:	00006b97          	auipc	s7,0x6
-    8000250a:	e22b8b93          	addi	s7,s7,-478 # 80008328 <states.1>
-    8000250e:	a00d                	j	80002530 <procdump+0x7a>
+    800026a0:	00006b97          	auipc	s7,0x6
+    800026a4:	cf8b8b93          	addi	s7,s7,-776 # 80008398 <states.1>
+    800026a8:	a00d                	j	800026ca <procdump+0x7a>
     printf("%d %s %s", p->pid, state, p->name);
-    80002510:	ed86a583          	lw	a1,-296(a3)
-    80002514:	8556                	mv	a0,s5
-    80002516:	ffffe097          	auipc	ra,0xffffe
-    8000251a:	06e080e7          	jalr	110(ra) # 80000584 <printf>
+    800026aa:	ed86a583          	lw	a1,-296(a3)
+    800026ae:	8556                	mv	a0,s5
+    800026b0:	ffffe097          	auipc	ra,0xffffe
+    800026b4:	ed4080e7          	jalr	-300(ra) # 80000584 <printf>
     printf("\n");
-    8000251e:	8552                	mv	a0,s4
-    80002520:	ffffe097          	auipc	ra,0xffffe
-    80002524:	064080e7          	jalr	100(ra) # 80000584 <printf>
+    800026b8:	8552                	mv	a0,s4
+    800026ba:	ffffe097          	auipc	ra,0xffffe
+    800026be:	eca080e7          	jalr	-310(ra) # 80000584 <printf>
   for(p = proc; p < &proc[NPROC]; p++){
-    80002528:	17848493          	addi	s1,s1,376
-    8000252c:	03248263          	beq	s1,s2,80002550 <procdump+0x9a>
+    800026c2:	17848493          	addi	s1,s1,376
+    800026c6:	03248263          	beq	s1,s2,800026ea <procdump+0x9a>
     if(p->state == UNUSED)
-    80002530:	86a6                	mv	a3,s1
-    80002532:	ec04a783          	lw	a5,-320(s1)
-    80002536:	dbed                	beqz	a5,80002528 <procdump+0x72>
+    800026ca:	86a6                	mv	a3,s1
+    800026cc:	ec04a783          	lw	a5,-320(s1)
+    800026d0:	dbed                	beqz	a5,800026c2 <procdump+0x72>
       state = "???";
-    80002538:	864e                	mv	a2,s3
+    800026d2:	864e                	mv	a2,s3
     if(p->state >= 0 && p->state < NELEM(states) && states[p->state])
-    8000253a:	fcfb6be3          	bltu	s6,a5,80002510 <procdump+0x5a>
-    8000253e:	02079713          	slli	a4,a5,0x20
-    80002542:	01d75793          	srli	a5,a4,0x1d
-    80002546:	97de                	add	a5,a5,s7
-    80002548:	6390                	ld	a2,0(a5)
-    8000254a:	f279                	bnez	a2,80002510 <procdump+0x5a>
+    800026d4:	fcfb6be3          	bltu	s6,a5,800026aa <procdump+0x5a>
+    800026d8:	02079713          	slli	a4,a5,0x20
+    800026dc:	01d75793          	srli	a5,a4,0x1d
+    800026e0:	97de                	add	a5,a5,s7
+    800026e2:	6390                	ld	a2,0(a5)
+    800026e4:	f279                	bnez	a2,800026aa <procdump+0x5a>
       state = "???";
-    8000254c:	864e                	mv	a2,s3
-    8000254e:	b7c9                	j	80002510 <procdump+0x5a>
+    800026e6:	864e                	mv	a2,s3
+    800026e8:	b7c9                	j	800026aa <procdump+0x5a>
   }
 }
-    80002550:	60a6                	ld	ra,72(sp)
-    80002552:	6406                	ld	s0,64(sp)
-    80002554:	74e2                	ld	s1,56(sp)
-    80002556:	7942                	ld	s2,48(sp)
-    80002558:	79a2                	ld	s3,40(sp)
-    8000255a:	7a02                	ld	s4,32(sp)
-    8000255c:	6ae2                	ld	s5,24(sp)
-    8000255e:	6b42                	ld	s6,16(sp)
-    80002560:	6ba2                	ld	s7,8(sp)
-    80002562:	6161                	addi	sp,sp,80
-    80002564:	8082                	ret
+    800026ea:	60a6                	ld	ra,72(sp)
+    800026ec:	6406                	ld	s0,64(sp)
+    800026ee:	74e2                	ld	s1,56(sp)
+    800026f0:	7942                	ld	s2,48(sp)
+    800026f2:	79a2                	ld	s3,40(sp)
+    800026f4:	7a02                	ld	s4,32(sp)
+    800026f6:	6ae2                	ld	s5,24(sp)
+    800026f8:	6b42                	ld	s6,16(sp)
+    800026fa:	6ba2                	ld	s7,8(sp)
+    800026fc:	6161                	addi	sp,sp,80
+    800026fe:	8082                	ret
 
-0000000080002566 <cps>:
+0000000080002700 <cps>:
 
 int
 cps (void)
 {
-    80002566:	715d                	addi	sp,sp,-80
-    80002568:	e486                	sd	ra,72(sp)
-    8000256a:	e0a2                	sd	s0,64(sp)
-    8000256c:	fc26                	sd	s1,56(sp)
-    8000256e:	f84a                	sd	s2,48(sp)
-    80002570:	f44e                	sd	s3,40(sp)
-    80002572:	f052                	sd	s4,32(sp)
-    80002574:	ec56                	sd	s5,24(sp)
-    80002576:	e85a                	sd	s6,16(sp)
-    80002578:	e45e                	sd	s7,8(sp)
-    8000257a:	e062                	sd	s8,0(sp)
-    8000257c:	0880                	addi	s0,sp,80
-	struct proc *p;
+    80002700:	711d                	addi	sp,sp,-96
+    80002702:	ec86                	sd	ra,88(sp)
+    80002704:	e8a2                	sd	s0,80(sp)
+    80002706:	e4a6                	sd	s1,72(sp)
+    80002708:	e0ca                	sd	s2,64(sp)
+    8000270a:	fc4e                	sd	s3,56(sp)
+    8000270c:	f852                	sd	s4,48(sp)
+    8000270e:	f456                	sd	s5,40(sp)
+    80002710:	f05a                	sd	s6,32(sp)
+    80002712:	ec5e                	sd	s7,24(sp)
+    80002714:	e862                	sd	s8,16(sp)
+    80002716:	e466                	sd	s9,8(sp)
+    80002718:	e06a                	sd	s10,0(sp)
+    8000271a:	1080                	addi	s0,sp,96
+  asm volatile("csrr %0, sstatus" : "=r" (x) );
+    8000271c:	100027f3          	csrr	a5,sstatus
+  w_sstatus(r_sstatus() | SSTATUS_SIE);
+    80002720:	0027e793          	ori	a5,a5,2
+  asm volatile("csrw sstatus, %0" : : "r" (x));
+    80002724:	10079073          	csrw	sstatus,a5
 	static const char *queue[] = { "HIGH","LOW" };
-	acquire (&proc->lock);
-    8000257e:	0000f517          	auipc	a0,0xf
-    80002582:	15250513          	addi	a0,a0,338 # 800116d0 <proc>
-    80002586:	ffffe097          	auipc	ra,0xffffe
-    8000258a:	64a080e7          	jalr	1610(ra) # 80000bd0 <acquire>
-	printf ("name \t pid \t state \t queue\n");
-    8000258e:	00006517          	auipc	a0,0x6
-    80002592:	d0a50513          	addi	a0,a0,-758 # 80008298 <digits+0x258>
-    80002596:	ffffe097          	auipc	ra,0xffffe
-    8000259a:	fee080e7          	jalr	-18(ra) # 80000584 <printf>
+	
+	//Enable interrupt
+	intr_on();
+	
+	printf ("name \t pid \t state \t queue \t tickets \t high ticks \t low ticks\n");
+    80002728:	00006517          	auipc	a0,0x6
+    8000272c:	b8050513          	addi	a0,a0,-1152 # 800082a8 <digits+0x258>
+    80002730:	ffffe097          	auipc	ra,0xffffe
+    80002734:	e54080e7          	jalr	-428(ra) # 80000584 <printf>
 	for (p = proc; p < &proc[NPROC]; p++) {
-    8000259e:	0000f497          	auipc	s1,0xf
-    800025a2:	28a48493          	addi	s1,s1,650 # 80011828 <proc+0x158>
-    800025a6:	00015997          	auipc	s3,0x15
-    800025aa:	08298993          	addi	s3,s3,130 # 80017628 <bcache+0x140>
+    80002738:	0000f497          	auipc	s1,0xf
+    8000273c:	0f048493          	addi	s1,s1,240 # 80011828 <proc+0x158>
+    80002740:	00015a17          	auipc	s4,0x15
+    80002744:	ee8a0a13          	addi	s4,s4,-280 # 80017628 <bcache+0x140>
+		acquire (&p->lock);
 		if (p->state == SLEEPING)
-    800025ae:	4909                	li	s2,2
-			printf ("%s \t %d \t SLEEPING \t %s\n", p->name, p->pid, queue [p->in_queue]);
+    80002748:	4989                	li	s3,2
+			printf ("%s \t %d \t SLEEPING \t %s \t %d \t %d \t %d\n", p->name, p->pid, queue [p->in_queue], p->ticket, p->hticks, p->lticks);
 		else if (p->state == RUNNING)
-    800025b0:	4a11                	li	s4,4
-			printf ("%s \t %d \t RUNNING \t %s\n", p->name, p->pid, queue [p->in_queue]);
+    8000274a:	4a91                	li	s5,4
+			printf ("%s \t %d \t RUNNING \t %s \t %d \t %d \t %d\n", p->name, p->pid, queue [p->in_queue], p->ticket, p->hticks, p->lticks);
 		else if (p->state == RUNNABLE)
-    800025b2:	4a8d                	li	s5,3
-			printf ("%s \t %d \t SLEEPING \t %s\n", p->name, p->pid, queue [p->in_queue]);
-    800025b4:	00006b17          	auipc	s6,0x6
-    800025b8:	d74b0b13          	addi	s6,s6,-652 # 80008328 <states.1>
-    800025bc:	00006b97          	auipc	s7,0x6
-    800025c0:	cfcb8b93          	addi	s7,s7,-772 # 800082b8 <digits+0x278>
-			printf ("%s \t %d \t RUNNING \t %s\n", p->name, p->pid, queue [p->in_queue]);
-    800025c4:	00006c17          	auipc	s8,0x6
-    800025c8:	d14c0c13          	addi	s8,s8,-748 # 800082d8 <digits+0x298>
-    800025cc:	a00d                	j	800025ee <cps+0x88>
-			printf ("%s \t %d \t SLEEPING \t %s\n", p->name, p->pid, queue [p->in_queue]);
-    800025ce:	0184e783          	lwu	a5,24(s1)
-    800025d2:	078e                	slli	a5,a5,0x3
-    800025d4:	97da                	add	a5,a5,s6
-    800025d6:	7b94                	ld	a3,48(a5)
-    800025d8:	ed84a603          	lw	a2,-296(s1)
-    800025dc:	855e                	mv	a0,s7
-    800025de:	ffffe097          	auipc	ra,0xffffe
-    800025e2:	fa6080e7          	jalr	-90(ra) # 80000584 <printf>
+    8000274c:	4b0d                	li	s6,3
+			printf ("%s \t %d \t RUNNABLE \t %s \t %d \t %d \t %d\n", p->name, p->pid, queue [p->in_queue], p->ticket, p->hticks, p->lticks);
+    8000274e:	00006b97          	auipc	s7,0x6
+    80002752:	c4ab8b93          	addi	s7,s7,-950 # 80008398 <states.1>
+    80002756:	00006d17          	auipc	s10,0x6
+    8000275a:	be2d0d13          	addi	s10,s10,-1054 # 80008338 <digits+0x2e8>
+			printf ("%s \t %d \t RUNNING \t %s \t %d \t %d \t %d\n", p->name, p->pid, queue [p->in_queue], p->ticket, p->hticks, p->lticks);
+    8000275e:	00006c97          	auipc	s9,0x6
+    80002762:	bb2c8c93          	addi	s9,s9,-1102 # 80008310 <digits+0x2c0>
+			printf ("%s \t %d \t SLEEPING \t %s \t %d \t %d \t %d\n", p->name, p->pid, queue [p->in_queue], p->ticket, p->hticks, p->lticks);
+    80002766:	00006c17          	auipc	s8,0x6
+    8000276a:	b82c0c13          	addi	s8,s8,-1150 # 800082e8 <digits+0x298>
+    8000276e:	a815                	j	800027a2 <cps+0xa2>
+    80002770:	01c4e683          	lwu	a3,28(s1)
+    80002774:	068e                	slli	a3,a3,0x3
+    80002776:	96de                	add	a3,a3,s7
+    80002778:	0144a803          	lw	a6,20(s1)
+    8000277c:	489c                	lw	a5,16(s1)
+    8000277e:	4c98                	lw	a4,24(s1)
+    80002780:	7a94                	ld	a3,48(a3)
+    80002782:	ed84a603          	lw	a2,-296(s1)
+    80002786:	8562                	mv	a0,s8
+    80002788:	ffffe097          	auipc	ra,0xffffe
+    8000278c:	dfc080e7          	jalr	-516(ra) # 80000584 <printf>
+		release(&p->lock);
+    80002790:	854a                	mv	a0,s2
+    80002792:	ffffe097          	auipc	ra,0xffffe
+    80002796:	4f2080e7          	jalr	1266(ra) # 80000c84 <release>
 	for (p = proc; p < &proc[NPROC]; p++) {
-    800025e6:	17848493          	addi	s1,s1,376
-    800025ea:	05348563          	beq	s1,s3,80002634 <cps+0xce>
+    8000279a:	17848493          	addi	s1,s1,376
+    8000279e:	07448463          	beq	s1,s4,80002806 <cps+0x106>
+		acquire (&p->lock);
+    800027a2:	ea848913          	addi	s2,s1,-344
+    800027a6:	854a                	mv	a0,s2
+    800027a8:	ffffe097          	auipc	ra,0xffffe
+    800027ac:	428080e7          	jalr	1064(ra) # 80000bd0 <acquire>
 		if (p->state == SLEEPING)
-    800025ee:	85a6                	mv	a1,s1
-    800025f0:	ec04a783          	lw	a5,-320(s1)
-    800025f4:	fd278de3          	beq	a5,s2,800025ce <cps+0x68>
+    800027b0:	85a6                	mv	a1,s1
+    800027b2:	ec04a783          	lw	a5,-320(s1)
+    800027b6:	fb378de3          	beq	a5,s3,80002770 <cps+0x70>
 		else if (p->state == RUNNING)
-    800025f8:	03478163          	beq	a5,s4,8000261a <cps+0xb4>
+    800027ba:	03578563          	beq	a5,s5,800027e4 <cps+0xe4>
 		else if (p->state == RUNNABLE)
-    800025fc:	ff5795e3          	bne	a5,s5,800025e6 <cps+0x80>
-			printf ("%s \t %d \t SLEEPING \t %s\n", p->name, p->pid, queue [p->in_queue]);
-    80002600:	0184e783          	lwu	a5,24(s1)
-    80002604:	078e                	slli	a5,a5,0x3
-    80002606:	97da                	add	a5,a5,s6
-    80002608:	7b94                	ld	a3,48(a5)
-    8000260a:	ed84a603          	lw	a2,-296(s1)
-    8000260e:	855e                	mv	a0,s7
-    80002610:	ffffe097          	auipc	ra,0xffffe
-    80002614:	f74080e7          	jalr	-140(ra) # 80000584 <printf>
-    80002618:	b7f9                	j	800025e6 <cps+0x80>
-			printf ("%s \t %d \t RUNNING \t %s\n", p->name, p->pid, queue [p->in_queue]);
-    8000261a:	0184e783          	lwu	a5,24(s1)
-    8000261e:	078e                	slli	a5,a5,0x3
-    80002620:	97da                	add	a5,a5,s6
-    80002622:	7b94                	ld	a3,48(a5)
-    80002624:	ed84a603          	lw	a2,-296(s1)
-    80002628:	8562                	mv	a0,s8
-    8000262a:	ffffe097          	auipc	ra,0xffffe
-    8000262e:	f5a080e7          	jalr	-166(ra) # 80000584 <printf>
-    80002632:	bf55                	j	800025e6 <cps+0x80>
+    800027be:	fd6799e3          	bne	a5,s6,80002790 <cps+0x90>
+			printf ("%s \t %d \t RUNNABLE \t %s \t %d \t %d \t %d\n", p->name, p->pid, queue [p->in_queue], p->ticket, p->hticks, p->lticks);
+    800027c2:	01c4e683          	lwu	a3,28(s1)
+    800027c6:	068e                	slli	a3,a3,0x3
+    800027c8:	96de                	add	a3,a3,s7
+    800027ca:	0144a803          	lw	a6,20(s1)
+    800027ce:	489c                	lw	a5,16(s1)
+    800027d0:	4c98                	lw	a4,24(s1)
+    800027d2:	7a94                	ld	a3,48(a3)
+    800027d4:	ed84a603          	lw	a2,-296(s1)
+    800027d8:	856a                	mv	a0,s10
+    800027da:	ffffe097          	auipc	ra,0xffffe
+    800027de:	daa080e7          	jalr	-598(ra) # 80000584 <printf>
+    800027e2:	b77d                	j	80002790 <cps+0x90>
+			printf ("%s \t %d \t RUNNING \t %s \t %d \t %d \t %d\n", p->name, p->pid, queue [p->in_queue], p->ticket, p->hticks, p->lticks);
+    800027e4:	01c4e683          	lwu	a3,28(s1)
+    800027e8:	068e                	slli	a3,a3,0x3
+    800027ea:	96de                	add	a3,a3,s7
+    800027ec:	0144a803          	lw	a6,20(s1)
+    800027f0:	489c                	lw	a5,16(s1)
+    800027f2:	4c98                	lw	a4,24(s1)
+    800027f4:	7a94                	ld	a3,48(a3)
+    800027f6:	ed84a603          	lw	a2,-296(s1)
+    800027fa:	8566                	mv	a0,s9
+    800027fc:	ffffe097          	auipc	ra,0xffffe
+    80002800:	d88080e7          	jalr	-632(ra) # 80000584 <printf>
+    80002804:	b771                	j	80002790 <cps+0x90>
 	}
-	release(&proc->lock);
-    80002634:	0000f517          	auipc	a0,0xf
-    80002638:	09c50513          	addi	a0,a0,156 # 800116d0 <proc>
-    8000263c:	ffffe097          	auipc	ra,0xffffe
-    80002640:	648080e7          	jalr	1608(ra) # 80000c84 <release>
-	return 22;
+	return 0;
 }
-    80002644:	4559                	li	a0,22
-    80002646:	60a6                	ld	ra,72(sp)
-    80002648:	6406                	ld	s0,64(sp)
-    8000264a:	74e2                	ld	s1,56(sp)
-    8000264c:	7942                	ld	s2,48(sp)
-    8000264e:	79a2                	ld	s3,40(sp)
-    80002650:	7a02                	ld	s4,32(sp)
-    80002652:	6ae2                	ld	s5,24(sp)
-    80002654:	6b42                	ld	s6,16(sp)
-    80002656:	6ba2                	ld	s7,8(sp)
-    80002658:	6c02                	ld	s8,0(sp)
-    8000265a:	6161                	addi	sp,sp,80
-    8000265c:	8082                	ret
+    80002806:	4501                	li	a0,0
+    80002808:	60e6                	ld	ra,88(sp)
+    8000280a:	6446                	ld	s0,80(sp)
+    8000280c:	64a6                	ld	s1,72(sp)
+    8000280e:	6906                	ld	s2,64(sp)
+    80002810:	79e2                	ld	s3,56(sp)
+    80002812:	7a42                	ld	s4,48(sp)
+    80002814:	7aa2                	ld	s5,40(sp)
+    80002816:	7b02                	ld	s6,32(sp)
+    80002818:	6be2                	ld	s7,24(sp)
+    8000281a:	6c42                	ld	s8,16(sp)
+    8000281c:	6ca2                	ld	s9,8(sp)
+    8000281e:	6d02                	ld	s10,0(sp)
+    80002820:	6125                	addi	sp,sp,96
+    80002822:	8082                	ret
 
-000000008000265e <swtch>:
-    8000265e:	00153023          	sd	ra,0(a0)
-    80002662:	00253423          	sd	sp,8(a0)
-    80002666:	e900                	sd	s0,16(a0)
-    80002668:	ed04                	sd	s1,24(a0)
-    8000266a:	03253023          	sd	s2,32(a0)
-    8000266e:	03353423          	sd	s3,40(a0)
-    80002672:	03453823          	sd	s4,48(a0)
-    80002676:	03553c23          	sd	s5,56(a0)
-    8000267a:	05653023          	sd	s6,64(a0)
-    8000267e:	05753423          	sd	s7,72(a0)
-    80002682:	05853823          	sd	s8,80(a0)
-    80002686:	05953c23          	sd	s9,88(a0)
-    8000268a:	07a53023          	sd	s10,96(a0)
-    8000268e:	07b53423          	sd	s11,104(a0)
-    80002692:	0005b083          	ld	ra,0(a1)
-    80002696:	0085b103          	ld	sp,8(a1)
-    8000269a:	6980                	ld	s0,16(a1)
-    8000269c:	6d84                	ld	s1,24(a1)
-    8000269e:	0205b903          	ld	s2,32(a1)
-    800026a2:	0285b983          	ld	s3,40(a1)
-    800026a6:	0305ba03          	ld	s4,48(a1)
-    800026aa:	0385ba83          	ld	s5,56(a1)
-    800026ae:	0405bb03          	ld	s6,64(a1)
-    800026b2:	0485bb83          	ld	s7,72(a1)
-    800026b6:	0505bc03          	ld	s8,80(a1)
-    800026ba:	0585bc83          	ld	s9,88(a1)
-    800026be:	0605bd03          	ld	s10,96(a1)
-    800026c2:	0685bd83          	ld	s11,104(a1)
-    800026c6:	8082                	ret
+0000000080002824 <settickets>:
 
-00000000800026c8 <trapinit>:
+//set ticket for each processor to num
+int 
+settickets (int pid, int num) {
+	struct proc *p;
+	if (num < 0)
+    80002824:	0805c363          	bltz	a1,800028aa <settickets+0x86>
+settickets (int pid, int num) {
+    80002828:	7179                	addi	sp,sp,-48
+    8000282a:	f406                	sd	ra,40(sp)
+    8000282c:	f022                	sd	s0,32(sp)
+    8000282e:	ec26                	sd	s1,24(sp)
+    80002830:	e84a                	sd	s2,16(sp)
+    80002832:	e44e                	sd	s3,8(sp)
+    80002834:	e052                	sd	s4,0(sp)
+    80002836:	1800                	addi	s0,sp,48
+    80002838:	892a                	mv	s2,a0
+    8000283a:	8a2e                	mv	s4,a1
+		return -1;
+	bool is_set = false;
+	for (p = proc; p < &proc[NPROC]; p++) {
+    8000283c:	0000f497          	auipc	s1,0xf
+    80002840:	e9448493          	addi	s1,s1,-364 # 800116d0 <proc>
+    80002844:	00015997          	auipc	s3,0x15
+    80002848:	c8c98993          	addi	s3,s3,-884 # 800174d0 <tickslock>
+    8000284c:	a811                	j	80002860 <settickets+0x3c>
+			total_tickets -= p->ticket;
+			p->ticket = num;
+			total_tickets += p->ticket;
+			is_set = true;
+		}
+		release (&p->lock);
+    8000284e:	8526                	mv	a0,s1
+    80002850:	ffffe097          	auipc	ra,0xffffe
+    80002854:	434080e7          	jalr	1076(ra) # 80000c84 <release>
+	for (p = proc; p < &proc[NPROC]; p++) {
+    80002858:	17848493          	addi	s1,s1,376
+    8000285c:	05348563          	beq	s1,s3,800028a6 <settickets+0x82>
+		acquire (&p->lock);
+    80002860:	8526                	mv	a0,s1
+    80002862:	ffffe097          	auipc	ra,0xffffe
+    80002866:	36e080e7          	jalr	878(ra) # 80000bd0 <acquire>
+		if (p->pid == pid) {
+    8000286a:	589c                	lw	a5,48(s1)
+    8000286c:	ff2791e3          	bne	a5,s2,8000284e <settickets+0x2a>
+			total_tickets -= p->ticket;
+    80002870:	00006717          	auipc	a4,0x6
+    80002874:	7c070713          	addi	a4,a4,1984 # 80009030 <total_tickets>
+    80002878:	431c                	lw	a5,0(a4)
+    8000287a:	1704a683          	lw	a3,368(s1)
+    8000287e:	9f95                	subw	a5,a5,a3
+			p->ticket = num;
+    80002880:	1744a823          	sw	s4,368(s1)
+			total_tickets += p->ticket;
+    80002884:	014787bb          	addw	a5,a5,s4
+    80002888:	c31c                	sw	a5,0(a4)
+		release (&p->lock);
+    8000288a:	8526                	mv	a0,s1
+    8000288c:	ffffe097          	auipc	ra,0xffffe
+    80002890:	3f8080e7          	jalr	1016(ra) # 80000c84 <release>
+		if (is_set) break;
+	}
+	return 0;
+    80002894:	4501                	li	a0,0
+}
+    80002896:	70a2                	ld	ra,40(sp)
+    80002898:	7402                	ld	s0,32(sp)
+    8000289a:	64e2                	ld	s1,24(sp)
+    8000289c:	6942                	ld	s2,16(sp)
+    8000289e:	69a2                	ld	s3,8(sp)
+    800028a0:	6a02                	ld	s4,0(sp)
+    800028a2:	6145                	addi	sp,sp,48
+    800028a4:	8082                	ret
+	return 0;
+    800028a6:	4501                	li	a0,0
+    800028a8:	b7fd                	j	80002896 <settickets+0x72>
+		return -1;
+    800028aa:	557d                	li	a0,-1
+}
+    800028ac:	8082                	ret
+
+00000000800028ae <swtch>:
+    800028ae:	00153023          	sd	ra,0(a0)
+    800028b2:	00253423          	sd	sp,8(a0)
+    800028b6:	e900                	sd	s0,16(a0)
+    800028b8:	ed04                	sd	s1,24(a0)
+    800028ba:	03253023          	sd	s2,32(a0)
+    800028be:	03353423          	sd	s3,40(a0)
+    800028c2:	03453823          	sd	s4,48(a0)
+    800028c6:	03553c23          	sd	s5,56(a0)
+    800028ca:	05653023          	sd	s6,64(a0)
+    800028ce:	05753423          	sd	s7,72(a0)
+    800028d2:	05853823          	sd	s8,80(a0)
+    800028d6:	05953c23          	sd	s9,88(a0)
+    800028da:	07a53023          	sd	s10,96(a0)
+    800028de:	07b53423          	sd	s11,104(a0)
+    800028e2:	0005b083          	ld	ra,0(a1)
+    800028e6:	0085b103          	ld	sp,8(a1)
+    800028ea:	6980                	ld	s0,16(a1)
+    800028ec:	6d84                	ld	s1,24(a1)
+    800028ee:	0205b903          	ld	s2,32(a1)
+    800028f2:	0285b983          	ld	s3,40(a1)
+    800028f6:	0305ba03          	ld	s4,48(a1)
+    800028fa:	0385ba83          	ld	s5,56(a1)
+    800028fe:	0405bb03          	ld	s6,64(a1)
+    80002902:	0485bb83          	ld	s7,72(a1)
+    80002906:	0505bc03          	ld	s8,80(a1)
+    8000290a:	0585bc83          	ld	s9,88(a1)
+    8000290e:	0605bd03          	ld	s10,96(a1)
+    80002912:	0685bd83          	ld	s11,104(a1)
+    80002916:	8082                	ret
+
+0000000080002918 <trapinit>:
 
 extern int devintr();
 
 void
 trapinit(void)
 {
-    800026c8:	1141                	addi	sp,sp,-16
-    800026ca:	e406                	sd	ra,8(sp)
-    800026cc:	e022                	sd	s0,0(sp)
-    800026ce:	0800                	addi	s0,sp,16
+    80002918:	1141                	addi	sp,sp,-16
+    8000291a:	e406                	sd	ra,8(sp)
+    8000291c:	e022                	sd	s0,0(sp)
+    8000291e:	0800                	addi	s0,sp,16
   initlock(&tickslock, "time");
-    800026d0:	00006597          	auipc	a1,0x6
-    800026d4:	c9858593          	addi	a1,a1,-872 # 80008368 <queue.0+0x10>
-    800026d8:	00015517          	auipc	a0,0x15
-    800026dc:	df850513          	addi	a0,a0,-520 # 800174d0 <tickslock>
-    800026e0:	ffffe097          	auipc	ra,0xffffe
-    800026e4:	460080e7          	jalr	1120(ra) # 80000b40 <initlock>
+    80002920:	00006597          	auipc	a1,0x6
+    80002924:	ab858593          	addi	a1,a1,-1352 # 800083d8 <queue.0+0x10>
+    80002928:	00015517          	auipc	a0,0x15
+    8000292c:	ba850513          	addi	a0,a0,-1112 # 800174d0 <tickslock>
+    80002930:	ffffe097          	auipc	ra,0xffffe
+    80002934:	210080e7          	jalr	528(ra) # 80000b40 <initlock>
 }
-    800026e8:	60a2                	ld	ra,8(sp)
-    800026ea:	6402                	ld	s0,0(sp)
-    800026ec:	0141                	addi	sp,sp,16
-    800026ee:	8082                	ret
+    80002938:	60a2                	ld	ra,8(sp)
+    8000293a:	6402                	ld	s0,0(sp)
+    8000293c:	0141                	addi	sp,sp,16
+    8000293e:	8082                	ret
 
-00000000800026f0 <trapinithart>:
+0000000080002940 <trapinithart>:
 
 // set up to take exceptions and traps while in the kernel.
 void
 trapinithart(void)
 {
-    800026f0:	1141                	addi	sp,sp,-16
-    800026f2:	e422                	sd	s0,8(sp)
-    800026f4:	0800                	addi	s0,sp,16
+    80002940:	1141                	addi	sp,sp,-16
+    80002942:	e422                	sd	s0,8(sp)
+    80002944:	0800                	addi	s0,sp,16
   asm volatile("csrw stvec, %0" : : "r" (x));
-    800026f6:	00003797          	auipc	a5,0x3
-    800026fa:	4da78793          	addi	a5,a5,1242 # 80005bd0 <kernelvec>
-    800026fe:	10579073          	csrw	stvec,a5
+    80002946:	00003797          	auipc	a5,0x3
+    8000294a:	51a78793          	addi	a5,a5,1306 # 80005e60 <kernelvec>
+    8000294e:	10579073          	csrw	stvec,a5
   w_stvec((uint64)kernelvec);
 }
-    80002702:	6422                	ld	s0,8(sp)
-    80002704:	0141                	addi	sp,sp,16
-    80002706:	8082                	ret
+    80002952:	6422                	ld	s0,8(sp)
+    80002954:	0141                	addi	sp,sp,16
+    80002956:	8082                	ret
 
-0000000080002708 <usertrapret>:
+0000000080002958 <usertrapret>:
 //
 // return to user space
 //
 void
 usertrapret(void)
 {
-    80002708:	1141                	addi	sp,sp,-16
-    8000270a:	e406                	sd	ra,8(sp)
-    8000270c:	e022                	sd	s0,0(sp)
-    8000270e:	0800                	addi	s0,sp,16
+    80002958:	1141                	addi	sp,sp,-16
+    8000295a:	e406                	sd	ra,8(sp)
+    8000295c:	e022                	sd	s0,0(sp)
+    8000295e:	0800                	addi	s0,sp,16
   struct proc *p = myproc();
-    80002710:	fffff097          	auipc	ra,0xfffff
-    80002714:	286080e7          	jalr	646(ra) # 80001996 <myproc>
+    80002960:	fffff097          	auipc	ra,0xfffff
+    80002964:	0e0080e7          	jalr	224(ra) # 80001a40 <myproc>
   asm volatile("csrr %0, sstatus" : "=r" (x) );
-    80002718:	100027f3          	csrr	a5,sstatus
+    80002968:	100027f3          	csrr	a5,sstatus
   w_sstatus(r_sstatus() & ~SSTATUS_SIE);
-    8000271c:	9bf5                	andi	a5,a5,-3
+    8000296c:	9bf5                	andi	a5,a5,-3
   asm volatile("csrw sstatus, %0" : : "r" (x));
-    8000271e:	10079073          	csrw	sstatus,a5
+    8000296e:	10079073          	csrw	sstatus,a5
   // kerneltrap() to usertrap(), so turn off interrupts until
   // we're back in user space, where usertrap() is correct.
   intr_off();
 
   // send syscalls, interrupts, and exceptions to trampoline.S
   w_stvec(TRAMPOLINE + (uservec - trampoline));
-    80002722:	00005697          	auipc	a3,0x5
-    80002726:	8de68693          	addi	a3,a3,-1826 # 80007000 <_trampoline>
-    8000272a:	00005717          	auipc	a4,0x5
-    8000272e:	8d670713          	addi	a4,a4,-1834 # 80007000 <_trampoline>
-    80002732:	8f15                	sub	a4,a4,a3
-    80002734:	040007b7          	lui	a5,0x4000
-    80002738:	17fd                	addi	a5,a5,-1 # 3ffffff <_entry-0x7c000001>
-    8000273a:	07b2                	slli	a5,a5,0xc
-    8000273c:	973e                	add	a4,a4,a5
+    80002972:	00004697          	auipc	a3,0x4
+    80002976:	68e68693          	addi	a3,a3,1678 # 80007000 <_trampoline>
+    8000297a:	00004717          	auipc	a4,0x4
+    8000297e:	68670713          	addi	a4,a4,1670 # 80007000 <_trampoline>
+    80002982:	8f15                	sub	a4,a4,a3
+    80002984:	040007b7          	lui	a5,0x4000
+    80002988:	17fd                	addi	a5,a5,-1 # 3ffffff <_entry-0x7c000001>
+    8000298a:	07b2                	slli	a5,a5,0xc
+    8000298c:	973e                	add	a4,a4,a5
   asm volatile("csrw stvec, %0" : : "r" (x));
-    8000273e:	10571073          	csrw	stvec,a4
+    8000298e:	10571073          	csrw	stvec,a4
 
   // set up trapframe values that uservec will need when
   // the process next re-enters the kernel.
   p->trapframe->kernel_satp = r_satp();         // kernel page table
-    80002742:	6d38                	ld	a4,88(a0)
+    80002992:	6d38                	ld	a4,88(a0)
   asm volatile("csrr %0, satp" : "=r" (x) );
-    80002744:	18002673          	csrr	a2,satp
-    80002748:	e310                	sd	a2,0(a4)
+    80002994:	18002673          	csrr	a2,satp
+    80002998:	e310                	sd	a2,0(a4)
   p->trapframe->kernel_sp = p->kstack + PGSIZE; // process's kernel stack
-    8000274a:	6d30                	ld	a2,88(a0)
-    8000274c:	6138                	ld	a4,64(a0)
-    8000274e:	6585                	lui	a1,0x1
-    80002750:	972e                	add	a4,a4,a1
-    80002752:	e618                	sd	a4,8(a2)
+    8000299a:	6d30                	ld	a2,88(a0)
+    8000299c:	6138                	ld	a4,64(a0)
+    8000299e:	6585                	lui	a1,0x1
+    800029a0:	972e                	add	a4,a4,a1
+    800029a2:	e618                	sd	a4,8(a2)
   p->trapframe->kernel_trap = (uint64)usertrap;
-    80002754:	6d38                	ld	a4,88(a0)
-    80002756:	00000617          	auipc	a2,0x0
-    8000275a:	13860613          	addi	a2,a2,312 # 8000288e <usertrap>
-    8000275e:	eb10                	sd	a2,16(a4)
+    800029a4:	6d38                	ld	a4,88(a0)
+    800029a6:	00000617          	auipc	a2,0x0
+    800029aa:	13860613          	addi	a2,a2,312 # 80002ade <usertrap>
+    800029ae:	eb10                	sd	a2,16(a4)
   p->trapframe->kernel_hartid = r_tp();         // hartid for cpuid()
-    80002760:	6d38                	ld	a4,88(a0)
+    800029b0:	6d38                	ld	a4,88(a0)
   asm volatile("mv %0, tp" : "=r" (x) );
-    80002762:	8612                	mv	a2,tp
-    80002764:	f310                	sd	a2,32(a4)
+    800029b2:	8612                	mv	a2,tp
+    800029b4:	f310                	sd	a2,32(a4)
   asm volatile("csrr %0, sstatus" : "=r" (x) );
-    80002766:	10002773          	csrr	a4,sstatus
+    800029b6:	10002773          	csrr	a4,sstatus
   // set up the registers that trampoline.S's sret will use
   // to get to user space.
   
   // set S Previous Privilege mode to User.
   unsigned long x = r_sstatus();
   x &= ~SSTATUS_SPP; // clear SPP to 0 for user mode
-    8000276a:	eff77713          	andi	a4,a4,-257
+    800029ba:	eff77713          	andi	a4,a4,-257
   x |= SSTATUS_SPIE; // enable interrupts in user mode
-    8000276e:	02076713          	ori	a4,a4,32
+    800029be:	02076713          	ori	a4,a4,32
   asm volatile("csrw sstatus, %0" : : "r" (x));
-    80002772:	10071073          	csrw	sstatus,a4
+    800029c2:	10071073          	csrw	sstatus,a4
   w_sstatus(x);
 
   // set S Exception Program Counter to the saved user pc.
   w_sepc(p->trapframe->epc);
-    80002776:	6d38                	ld	a4,88(a0)
+    800029c6:	6d38                	ld	a4,88(a0)
   asm volatile("csrw sepc, %0" : : "r" (x));
-    80002778:	6f18                	ld	a4,24(a4)
-    8000277a:	14171073          	csrw	sepc,a4
+    800029c8:	6f18                	ld	a4,24(a4)
+    800029ca:	14171073          	csrw	sepc,a4
 
   // tell trampoline.S the user page table to switch to.
   uint64 satp = MAKE_SATP(p->pagetable);
-    8000277e:	692c                	ld	a1,80(a0)
-    80002780:	81b1                	srli	a1,a1,0xc
+    800029ce:	692c                	ld	a1,80(a0)
+    800029d0:	81b1                	srli	a1,a1,0xc
 
   // jump to trampoline.S at the top of memory, which 
   // switches to the user page table, restores user registers,
   // and switches to user mode with sret.
   uint64 fn = TRAMPOLINE + (userret - trampoline);
-    80002782:	00005717          	auipc	a4,0x5
-    80002786:	90e70713          	addi	a4,a4,-1778 # 80007090 <userret>
-    8000278a:	8f15                	sub	a4,a4,a3
-    8000278c:	97ba                	add	a5,a5,a4
+    800029d2:	00004717          	auipc	a4,0x4
+    800029d6:	6be70713          	addi	a4,a4,1726 # 80007090 <userret>
+    800029da:	8f15                	sub	a4,a4,a3
+    800029dc:	97ba                	add	a5,a5,a4
   ((void (*)(uint64,uint64))fn)(TRAPFRAME, satp);
-    8000278e:	577d                	li	a4,-1
-    80002790:	177e                	slli	a4,a4,0x3f
-    80002792:	8dd9                	or	a1,a1,a4
-    80002794:	02000537          	lui	a0,0x2000
-    80002798:	157d                	addi	a0,a0,-1 # 1ffffff <_entry-0x7e000001>
-    8000279a:	0536                	slli	a0,a0,0xd
-    8000279c:	9782                	jalr	a5
+    800029de:	577d                	li	a4,-1
+    800029e0:	177e                	slli	a4,a4,0x3f
+    800029e2:	8dd9                	or	a1,a1,a4
+    800029e4:	02000537          	lui	a0,0x2000
+    800029e8:	157d                	addi	a0,a0,-1 # 1ffffff <_entry-0x7e000001>
+    800029ea:	0536                	slli	a0,a0,0xd
+    800029ec:	9782                	jalr	a5
 }
-    8000279e:	60a2                	ld	ra,8(sp)
-    800027a0:	6402                	ld	s0,0(sp)
-    800027a2:	0141                	addi	sp,sp,16
-    800027a4:	8082                	ret
+    800029ee:	60a2                	ld	ra,8(sp)
+    800029f0:	6402                	ld	s0,0(sp)
+    800029f2:	0141                	addi	sp,sp,16
+    800029f4:	8082                	ret
 
-00000000800027a6 <clockintr>:
+00000000800029f6 <clockintr>:
   w_sstatus(sstatus);
 }
 
 void
 clockintr()
 {
-    800027a6:	1101                	addi	sp,sp,-32
-    800027a8:	ec06                	sd	ra,24(sp)
-    800027aa:	e822                	sd	s0,16(sp)
-    800027ac:	e426                	sd	s1,8(sp)
-    800027ae:	1000                	addi	s0,sp,32
+    800029f6:	1101                	addi	sp,sp,-32
+    800029f8:	ec06                	sd	ra,24(sp)
+    800029fa:	e822                	sd	s0,16(sp)
+    800029fc:	e426                	sd	s1,8(sp)
+    800029fe:	1000                	addi	s0,sp,32
   acquire(&tickslock);
-    800027b0:	00015497          	auipc	s1,0x15
-    800027b4:	d2048493          	addi	s1,s1,-736 # 800174d0 <tickslock>
-    800027b8:	8526                	mv	a0,s1
-    800027ba:	ffffe097          	auipc	ra,0xffffe
-    800027be:	416080e7          	jalr	1046(ra) # 80000bd0 <acquire>
+    80002a00:	00015497          	auipc	s1,0x15
+    80002a04:	ad048493          	addi	s1,s1,-1328 # 800174d0 <tickslock>
+    80002a08:	8526                	mv	a0,s1
+    80002a0a:	ffffe097          	auipc	ra,0xffffe
+    80002a0e:	1c6080e7          	jalr	454(ra) # 80000bd0 <acquire>
   ticks++;
-    800027c2:	00007517          	auipc	a0,0x7
-    800027c6:	86e50513          	addi	a0,a0,-1938 # 80009030 <ticks>
-    800027ca:	411c                	lw	a5,0(a0)
-    800027cc:	2785                	addiw	a5,a5,1
-    800027ce:	c11c                	sw	a5,0(a0)
+    80002a12:	00006517          	auipc	a0,0x6
+    80002a16:	62250513          	addi	a0,a0,1570 # 80009034 <ticks>
+    80002a1a:	411c                	lw	a5,0(a0)
+    80002a1c:	2785                	addiw	a5,a5,1
+    80002a1e:	c11c                	sw	a5,0(a0)
   wakeup(&ticks);
-    800027d0:	00000097          	auipc	ra,0x0
-    800027d4:	a22080e7          	jalr	-1502(ra) # 800021f2 <wakeup>
+    80002a20:	00000097          	auipc	ra,0x0
+    80002a24:	96c080e7          	jalr	-1684(ra) # 8000238c <wakeup>
   release(&tickslock);
-    800027d8:	8526                	mv	a0,s1
-    800027da:	ffffe097          	auipc	ra,0xffffe
-    800027de:	4aa080e7          	jalr	1194(ra) # 80000c84 <release>
+    80002a28:	8526                	mv	a0,s1
+    80002a2a:	ffffe097          	auipc	ra,0xffffe
+    80002a2e:	25a080e7          	jalr	602(ra) # 80000c84 <release>
 }
-    800027e2:	60e2                	ld	ra,24(sp)
-    800027e4:	6442                	ld	s0,16(sp)
-    800027e6:	64a2                	ld	s1,8(sp)
-    800027e8:	6105                	addi	sp,sp,32
-    800027ea:	8082                	ret
+    80002a32:	60e2                	ld	ra,24(sp)
+    80002a34:	6442                	ld	s0,16(sp)
+    80002a36:	64a2                	ld	s1,8(sp)
+    80002a38:	6105                	addi	sp,sp,32
+    80002a3a:	8082                	ret
 
-00000000800027ec <devintr>:
+0000000080002a3c <devintr>:
 // returns 2 if timer interrupt,
 // 1 if other device,
 // 0 if not recognized.
 int
 devintr()
 {
-    800027ec:	1101                	addi	sp,sp,-32
-    800027ee:	ec06                	sd	ra,24(sp)
-    800027f0:	e822                	sd	s0,16(sp)
-    800027f2:	e426                	sd	s1,8(sp)
-    800027f4:	1000                	addi	s0,sp,32
+    80002a3c:	1101                	addi	sp,sp,-32
+    80002a3e:	ec06                	sd	ra,24(sp)
+    80002a40:	e822                	sd	s0,16(sp)
+    80002a42:	e426                	sd	s1,8(sp)
+    80002a44:	1000                	addi	s0,sp,32
   asm volatile("csrr %0, scause" : "=r" (x) );
-    800027f6:	14202773          	csrr	a4,scause
+    80002a46:	14202773          	csrr	a4,scause
   uint64 scause = r_scause();
 
   if((scause & 0x8000000000000000L) &&
-    800027fa:	00074d63          	bltz	a4,80002814 <devintr+0x28>
+    80002a4a:	00074d63          	bltz	a4,80002a64 <devintr+0x28>
     // now allowed to interrupt again.
     if(irq)
       plic_complete(irq);
 
     return 1;
   } else if(scause == 0x8000000000000001L){
-    800027fe:	57fd                	li	a5,-1
-    80002800:	17fe                	slli	a5,a5,0x3f
-    80002802:	0785                	addi	a5,a5,1
+    80002a4e:	57fd                	li	a5,-1
+    80002a50:	17fe                	slli	a5,a5,0x3f
+    80002a52:	0785                	addi	a5,a5,1
     // the SSIP bit in sip.
     w_sip(r_sip() & ~2);
 
     return 2;
   } else {
     return 0;
-    80002804:	4501                	li	a0,0
+    80002a54:	4501                	li	a0,0
   } else if(scause == 0x8000000000000001L){
-    80002806:	06f70363          	beq	a4,a5,8000286c <devintr+0x80>
+    80002a56:	06f70363          	beq	a4,a5,80002abc <devintr+0x80>
   }
 }
-    8000280a:	60e2                	ld	ra,24(sp)
-    8000280c:	6442                	ld	s0,16(sp)
-    8000280e:	64a2                	ld	s1,8(sp)
-    80002810:	6105                	addi	sp,sp,32
-    80002812:	8082                	ret
+    80002a5a:	60e2                	ld	ra,24(sp)
+    80002a5c:	6442                	ld	s0,16(sp)
+    80002a5e:	64a2                	ld	s1,8(sp)
+    80002a60:	6105                	addi	sp,sp,32
+    80002a62:	8082                	ret
      (scause & 0xff) == 9){
-    80002814:	0ff77793          	zext.b	a5,a4
+    80002a64:	0ff77793          	zext.b	a5,a4
   if((scause & 0x8000000000000000L) &&
-    80002818:	46a5                	li	a3,9
-    8000281a:	fed792e3          	bne	a5,a3,800027fe <devintr+0x12>
+    80002a68:	46a5                	li	a3,9
+    80002a6a:	fed792e3          	bne	a5,a3,80002a4e <devintr+0x12>
     int irq = plic_claim();
-    8000281e:	00003097          	auipc	ra,0x3
-    80002822:	4ba080e7          	jalr	1210(ra) # 80005cd8 <plic_claim>
-    80002826:	84aa                	mv	s1,a0
+    80002a6e:	00003097          	auipc	ra,0x3
+    80002a72:	4fa080e7          	jalr	1274(ra) # 80005f68 <plic_claim>
+    80002a76:	84aa                	mv	s1,a0
     if(irq == UART0_IRQ){
-    80002828:	47a9                	li	a5,10
-    8000282a:	02f50763          	beq	a0,a5,80002858 <devintr+0x6c>
+    80002a78:	47a9                	li	a5,10
+    80002a7a:	02f50763          	beq	a0,a5,80002aa8 <devintr+0x6c>
     } else if(irq == VIRTIO0_IRQ){
-    8000282e:	4785                	li	a5,1
-    80002830:	02f50963          	beq	a0,a5,80002862 <devintr+0x76>
+    80002a7e:	4785                	li	a5,1
+    80002a80:	02f50963          	beq	a0,a5,80002ab2 <devintr+0x76>
     return 1;
-    80002834:	4505                	li	a0,1
+    80002a84:	4505                	li	a0,1
     } else if(irq){
-    80002836:	d8f1                	beqz	s1,8000280a <devintr+0x1e>
+    80002a86:	d8f1                	beqz	s1,80002a5a <devintr+0x1e>
       printf("unexpected interrupt irq=%d\n", irq);
-    80002838:	85a6                	mv	a1,s1
-    8000283a:	00006517          	auipc	a0,0x6
-    8000283e:	b3650513          	addi	a0,a0,-1226 # 80008370 <queue.0+0x18>
-    80002842:	ffffe097          	auipc	ra,0xffffe
-    80002846:	d42080e7          	jalr	-702(ra) # 80000584 <printf>
+    80002a88:	85a6                	mv	a1,s1
+    80002a8a:	00006517          	auipc	a0,0x6
+    80002a8e:	95650513          	addi	a0,a0,-1706 # 800083e0 <queue.0+0x18>
+    80002a92:	ffffe097          	auipc	ra,0xffffe
+    80002a96:	af2080e7          	jalr	-1294(ra) # 80000584 <printf>
       plic_complete(irq);
-    8000284a:	8526                	mv	a0,s1
-    8000284c:	00003097          	auipc	ra,0x3
-    80002850:	4b0080e7          	jalr	1200(ra) # 80005cfc <plic_complete>
+    80002a9a:	8526                	mv	a0,s1
+    80002a9c:	00003097          	auipc	ra,0x3
+    80002aa0:	4f0080e7          	jalr	1264(ra) # 80005f8c <plic_complete>
     return 1;
-    80002854:	4505                	li	a0,1
-    80002856:	bf55                	j	8000280a <devintr+0x1e>
+    80002aa4:	4505                	li	a0,1
+    80002aa6:	bf55                	j	80002a5a <devintr+0x1e>
       uartintr();
-    80002858:	ffffe097          	auipc	ra,0xffffe
-    8000285c:	13a080e7          	jalr	314(ra) # 80000992 <uartintr>
-    80002860:	b7ed                	j	8000284a <devintr+0x5e>
+    80002aa8:	ffffe097          	auipc	ra,0xffffe
+    80002aac:	eea080e7          	jalr	-278(ra) # 80000992 <uartintr>
+    80002ab0:	b7ed                	j	80002a9a <devintr+0x5e>
       virtio_disk_intr();
-    80002862:	00004097          	auipc	ra,0x4
-    80002866:	926080e7          	jalr	-1754(ra) # 80006188 <virtio_disk_intr>
-    8000286a:	b7c5                	j	8000284a <devintr+0x5e>
+    80002ab2:	00004097          	auipc	ra,0x4
+    80002ab6:	966080e7          	jalr	-1690(ra) # 80006418 <virtio_disk_intr>
+    80002aba:	b7c5                	j	80002a9a <devintr+0x5e>
     if(cpuid() == 0){
-    8000286c:	fffff097          	auipc	ra,0xfffff
-    80002870:	0fe080e7          	jalr	254(ra) # 8000196a <cpuid>
-    80002874:	c901                	beqz	a0,80002884 <devintr+0x98>
+    80002abc:	fffff097          	auipc	ra,0xfffff
+    80002ac0:	f58080e7          	jalr	-168(ra) # 80001a14 <cpuid>
+    80002ac4:	c901                	beqz	a0,80002ad4 <devintr+0x98>
   asm volatile("csrr %0, sip" : "=r" (x) );
-    80002876:	144027f3          	csrr	a5,sip
+    80002ac6:	144027f3          	csrr	a5,sip
     w_sip(r_sip() & ~2);
-    8000287a:	9bf5                	andi	a5,a5,-3
+    80002aca:	9bf5                	andi	a5,a5,-3
   asm volatile("csrw sip, %0" : : "r" (x));
-    8000287c:	14479073          	csrw	sip,a5
+    80002acc:	14479073          	csrw	sip,a5
     return 2;
-    80002880:	4509                	li	a0,2
-    80002882:	b761                	j	8000280a <devintr+0x1e>
+    80002ad0:	4509                	li	a0,2
+    80002ad2:	b761                	j	80002a5a <devintr+0x1e>
       clockintr();
-    80002884:	00000097          	auipc	ra,0x0
-    80002888:	f22080e7          	jalr	-222(ra) # 800027a6 <clockintr>
-    8000288c:	b7ed                	j	80002876 <devintr+0x8a>
+    80002ad4:	00000097          	auipc	ra,0x0
+    80002ad8:	f22080e7          	jalr	-222(ra) # 800029f6 <clockintr>
+    80002adc:	b7ed                	j	80002ac6 <devintr+0x8a>
 
-000000008000288e <usertrap>:
+0000000080002ade <usertrap>:
 {
-    8000288e:	1101                	addi	sp,sp,-32
-    80002890:	ec06                	sd	ra,24(sp)
-    80002892:	e822                	sd	s0,16(sp)
-    80002894:	e426                	sd	s1,8(sp)
-    80002896:	e04a                	sd	s2,0(sp)
-    80002898:	1000                	addi	s0,sp,32
+    80002ade:	1101                	addi	sp,sp,-32
+    80002ae0:	ec06                	sd	ra,24(sp)
+    80002ae2:	e822                	sd	s0,16(sp)
+    80002ae4:	e426                	sd	s1,8(sp)
+    80002ae6:	e04a                	sd	s2,0(sp)
+    80002ae8:	1000                	addi	s0,sp,32
   asm volatile("csrr %0, sstatus" : "=r" (x) );
-    8000289a:	100027f3          	csrr	a5,sstatus
+    80002aea:	100027f3          	csrr	a5,sstatus
   if((r_sstatus() & SSTATUS_SPP) != 0)
-    8000289e:	1007f793          	andi	a5,a5,256
-    800028a2:	e3ad                	bnez	a5,80002904 <usertrap+0x76>
+    80002aee:	1007f793          	andi	a5,a5,256
+    80002af2:	e3ad                	bnez	a5,80002b54 <usertrap+0x76>
   asm volatile("csrw stvec, %0" : : "r" (x));
-    800028a4:	00003797          	auipc	a5,0x3
-    800028a8:	32c78793          	addi	a5,a5,812 # 80005bd0 <kernelvec>
-    800028ac:	10579073          	csrw	stvec,a5
+    80002af4:	00003797          	auipc	a5,0x3
+    80002af8:	36c78793          	addi	a5,a5,876 # 80005e60 <kernelvec>
+    80002afc:	10579073          	csrw	stvec,a5
   struct proc *p = myproc();
-    800028b0:	fffff097          	auipc	ra,0xfffff
-    800028b4:	0e6080e7          	jalr	230(ra) # 80001996 <myproc>
-    800028b8:	84aa                	mv	s1,a0
+    80002b00:	fffff097          	auipc	ra,0xfffff
+    80002b04:	f40080e7          	jalr	-192(ra) # 80001a40 <myproc>
+    80002b08:	84aa                	mv	s1,a0
   p->trapframe->epc = r_sepc();
-    800028ba:	6d3c                	ld	a5,88(a0)
+    80002b0a:	6d3c                	ld	a5,88(a0)
   asm volatile("csrr %0, sepc" : "=r" (x) );
-    800028bc:	14102773          	csrr	a4,sepc
-    800028c0:	ef98                	sd	a4,24(a5)
+    80002b0c:	14102773          	csrr	a4,sepc
+    80002b10:	ef98                	sd	a4,24(a5)
   asm volatile("csrr %0, scause" : "=r" (x) );
-    800028c2:	14202773          	csrr	a4,scause
+    80002b12:	14202773          	csrr	a4,scause
   if(r_scause() == 8){
-    800028c6:	47a1                	li	a5,8
-    800028c8:	04f71c63          	bne	a4,a5,80002920 <usertrap+0x92>
+    80002b16:	47a1                	li	a5,8
+    80002b18:	04f71c63          	bne	a4,a5,80002b70 <usertrap+0x92>
     if(p->killed)
-    800028cc:	551c                	lw	a5,40(a0)
-    800028ce:	e3b9                	bnez	a5,80002914 <usertrap+0x86>
+    80002b1c:	551c                	lw	a5,40(a0)
+    80002b1e:	e3b9                	bnez	a5,80002b64 <usertrap+0x86>
     p->trapframe->epc += 4;
-    800028d0:	6cb8                	ld	a4,88(s1)
-    800028d2:	6f1c                	ld	a5,24(a4)
-    800028d4:	0791                	addi	a5,a5,4
-    800028d6:	ef1c                	sd	a5,24(a4)
+    80002b20:	6cb8                	ld	a4,88(s1)
+    80002b22:	6f1c                	ld	a5,24(a4)
+    80002b24:	0791                	addi	a5,a5,4
+    80002b26:	ef1c                	sd	a5,24(a4)
   asm volatile("csrr %0, sstatus" : "=r" (x) );
-    800028d8:	100027f3          	csrr	a5,sstatus
+    80002b28:	100027f3          	csrr	a5,sstatus
   w_sstatus(r_sstatus() | SSTATUS_SIE);
-    800028dc:	0027e793          	ori	a5,a5,2
+    80002b2c:	0027e793          	ori	a5,a5,2
   asm volatile("csrw sstatus, %0" : : "r" (x));
-    800028e0:	10079073          	csrw	sstatus,a5
+    80002b30:	10079073          	csrw	sstatus,a5
     syscall();
-    800028e4:	00000097          	auipc	ra,0x0
-    800028e8:	2e0080e7          	jalr	736(ra) # 80002bc4 <syscall>
+    80002b34:	00000097          	auipc	ra,0x0
+    80002b38:	2e0080e7          	jalr	736(ra) # 80002e14 <syscall>
   if(p->killed)
-    800028ec:	549c                	lw	a5,40(s1)
-    800028ee:	ebc1                	bnez	a5,8000297e <usertrap+0xf0>
+    80002b3c:	549c                	lw	a5,40(s1)
+    80002b3e:	ebc1                	bnez	a5,80002bce <usertrap+0xf0>
   usertrapret();
-    800028f0:	00000097          	auipc	ra,0x0
-    800028f4:	e18080e7          	jalr	-488(ra) # 80002708 <usertrapret>
+    80002b40:	00000097          	auipc	ra,0x0
+    80002b44:	e18080e7          	jalr	-488(ra) # 80002958 <usertrapret>
 }
-    800028f8:	60e2                	ld	ra,24(sp)
-    800028fa:	6442                	ld	s0,16(sp)
-    800028fc:	64a2                	ld	s1,8(sp)
-    800028fe:	6902                	ld	s2,0(sp)
-    80002900:	6105                	addi	sp,sp,32
-    80002902:	8082                	ret
+    80002b48:	60e2                	ld	ra,24(sp)
+    80002b4a:	6442                	ld	s0,16(sp)
+    80002b4c:	64a2                	ld	s1,8(sp)
+    80002b4e:	6902                	ld	s2,0(sp)
+    80002b50:	6105                	addi	sp,sp,32
+    80002b52:	8082                	ret
     panic("usertrap: not from user mode");
-    80002904:	00006517          	auipc	a0,0x6
-    80002908:	a8c50513          	addi	a0,a0,-1396 # 80008390 <queue.0+0x38>
-    8000290c:	ffffe097          	auipc	ra,0xffffe
-    80002910:	c2e080e7          	jalr	-978(ra) # 8000053a <panic>
+    80002b54:	00006517          	auipc	a0,0x6
+    80002b58:	8ac50513          	addi	a0,a0,-1876 # 80008400 <queue.0+0x38>
+    80002b5c:	ffffe097          	auipc	ra,0xffffe
+    80002b60:	9de080e7          	jalr	-1570(ra) # 8000053a <panic>
       exit(-1);
-    80002914:	557d                	li	a0,-1
-    80002916:	00000097          	auipc	ra,0x0
-    8000291a:	9ac080e7          	jalr	-1620(ra) # 800022c2 <exit>
-    8000291e:	bf4d                	j	800028d0 <usertrap+0x42>
+    80002b64:	557d                	li	a0,-1
+    80002b66:	00000097          	auipc	ra,0x0
+    80002b6a:	8f6080e7          	jalr	-1802(ra) # 8000245c <exit>
+    80002b6e:	bf4d                	j	80002b20 <usertrap+0x42>
   } else if((which_dev = devintr()) != 0){
-    80002920:	00000097          	auipc	ra,0x0
-    80002924:	ecc080e7          	jalr	-308(ra) # 800027ec <devintr>
-    80002928:	892a                	mv	s2,a0
-    8000292a:	c501                	beqz	a0,80002932 <usertrap+0xa4>
+    80002b70:	00000097          	auipc	ra,0x0
+    80002b74:	ecc080e7          	jalr	-308(ra) # 80002a3c <devintr>
+    80002b78:	892a                	mv	s2,a0
+    80002b7a:	c501                	beqz	a0,80002b82 <usertrap+0xa4>
   if(p->killed)
-    8000292c:	549c                	lw	a5,40(s1)
-    8000292e:	c3a1                	beqz	a5,8000296e <usertrap+0xe0>
-    80002930:	a815                	j	80002964 <usertrap+0xd6>
+    80002b7c:	549c                	lw	a5,40(s1)
+    80002b7e:	c3a1                	beqz	a5,80002bbe <usertrap+0xe0>
+    80002b80:	a815                	j	80002bb4 <usertrap+0xd6>
   asm volatile("csrr %0, scause" : "=r" (x) );
-    80002932:	142025f3          	csrr	a1,scause
+    80002b82:	142025f3          	csrr	a1,scause
     printf("usertrap(): unexpected scause %p pid=%d\n", r_scause(), p->pid);
-    80002936:	5890                	lw	a2,48(s1)
-    80002938:	00006517          	auipc	a0,0x6
-    8000293c:	a7850513          	addi	a0,a0,-1416 # 800083b0 <queue.0+0x58>
-    80002940:	ffffe097          	auipc	ra,0xffffe
-    80002944:	c44080e7          	jalr	-956(ra) # 80000584 <printf>
+    80002b86:	5890                	lw	a2,48(s1)
+    80002b88:	00006517          	auipc	a0,0x6
+    80002b8c:	89850513          	addi	a0,a0,-1896 # 80008420 <queue.0+0x58>
+    80002b90:	ffffe097          	auipc	ra,0xffffe
+    80002b94:	9f4080e7          	jalr	-1548(ra) # 80000584 <printf>
   asm volatile("csrr %0, sepc" : "=r" (x) );
-    80002948:	141025f3          	csrr	a1,sepc
+    80002b98:	141025f3          	csrr	a1,sepc
   asm volatile("csrr %0, stval" : "=r" (x) );
-    8000294c:	14302673          	csrr	a2,stval
+    80002b9c:	14302673          	csrr	a2,stval
     printf("            sepc=%p stval=%p\n", r_sepc(), r_stval());
-    80002950:	00006517          	auipc	a0,0x6
-    80002954:	a9050513          	addi	a0,a0,-1392 # 800083e0 <queue.0+0x88>
-    80002958:	ffffe097          	auipc	ra,0xffffe
-    8000295c:	c2c080e7          	jalr	-980(ra) # 80000584 <printf>
+    80002ba0:	00006517          	auipc	a0,0x6
+    80002ba4:	8b050513          	addi	a0,a0,-1872 # 80008450 <queue.0+0x88>
+    80002ba8:	ffffe097          	auipc	ra,0xffffe
+    80002bac:	9dc080e7          	jalr	-1572(ra) # 80000584 <printf>
     p->killed = 1;
-    80002960:	4785                	li	a5,1
-    80002962:	d49c                	sw	a5,40(s1)
+    80002bb0:	4785                	li	a5,1
+    80002bb2:	d49c                	sw	a5,40(s1)
     exit(-1);
-    80002964:	557d                	li	a0,-1
-    80002966:	00000097          	auipc	ra,0x0
-    8000296a:	95c080e7          	jalr	-1700(ra) # 800022c2 <exit>
+    80002bb4:	557d                	li	a0,-1
+    80002bb6:	00000097          	auipc	ra,0x0
+    80002bba:	8a6080e7          	jalr	-1882(ra) # 8000245c <exit>
   if(which_dev == 2)
-    8000296e:	4789                	li	a5,2
-    80002970:	f8f910e3          	bne	s2,a5,800028f0 <usertrap+0x62>
+    80002bbe:	4789                	li	a5,2
+    80002bc0:	f8f910e3          	bne	s2,a5,80002b40 <usertrap+0x62>
     yield();
-    80002974:	fffff097          	auipc	ra,0xfffff
-    80002978:	6b6080e7          	jalr	1718(ra) # 8000202a <yield>
-    8000297c:	bf95                	j	800028f0 <usertrap+0x62>
+    80002bc4:	fffff097          	auipc	ra,0xfffff
+    80002bc8:	600080e7          	jalr	1536(ra) # 800021c4 <yield>
+    80002bcc:	bf95                	j	80002b40 <usertrap+0x62>
   int which_dev = 0;
-    8000297e:	4901                	li	s2,0
-    80002980:	b7d5                	j	80002964 <usertrap+0xd6>
+    80002bce:	4901                	li	s2,0
+    80002bd0:	b7d5                	j	80002bb4 <usertrap+0xd6>
 
-0000000080002982 <kerneltrap>:
+0000000080002bd2 <kerneltrap>:
 {
-    80002982:	7179                	addi	sp,sp,-48
-    80002984:	f406                	sd	ra,40(sp)
-    80002986:	f022                	sd	s0,32(sp)
-    80002988:	ec26                	sd	s1,24(sp)
-    8000298a:	e84a                	sd	s2,16(sp)
-    8000298c:	e44e                	sd	s3,8(sp)
-    8000298e:	1800                	addi	s0,sp,48
+    80002bd2:	7179                	addi	sp,sp,-48
+    80002bd4:	f406                	sd	ra,40(sp)
+    80002bd6:	f022                	sd	s0,32(sp)
+    80002bd8:	ec26                	sd	s1,24(sp)
+    80002bda:	e84a                	sd	s2,16(sp)
+    80002bdc:	e44e                	sd	s3,8(sp)
+    80002bde:	1800                	addi	s0,sp,48
   asm volatile("csrr %0, sepc" : "=r" (x) );
-    80002990:	14102973          	csrr	s2,sepc
+    80002be0:	14102973          	csrr	s2,sepc
   asm volatile("csrr %0, sstatus" : "=r" (x) );
-    80002994:	100024f3          	csrr	s1,sstatus
+    80002be4:	100024f3          	csrr	s1,sstatus
   asm volatile("csrr %0, scause" : "=r" (x) );
-    80002998:	142029f3          	csrr	s3,scause
+    80002be8:	142029f3          	csrr	s3,scause
   if((sstatus & SSTATUS_SPP) == 0)
-    8000299c:	1004f793          	andi	a5,s1,256
-    800029a0:	cb85                	beqz	a5,800029d0 <kerneltrap+0x4e>
+    80002bec:	1004f793          	andi	a5,s1,256
+    80002bf0:	cb85                	beqz	a5,80002c20 <kerneltrap+0x4e>
   asm volatile("csrr %0, sstatus" : "=r" (x) );
-    800029a2:	100027f3          	csrr	a5,sstatus
+    80002bf2:	100027f3          	csrr	a5,sstatus
   return (x & SSTATUS_SIE) != 0;
-    800029a6:	8b89                	andi	a5,a5,2
+    80002bf6:	8b89                	andi	a5,a5,2
   if(intr_get() != 0)
-    800029a8:	ef85                	bnez	a5,800029e0 <kerneltrap+0x5e>
+    80002bf8:	ef85                	bnez	a5,80002c30 <kerneltrap+0x5e>
   if((which_dev = devintr()) == 0){
-    800029aa:	00000097          	auipc	ra,0x0
-    800029ae:	e42080e7          	jalr	-446(ra) # 800027ec <devintr>
-    800029b2:	cd1d                	beqz	a0,800029f0 <kerneltrap+0x6e>
+    80002bfa:	00000097          	auipc	ra,0x0
+    80002bfe:	e42080e7          	jalr	-446(ra) # 80002a3c <devintr>
+    80002c02:	cd1d                	beqz	a0,80002c40 <kerneltrap+0x6e>
   if(which_dev == 2 && myproc() != 0 && myproc()->state == RUNNING)
-    800029b4:	4789                	li	a5,2
-    800029b6:	06f50a63          	beq	a0,a5,80002a2a <kerneltrap+0xa8>
+    80002c04:	4789                	li	a5,2
+    80002c06:	06f50a63          	beq	a0,a5,80002c7a <kerneltrap+0xa8>
   asm volatile("csrw sepc, %0" : : "r" (x));
-    800029ba:	14191073          	csrw	sepc,s2
+    80002c0a:	14191073          	csrw	sepc,s2
   asm volatile("csrw sstatus, %0" : : "r" (x));
-    800029be:	10049073          	csrw	sstatus,s1
+    80002c0e:	10049073          	csrw	sstatus,s1
 }
-    800029c2:	70a2                	ld	ra,40(sp)
-    800029c4:	7402                	ld	s0,32(sp)
-    800029c6:	64e2                	ld	s1,24(sp)
-    800029c8:	6942                	ld	s2,16(sp)
-    800029ca:	69a2                	ld	s3,8(sp)
-    800029cc:	6145                	addi	sp,sp,48
-    800029ce:	8082                	ret
+    80002c12:	70a2                	ld	ra,40(sp)
+    80002c14:	7402                	ld	s0,32(sp)
+    80002c16:	64e2                	ld	s1,24(sp)
+    80002c18:	6942                	ld	s2,16(sp)
+    80002c1a:	69a2                	ld	s3,8(sp)
+    80002c1c:	6145                	addi	sp,sp,48
+    80002c1e:	8082                	ret
     panic("kerneltrap: not from supervisor mode");
-    800029d0:	00006517          	auipc	a0,0x6
-    800029d4:	a3050513          	addi	a0,a0,-1488 # 80008400 <queue.0+0xa8>
-    800029d8:	ffffe097          	auipc	ra,0xffffe
-    800029dc:	b62080e7          	jalr	-1182(ra) # 8000053a <panic>
+    80002c20:	00006517          	auipc	a0,0x6
+    80002c24:	85050513          	addi	a0,a0,-1968 # 80008470 <queue.0+0xa8>
+    80002c28:	ffffe097          	auipc	ra,0xffffe
+    80002c2c:	912080e7          	jalr	-1774(ra) # 8000053a <panic>
     panic("kerneltrap: interrupts enabled");
-    800029e0:	00006517          	auipc	a0,0x6
-    800029e4:	a4850513          	addi	a0,a0,-1464 # 80008428 <queue.0+0xd0>
-    800029e8:	ffffe097          	auipc	ra,0xffffe
-    800029ec:	b52080e7          	jalr	-1198(ra) # 8000053a <panic>
+    80002c30:	00006517          	auipc	a0,0x6
+    80002c34:	86850513          	addi	a0,a0,-1944 # 80008498 <queue.0+0xd0>
+    80002c38:	ffffe097          	auipc	ra,0xffffe
+    80002c3c:	902080e7          	jalr	-1790(ra) # 8000053a <panic>
     printf("scause %p\n", scause);
-    800029f0:	85ce                	mv	a1,s3
-    800029f2:	00006517          	auipc	a0,0x6
-    800029f6:	a5650513          	addi	a0,a0,-1450 # 80008448 <queue.0+0xf0>
-    800029fa:	ffffe097          	auipc	ra,0xffffe
-    800029fe:	b8a080e7          	jalr	-1142(ra) # 80000584 <printf>
+    80002c40:	85ce                	mv	a1,s3
+    80002c42:	00006517          	auipc	a0,0x6
+    80002c46:	87650513          	addi	a0,a0,-1930 # 800084b8 <queue.0+0xf0>
+    80002c4a:	ffffe097          	auipc	ra,0xffffe
+    80002c4e:	93a080e7          	jalr	-1734(ra) # 80000584 <printf>
   asm volatile("csrr %0, sepc" : "=r" (x) );
-    80002a02:	141025f3          	csrr	a1,sepc
+    80002c52:	141025f3          	csrr	a1,sepc
   asm volatile("csrr %0, stval" : "=r" (x) );
-    80002a06:	14302673          	csrr	a2,stval
+    80002c56:	14302673          	csrr	a2,stval
     printf("sepc=%p stval=%p\n", r_sepc(), r_stval());
-    80002a0a:	00006517          	auipc	a0,0x6
-    80002a0e:	a4e50513          	addi	a0,a0,-1458 # 80008458 <queue.0+0x100>
-    80002a12:	ffffe097          	auipc	ra,0xffffe
-    80002a16:	b72080e7          	jalr	-1166(ra) # 80000584 <printf>
+    80002c5a:	00006517          	auipc	a0,0x6
+    80002c5e:	86e50513          	addi	a0,a0,-1938 # 800084c8 <queue.0+0x100>
+    80002c62:	ffffe097          	auipc	ra,0xffffe
+    80002c66:	922080e7          	jalr	-1758(ra) # 80000584 <printf>
     panic("kerneltrap");
-    80002a1a:	00006517          	auipc	a0,0x6
-    80002a1e:	a5650513          	addi	a0,a0,-1450 # 80008470 <queue.0+0x118>
-    80002a22:	ffffe097          	auipc	ra,0xffffe
-    80002a26:	b18080e7          	jalr	-1256(ra) # 8000053a <panic>
+    80002c6a:	00006517          	auipc	a0,0x6
+    80002c6e:	87650513          	addi	a0,a0,-1930 # 800084e0 <queue.0+0x118>
+    80002c72:	ffffe097          	auipc	ra,0xffffe
+    80002c76:	8c8080e7          	jalr	-1848(ra) # 8000053a <panic>
   if(which_dev == 2 && myproc() != 0 && myproc()->state == RUNNING)
-    80002a2a:	fffff097          	auipc	ra,0xfffff
-    80002a2e:	f6c080e7          	jalr	-148(ra) # 80001996 <myproc>
-    80002a32:	d541                	beqz	a0,800029ba <kerneltrap+0x38>
-    80002a34:	fffff097          	auipc	ra,0xfffff
-    80002a38:	f62080e7          	jalr	-158(ra) # 80001996 <myproc>
-    80002a3c:	4d18                	lw	a4,24(a0)
-    80002a3e:	4791                	li	a5,4
-    80002a40:	f6f71de3          	bne	a4,a5,800029ba <kerneltrap+0x38>
+    80002c7a:	fffff097          	auipc	ra,0xfffff
+    80002c7e:	dc6080e7          	jalr	-570(ra) # 80001a40 <myproc>
+    80002c82:	d541                	beqz	a0,80002c0a <kerneltrap+0x38>
+    80002c84:	fffff097          	auipc	ra,0xfffff
+    80002c88:	dbc080e7          	jalr	-580(ra) # 80001a40 <myproc>
+    80002c8c:	4d18                	lw	a4,24(a0)
+    80002c8e:	4791                	li	a5,4
+    80002c90:	f6f71de3          	bne	a4,a5,80002c0a <kerneltrap+0x38>
     yield();
-    80002a44:	fffff097          	auipc	ra,0xfffff
-    80002a48:	5e6080e7          	jalr	1510(ra) # 8000202a <yield>
-    80002a4c:	b7bd                	j	800029ba <kerneltrap+0x38>
+    80002c94:	fffff097          	auipc	ra,0xfffff
+    80002c98:	530080e7          	jalr	1328(ra) # 800021c4 <yield>
+    80002c9c:	b7bd                	j	80002c0a <kerneltrap+0x38>
 
-0000000080002a4e <argraw>:
+0000000080002c9e <argraw>:
   return strlen(buf);
 }
 
 static uint64
 argraw(int n)
 {
-    80002a4e:	1101                	addi	sp,sp,-32
-    80002a50:	ec06                	sd	ra,24(sp)
-    80002a52:	e822                	sd	s0,16(sp)
-    80002a54:	e426                	sd	s1,8(sp)
-    80002a56:	1000                	addi	s0,sp,32
-    80002a58:	84aa                	mv	s1,a0
+    80002c9e:	1101                	addi	sp,sp,-32
+    80002ca0:	ec06                	sd	ra,24(sp)
+    80002ca2:	e822                	sd	s0,16(sp)
+    80002ca4:	e426                	sd	s1,8(sp)
+    80002ca6:	1000                	addi	s0,sp,32
+    80002ca8:	84aa                	mv	s1,a0
   struct proc *p = myproc();
-    80002a5a:	fffff097          	auipc	ra,0xfffff
-    80002a5e:	f3c080e7          	jalr	-196(ra) # 80001996 <myproc>
+    80002caa:	fffff097          	auipc	ra,0xfffff
+    80002cae:	d96080e7          	jalr	-618(ra) # 80001a40 <myproc>
   switch (n) {
-    80002a62:	4795                	li	a5,5
-    80002a64:	0497e163          	bltu	a5,s1,80002aa6 <argraw+0x58>
-    80002a68:	048a                	slli	s1,s1,0x2
-    80002a6a:	00006717          	auipc	a4,0x6
-    80002a6e:	a3e70713          	addi	a4,a4,-1474 # 800084a8 <queue.0+0x150>
-    80002a72:	94ba                	add	s1,s1,a4
-    80002a74:	409c                	lw	a5,0(s1)
-    80002a76:	97ba                	add	a5,a5,a4
-    80002a78:	8782                	jr	a5
+    80002cb2:	4795                	li	a5,5
+    80002cb4:	0497e163          	bltu	a5,s1,80002cf6 <argraw+0x58>
+    80002cb8:	048a                	slli	s1,s1,0x2
+    80002cba:	00006717          	auipc	a4,0x6
+    80002cbe:	85e70713          	addi	a4,a4,-1954 # 80008518 <queue.0+0x150>
+    80002cc2:	94ba                	add	s1,s1,a4
+    80002cc4:	409c                	lw	a5,0(s1)
+    80002cc6:	97ba                	add	a5,a5,a4
+    80002cc8:	8782                	jr	a5
   case 0:
     return p->trapframe->a0;
-    80002a7a:	6d3c                	ld	a5,88(a0)
-    80002a7c:	7ba8                	ld	a0,112(a5)
+    80002cca:	6d3c                	ld	a5,88(a0)
+    80002ccc:	7ba8                	ld	a0,112(a5)
   case 5:
     return p->trapframe->a5;
   }
   panic("argraw");
   return -1;
 }
-    80002a7e:	60e2                	ld	ra,24(sp)
-    80002a80:	6442                	ld	s0,16(sp)
-    80002a82:	64a2                	ld	s1,8(sp)
-    80002a84:	6105                	addi	sp,sp,32
-    80002a86:	8082                	ret
+    80002cce:	60e2                	ld	ra,24(sp)
+    80002cd0:	6442                	ld	s0,16(sp)
+    80002cd2:	64a2                	ld	s1,8(sp)
+    80002cd4:	6105                	addi	sp,sp,32
+    80002cd6:	8082                	ret
     return p->trapframe->a1;
-    80002a88:	6d3c                	ld	a5,88(a0)
-    80002a8a:	7fa8                	ld	a0,120(a5)
-    80002a8c:	bfcd                	j	80002a7e <argraw+0x30>
+    80002cd8:	6d3c                	ld	a5,88(a0)
+    80002cda:	7fa8                	ld	a0,120(a5)
+    80002cdc:	bfcd                	j	80002cce <argraw+0x30>
     return p->trapframe->a2;
-    80002a8e:	6d3c                	ld	a5,88(a0)
-    80002a90:	63c8                	ld	a0,128(a5)
-    80002a92:	b7f5                	j	80002a7e <argraw+0x30>
+    80002cde:	6d3c                	ld	a5,88(a0)
+    80002ce0:	63c8                	ld	a0,128(a5)
+    80002ce2:	b7f5                	j	80002cce <argraw+0x30>
     return p->trapframe->a3;
-    80002a94:	6d3c                	ld	a5,88(a0)
-    80002a96:	67c8                	ld	a0,136(a5)
-    80002a98:	b7dd                	j	80002a7e <argraw+0x30>
+    80002ce4:	6d3c                	ld	a5,88(a0)
+    80002ce6:	67c8                	ld	a0,136(a5)
+    80002ce8:	b7dd                	j	80002cce <argraw+0x30>
     return p->trapframe->a4;
-    80002a9a:	6d3c                	ld	a5,88(a0)
-    80002a9c:	6bc8                	ld	a0,144(a5)
-    80002a9e:	b7c5                	j	80002a7e <argraw+0x30>
+    80002cea:	6d3c                	ld	a5,88(a0)
+    80002cec:	6bc8                	ld	a0,144(a5)
+    80002cee:	b7c5                	j	80002cce <argraw+0x30>
     return p->trapframe->a5;
-    80002aa0:	6d3c                	ld	a5,88(a0)
-    80002aa2:	6fc8                	ld	a0,152(a5)
-    80002aa4:	bfe9                	j	80002a7e <argraw+0x30>
+    80002cf0:	6d3c                	ld	a5,88(a0)
+    80002cf2:	6fc8                	ld	a0,152(a5)
+    80002cf4:	bfe9                	j	80002cce <argraw+0x30>
   panic("argraw");
-    80002aa6:	00006517          	auipc	a0,0x6
-    80002aaa:	9da50513          	addi	a0,a0,-1574 # 80008480 <queue.0+0x128>
-    80002aae:	ffffe097          	auipc	ra,0xffffe
-    80002ab2:	a8c080e7          	jalr	-1396(ra) # 8000053a <panic>
+    80002cf6:	00005517          	auipc	a0,0x5
+    80002cfa:	7fa50513          	addi	a0,a0,2042 # 800084f0 <queue.0+0x128>
+    80002cfe:	ffffe097          	auipc	ra,0xffffe
+    80002d02:	83c080e7          	jalr	-1988(ra) # 8000053a <panic>
 
-0000000080002ab6 <fetchaddr>:
+0000000080002d06 <fetchaddr>:
 {
-    80002ab6:	1101                	addi	sp,sp,-32
-    80002ab8:	ec06                	sd	ra,24(sp)
-    80002aba:	e822                	sd	s0,16(sp)
-    80002abc:	e426                	sd	s1,8(sp)
-    80002abe:	e04a                	sd	s2,0(sp)
-    80002ac0:	1000                	addi	s0,sp,32
-    80002ac2:	84aa                	mv	s1,a0
-    80002ac4:	892e                	mv	s2,a1
+    80002d06:	1101                	addi	sp,sp,-32
+    80002d08:	ec06                	sd	ra,24(sp)
+    80002d0a:	e822                	sd	s0,16(sp)
+    80002d0c:	e426                	sd	s1,8(sp)
+    80002d0e:	e04a                	sd	s2,0(sp)
+    80002d10:	1000                	addi	s0,sp,32
+    80002d12:	84aa                	mv	s1,a0
+    80002d14:	892e                	mv	s2,a1
   struct proc *p = myproc();
-    80002ac6:	fffff097          	auipc	ra,0xfffff
-    80002aca:	ed0080e7          	jalr	-304(ra) # 80001996 <myproc>
+    80002d16:	fffff097          	auipc	ra,0xfffff
+    80002d1a:	d2a080e7          	jalr	-726(ra) # 80001a40 <myproc>
   if(addr >= p->sz || addr+sizeof(uint64) > p->sz)
-    80002ace:	653c                	ld	a5,72(a0)
-    80002ad0:	02f4f863          	bgeu	s1,a5,80002b00 <fetchaddr+0x4a>
-    80002ad4:	00848713          	addi	a4,s1,8
-    80002ad8:	02e7e663          	bltu	a5,a4,80002b04 <fetchaddr+0x4e>
+    80002d1e:	653c                	ld	a5,72(a0)
+    80002d20:	02f4f863          	bgeu	s1,a5,80002d50 <fetchaddr+0x4a>
+    80002d24:	00848713          	addi	a4,s1,8
+    80002d28:	02e7e663          	bltu	a5,a4,80002d54 <fetchaddr+0x4e>
   if(copyin(p->pagetable, (char *)ip, addr, sizeof(*ip)) != 0)
-    80002adc:	46a1                	li	a3,8
-    80002ade:	8626                	mv	a2,s1
-    80002ae0:	85ca                	mv	a1,s2
-    80002ae2:	6928                	ld	a0,80(a0)
-    80002ae4:	fffff097          	auipc	ra,0xfffff
-    80002ae8:	c02080e7          	jalr	-1022(ra) # 800016e6 <copyin>
-    80002aec:	00a03533          	snez	a0,a0
-    80002af0:	40a00533          	neg	a0,a0
+    80002d2c:	46a1                	li	a3,8
+    80002d2e:	8626                	mv	a2,s1
+    80002d30:	85ca                	mv	a1,s2
+    80002d32:	6928                	ld	a0,80(a0)
+    80002d34:	fffff097          	auipc	ra,0xfffff
+    80002d38:	9b2080e7          	jalr	-1614(ra) # 800016e6 <copyin>
+    80002d3c:	00a03533          	snez	a0,a0
+    80002d40:	40a00533          	neg	a0,a0
 }
-    80002af4:	60e2                	ld	ra,24(sp)
-    80002af6:	6442                	ld	s0,16(sp)
-    80002af8:	64a2                	ld	s1,8(sp)
-    80002afa:	6902                	ld	s2,0(sp)
-    80002afc:	6105                	addi	sp,sp,32
-    80002afe:	8082                	ret
+    80002d44:	60e2                	ld	ra,24(sp)
+    80002d46:	6442                	ld	s0,16(sp)
+    80002d48:	64a2                	ld	s1,8(sp)
+    80002d4a:	6902                	ld	s2,0(sp)
+    80002d4c:	6105                	addi	sp,sp,32
+    80002d4e:	8082                	ret
     return -1;
-    80002b00:	557d                	li	a0,-1
-    80002b02:	bfcd                	j	80002af4 <fetchaddr+0x3e>
-    80002b04:	557d                	li	a0,-1
-    80002b06:	b7fd                	j	80002af4 <fetchaddr+0x3e>
+    80002d50:	557d                	li	a0,-1
+    80002d52:	bfcd                	j	80002d44 <fetchaddr+0x3e>
+    80002d54:	557d                	li	a0,-1
+    80002d56:	b7fd                	j	80002d44 <fetchaddr+0x3e>
 
-0000000080002b08 <fetchstr>:
+0000000080002d58 <fetchstr>:
 {
-    80002b08:	7179                	addi	sp,sp,-48
-    80002b0a:	f406                	sd	ra,40(sp)
-    80002b0c:	f022                	sd	s0,32(sp)
-    80002b0e:	ec26                	sd	s1,24(sp)
-    80002b10:	e84a                	sd	s2,16(sp)
-    80002b12:	e44e                	sd	s3,8(sp)
-    80002b14:	1800                	addi	s0,sp,48
-    80002b16:	892a                	mv	s2,a0
-    80002b18:	84ae                	mv	s1,a1
-    80002b1a:	89b2                	mv	s3,a2
+    80002d58:	7179                	addi	sp,sp,-48
+    80002d5a:	f406                	sd	ra,40(sp)
+    80002d5c:	f022                	sd	s0,32(sp)
+    80002d5e:	ec26                	sd	s1,24(sp)
+    80002d60:	e84a                	sd	s2,16(sp)
+    80002d62:	e44e                	sd	s3,8(sp)
+    80002d64:	1800                	addi	s0,sp,48
+    80002d66:	892a                	mv	s2,a0
+    80002d68:	84ae                	mv	s1,a1
+    80002d6a:	89b2                	mv	s3,a2
   struct proc *p = myproc();
-    80002b1c:	fffff097          	auipc	ra,0xfffff
-    80002b20:	e7a080e7          	jalr	-390(ra) # 80001996 <myproc>
+    80002d6c:	fffff097          	auipc	ra,0xfffff
+    80002d70:	cd4080e7          	jalr	-812(ra) # 80001a40 <myproc>
   int err = copyinstr(p->pagetable, buf, addr, max);
-    80002b24:	86ce                	mv	a3,s3
-    80002b26:	864a                	mv	a2,s2
-    80002b28:	85a6                	mv	a1,s1
-    80002b2a:	6928                	ld	a0,80(a0)
-    80002b2c:	fffff097          	auipc	ra,0xfffff
-    80002b30:	c48080e7          	jalr	-952(ra) # 80001774 <copyinstr>
+    80002d74:	86ce                	mv	a3,s3
+    80002d76:	864a                	mv	a2,s2
+    80002d78:	85a6                	mv	a1,s1
+    80002d7a:	6928                	ld	a0,80(a0)
+    80002d7c:	fffff097          	auipc	ra,0xfffff
+    80002d80:	9f8080e7          	jalr	-1544(ra) # 80001774 <copyinstr>
   if(err < 0)
-    80002b34:	00054763          	bltz	a0,80002b42 <fetchstr+0x3a>
+    80002d84:	00054763          	bltz	a0,80002d92 <fetchstr+0x3a>
   return strlen(buf);
-    80002b38:	8526                	mv	a0,s1
-    80002b3a:	ffffe097          	auipc	ra,0xffffe
-    80002b3e:	30e080e7          	jalr	782(ra) # 80000e48 <strlen>
+    80002d88:	8526                	mv	a0,s1
+    80002d8a:	ffffe097          	auipc	ra,0xffffe
+    80002d8e:	0be080e7          	jalr	190(ra) # 80000e48 <strlen>
 }
-    80002b42:	70a2                	ld	ra,40(sp)
-    80002b44:	7402                	ld	s0,32(sp)
-    80002b46:	64e2                	ld	s1,24(sp)
-    80002b48:	6942                	ld	s2,16(sp)
-    80002b4a:	69a2                	ld	s3,8(sp)
-    80002b4c:	6145                	addi	sp,sp,48
-    80002b4e:	8082                	ret
+    80002d92:	70a2                	ld	ra,40(sp)
+    80002d94:	7402                	ld	s0,32(sp)
+    80002d96:	64e2                	ld	s1,24(sp)
+    80002d98:	6942                	ld	s2,16(sp)
+    80002d9a:	69a2                	ld	s3,8(sp)
+    80002d9c:	6145                	addi	sp,sp,48
+    80002d9e:	8082                	ret
 
-0000000080002b50 <argint>:
+0000000080002da0 <argint>:
 
 // Fetch the nth 32-bit system call argument.
 int
 argint(int n, int *ip)
 {
-    80002b50:	1101                	addi	sp,sp,-32
-    80002b52:	ec06                	sd	ra,24(sp)
-    80002b54:	e822                	sd	s0,16(sp)
-    80002b56:	e426                	sd	s1,8(sp)
-    80002b58:	1000                	addi	s0,sp,32
-    80002b5a:	84ae                	mv	s1,a1
+    80002da0:	1101                	addi	sp,sp,-32
+    80002da2:	ec06                	sd	ra,24(sp)
+    80002da4:	e822                	sd	s0,16(sp)
+    80002da6:	e426                	sd	s1,8(sp)
+    80002da8:	1000                	addi	s0,sp,32
+    80002daa:	84ae                	mv	s1,a1
   *ip = argraw(n);
-    80002b5c:	00000097          	auipc	ra,0x0
-    80002b60:	ef2080e7          	jalr	-270(ra) # 80002a4e <argraw>
-    80002b64:	c088                	sw	a0,0(s1)
+    80002dac:	00000097          	auipc	ra,0x0
+    80002db0:	ef2080e7          	jalr	-270(ra) # 80002c9e <argraw>
+    80002db4:	c088                	sw	a0,0(s1)
   return 0;
 }
-    80002b66:	4501                	li	a0,0
-    80002b68:	60e2                	ld	ra,24(sp)
-    80002b6a:	6442                	ld	s0,16(sp)
-    80002b6c:	64a2                	ld	s1,8(sp)
-    80002b6e:	6105                	addi	sp,sp,32
-    80002b70:	8082                	ret
+    80002db6:	4501                	li	a0,0
+    80002db8:	60e2                	ld	ra,24(sp)
+    80002dba:	6442                	ld	s0,16(sp)
+    80002dbc:	64a2                	ld	s1,8(sp)
+    80002dbe:	6105                	addi	sp,sp,32
+    80002dc0:	8082                	ret
 
-0000000080002b72 <argaddr>:
+0000000080002dc2 <argaddr>:
 // Retrieve an argument as a pointer.
 // Doesn't check for legality, since
 // copyin/copyout will do that.
 int
 argaddr(int n, uint64 *ip)
 {
-    80002b72:	1101                	addi	sp,sp,-32
-    80002b74:	ec06                	sd	ra,24(sp)
-    80002b76:	e822                	sd	s0,16(sp)
-    80002b78:	e426                	sd	s1,8(sp)
-    80002b7a:	1000                	addi	s0,sp,32
-    80002b7c:	84ae                	mv	s1,a1
+    80002dc2:	1101                	addi	sp,sp,-32
+    80002dc4:	ec06                	sd	ra,24(sp)
+    80002dc6:	e822                	sd	s0,16(sp)
+    80002dc8:	e426                	sd	s1,8(sp)
+    80002dca:	1000                	addi	s0,sp,32
+    80002dcc:	84ae                	mv	s1,a1
   *ip = argraw(n);
-    80002b7e:	00000097          	auipc	ra,0x0
-    80002b82:	ed0080e7          	jalr	-304(ra) # 80002a4e <argraw>
-    80002b86:	e088                	sd	a0,0(s1)
+    80002dce:	00000097          	auipc	ra,0x0
+    80002dd2:	ed0080e7          	jalr	-304(ra) # 80002c9e <argraw>
+    80002dd6:	e088                	sd	a0,0(s1)
   return 0;
 }
-    80002b88:	4501                	li	a0,0
-    80002b8a:	60e2                	ld	ra,24(sp)
-    80002b8c:	6442                	ld	s0,16(sp)
-    80002b8e:	64a2                	ld	s1,8(sp)
-    80002b90:	6105                	addi	sp,sp,32
-    80002b92:	8082                	ret
+    80002dd8:	4501                	li	a0,0
+    80002dda:	60e2                	ld	ra,24(sp)
+    80002ddc:	6442                	ld	s0,16(sp)
+    80002dde:	64a2                	ld	s1,8(sp)
+    80002de0:	6105                	addi	sp,sp,32
+    80002de2:	8082                	ret
 
-0000000080002b94 <argstr>:
+0000000080002de4 <argstr>:
 // Fetch the nth word-sized system call argument as a null-terminated string.
 // Copies into buf, at most max.
 // Returns string length if OK (including nul), -1 if error.
 int
 argstr(int n, char *buf, int max)
 {
-    80002b94:	1101                	addi	sp,sp,-32
-    80002b96:	ec06                	sd	ra,24(sp)
-    80002b98:	e822                	sd	s0,16(sp)
-    80002b9a:	e426                	sd	s1,8(sp)
-    80002b9c:	e04a                	sd	s2,0(sp)
-    80002b9e:	1000                	addi	s0,sp,32
-    80002ba0:	84ae                	mv	s1,a1
-    80002ba2:	8932                	mv	s2,a2
+    80002de4:	1101                	addi	sp,sp,-32
+    80002de6:	ec06                	sd	ra,24(sp)
+    80002de8:	e822                	sd	s0,16(sp)
+    80002dea:	e426                	sd	s1,8(sp)
+    80002dec:	e04a                	sd	s2,0(sp)
+    80002dee:	1000                	addi	s0,sp,32
+    80002df0:	84ae                	mv	s1,a1
+    80002df2:	8932                	mv	s2,a2
   *ip = argraw(n);
-    80002ba4:	00000097          	auipc	ra,0x0
-    80002ba8:	eaa080e7          	jalr	-342(ra) # 80002a4e <argraw>
+    80002df4:	00000097          	auipc	ra,0x0
+    80002df8:	eaa080e7          	jalr	-342(ra) # 80002c9e <argraw>
   uint64 addr;
   if(argaddr(n, &addr) < 0)
     return -1;
   return fetchstr(addr, buf, max);
-    80002bac:	864a                	mv	a2,s2
-    80002bae:	85a6                	mv	a1,s1
-    80002bb0:	00000097          	auipc	ra,0x0
-    80002bb4:	f58080e7          	jalr	-168(ra) # 80002b08 <fetchstr>
+    80002dfc:	864a                	mv	a2,s2
+    80002dfe:	85a6                	mv	a1,s1
+    80002e00:	00000097          	auipc	ra,0x0
+    80002e04:	f58080e7          	jalr	-168(ra) # 80002d58 <fetchstr>
 }
-    80002bb8:	60e2                	ld	ra,24(sp)
-    80002bba:	6442                	ld	s0,16(sp)
-    80002bbc:	64a2                	ld	s1,8(sp)
-    80002bbe:	6902                	ld	s2,0(sp)
-    80002bc0:	6105                	addi	sp,sp,32
-    80002bc2:	8082                	ret
+    80002e08:	60e2                	ld	ra,24(sp)
+    80002e0a:	6442                	ld	s0,16(sp)
+    80002e0c:	64a2                	ld	s1,8(sp)
+    80002e0e:	6902                	ld	s2,0(sp)
+    80002e10:	6105                	addi	sp,sp,32
+    80002e12:	8082                	ret
 
-0000000080002bc4 <syscall>:
-[SYS_cps] sys_cps,
+0000000080002e14 <syscall>:
+[SYS_settickets] sys_settickets,
 };
 
 void
 syscall(void)
 {
-    80002bc4:	1101                	addi	sp,sp,-32
-    80002bc6:	ec06                	sd	ra,24(sp)
-    80002bc8:	e822                	sd	s0,16(sp)
-    80002bca:	e426                	sd	s1,8(sp)
-    80002bcc:	e04a                	sd	s2,0(sp)
-    80002bce:	1000                	addi	s0,sp,32
+    80002e14:	1101                	addi	sp,sp,-32
+    80002e16:	ec06                	sd	ra,24(sp)
+    80002e18:	e822                	sd	s0,16(sp)
+    80002e1a:	e426                	sd	s1,8(sp)
+    80002e1c:	e04a                	sd	s2,0(sp)
+    80002e1e:	1000                	addi	s0,sp,32
   int num;
   struct proc *p = myproc();
-    80002bd0:	fffff097          	auipc	ra,0xfffff
-    80002bd4:	dc6080e7          	jalr	-570(ra) # 80001996 <myproc>
-    80002bd8:	84aa                	mv	s1,a0
+    80002e20:	fffff097          	auipc	ra,0xfffff
+    80002e24:	c20080e7          	jalr	-992(ra) # 80001a40 <myproc>
+    80002e28:	84aa                	mv	s1,a0
   count_syscall++;
-    80002bda:	00006717          	auipc	a4,0x6
-    80002bde:	45e70713          	addi	a4,a4,1118 # 80009038 <count_syscall>
-    80002be2:	631c                	ld	a5,0(a4)
-    80002be4:	0785                	addi	a5,a5,1
-    80002be6:	e31c                	sd	a5,0(a4)
+    80002e2a:	00006717          	auipc	a4,0x6
+    80002e2e:	20e70713          	addi	a4,a4,526 # 80009038 <count_syscall>
+    80002e32:	631c                	ld	a5,0(a4)
+    80002e34:	0785                	addi	a5,a5,1
+    80002e36:	e31c                	sd	a5,0(a4)
 
   num = p->trapframe->a7;
-    80002be8:	05853903          	ld	s2,88(a0)
-    80002bec:	0a893783          	ld	a5,168(s2)
-    80002bf0:	0007869b          	sext.w	a3,a5
+    80002e38:	05853903          	ld	s2,88(a0)
+    80002e3c:	0a893783          	ld	a5,168(s2)
+    80002e40:	0007869b          	sext.w	a3,a5
   if(num > 0 && num < NELEM(syscalls) && syscalls[num]) {
-    80002bf4:	37fd                	addiw	a5,a5,-1
-    80002bf6:	4759                	li	a4,22
-    80002bf8:	00f76f63          	bltu	a4,a5,80002c16 <syscall+0x52>
-    80002bfc:	00369713          	slli	a4,a3,0x3
-    80002c00:	00006797          	auipc	a5,0x6
-    80002c04:	8c078793          	addi	a5,a5,-1856 # 800084c0 <syscalls>
-    80002c08:	97ba                	add	a5,a5,a4
-    80002c0a:	639c                	ld	a5,0(a5)
-    80002c0c:	c789                	beqz	a5,80002c16 <syscall+0x52>
+    80002e44:	37fd                	addiw	a5,a5,-1
+    80002e46:	475d                	li	a4,23
+    80002e48:	00f76f63          	bltu	a4,a5,80002e66 <syscall+0x52>
+    80002e4c:	00369713          	slli	a4,a3,0x3
+    80002e50:	00005797          	auipc	a5,0x5
+    80002e54:	6e078793          	addi	a5,a5,1760 # 80008530 <syscalls>
+    80002e58:	97ba                	add	a5,a5,a4
+    80002e5a:	639c                	ld	a5,0(a5)
+    80002e5c:	c789                	beqz	a5,80002e66 <syscall+0x52>
     p->trapframe->a0 = syscalls[num]();
-    80002c0e:	9782                	jalr	a5
-    80002c10:	06a93823          	sd	a0,112(s2)
-    80002c14:	a839                	j	80002c32 <syscall+0x6e>
+    80002e5e:	9782                	jalr	a5
+    80002e60:	06a93823          	sd	a0,112(s2)
+    80002e64:	a839                	j	80002e82 <syscall+0x6e>
   } else {
     printf("%d %s: unknown sys call %d\n",
-    80002c16:	15848613          	addi	a2,s1,344
-    80002c1a:	588c                	lw	a1,48(s1)
-    80002c1c:	00006517          	auipc	a0,0x6
-    80002c20:	86c50513          	addi	a0,a0,-1940 # 80008488 <queue.0+0x130>
-    80002c24:	ffffe097          	auipc	ra,0xffffe
-    80002c28:	960080e7          	jalr	-1696(ra) # 80000584 <printf>
+    80002e66:	15848613          	addi	a2,s1,344
+    80002e6a:	588c                	lw	a1,48(s1)
+    80002e6c:	00005517          	auipc	a0,0x5
+    80002e70:	68c50513          	addi	a0,a0,1676 # 800084f8 <queue.0+0x130>
+    80002e74:	ffffd097          	auipc	ra,0xffffd
+    80002e78:	710080e7          	jalr	1808(ra) # 80000584 <printf>
             p->pid, p->name, num);
     p->trapframe->a0 = -1;
-    80002c2c:	6cbc                	ld	a5,88(s1)
-    80002c2e:	577d                	li	a4,-1
-    80002c30:	fbb8                	sd	a4,112(a5)
+    80002e7c:	6cbc                	ld	a5,88(s1)
+    80002e7e:	577d                	li	a4,-1
+    80002e80:	fbb8                	sd	a4,112(a5)
   }
 }
-    80002c32:	60e2                	ld	ra,24(sp)
-    80002c34:	6442                	ld	s0,16(sp)
-    80002c36:	64a2                	ld	s1,8(sp)
-    80002c38:	6902                	ld	s2,0(sp)
-    80002c3a:	6105                	addi	sp,sp,32
-    80002c3c:	8082                	ret
+    80002e82:	60e2                	ld	ra,24(sp)
+    80002e84:	6442                	ld	s0,16(sp)
+    80002e86:	64a2                	ld	s1,8(sp)
+    80002e88:	6902                	ld	s2,0(sp)
+    80002e8a:	6105                	addi	sp,sp,32
+    80002e8c:	8082                	ret
 
-0000000080002c3e <sys_exit>:
+0000000080002e8e <sys_exit>:
 
 uint64 count_syscall = 0;
 
 uint64
 sys_exit(void)
 {
-    80002c3e:	1101                	addi	sp,sp,-32
-    80002c40:	ec06                	sd	ra,24(sp)
-    80002c42:	e822                	sd	s0,16(sp)
-    80002c44:	1000                	addi	s0,sp,32
+    80002e8e:	1101                	addi	sp,sp,-32
+    80002e90:	ec06                	sd	ra,24(sp)
+    80002e92:	e822                	sd	s0,16(sp)
+    80002e94:	1000                	addi	s0,sp,32
   int n;
   if(argint(0, &n) < 0)
-    80002c46:	fec40593          	addi	a1,s0,-20
-    80002c4a:	4501                	li	a0,0
-    80002c4c:	00000097          	auipc	ra,0x0
-    80002c50:	f04080e7          	jalr	-252(ra) # 80002b50 <argint>
+    80002e96:	fec40593          	addi	a1,s0,-20
+    80002e9a:	4501                	li	a0,0
+    80002e9c:	00000097          	auipc	ra,0x0
+    80002ea0:	f04080e7          	jalr	-252(ra) # 80002da0 <argint>
     return -1;
-    80002c54:	57fd                	li	a5,-1
+    80002ea4:	57fd                	li	a5,-1
   if(argint(0, &n) < 0)
-    80002c56:	00054963          	bltz	a0,80002c68 <sys_exit+0x2a>
+    80002ea6:	00054963          	bltz	a0,80002eb8 <sys_exit+0x2a>
   exit(n);
-    80002c5a:	fec42503          	lw	a0,-20(s0)
-    80002c5e:	fffff097          	auipc	ra,0xfffff
-    80002c62:	664080e7          	jalr	1636(ra) # 800022c2 <exit>
+    80002eaa:	fec42503          	lw	a0,-20(s0)
+    80002eae:	fffff097          	auipc	ra,0xfffff
+    80002eb2:	5ae080e7          	jalr	1454(ra) # 8000245c <exit>
   return 0;  // not reached
-    80002c66:	4781                	li	a5,0
+    80002eb6:	4781                	li	a5,0
 }
-    80002c68:	853e                	mv	a0,a5
-    80002c6a:	60e2                	ld	ra,24(sp)
-    80002c6c:	6442                	ld	s0,16(sp)
-    80002c6e:	6105                	addi	sp,sp,32
-    80002c70:	8082                	ret
+    80002eb8:	853e                	mv	a0,a5
+    80002eba:	60e2                	ld	ra,24(sp)
+    80002ebc:	6442                	ld	s0,16(sp)
+    80002ebe:	6105                	addi	sp,sp,32
+    80002ec0:	8082                	ret
 
-0000000080002c72 <sys_getpid>:
+0000000080002ec2 <sys_getpid>:
 
 uint64
 sys_getpid(void)
 {
-    80002c72:	1141                	addi	sp,sp,-16
-    80002c74:	e406                	sd	ra,8(sp)
-    80002c76:	e022                	sd	s0,0(sp)
-    80002c78:	0800                	addi	s0,sp,16
+    80002ec2:	1141                	addi	sp,sp,-16
+    80002ec4:	e406                	sd	ra,8(sp)
+    80002ec6:	e022                	sd	s0,0(sp)
+    80002ec8:	0800                	addi	s0,sp,16
   return myproc()->pid;
-    80002c7a:	fffff097          	auipc	ra,0xfffff
-    80002c7e:	d1c080e7          	jalr	-740(ra) # 80001996 <myproc>
+    80002eca:	fffff097          	auipc	ra,0xfffff
+    80002ece:	b76080e7          	jalr	-1162(ra) # 80001a40 <myproc>
 }
-    80002c82:	5908                	lw	a0,48(a0)
-    80002c84:	60a2                	ld	ra,8(sp)
-    80002c86:	6402                	ld	s0,0(sp)
-    80002c88:	0141                	addi	sp,sp,16
-    80002c8a:	8082                	ret
+    80002ed2:	5908                	lw	a0,48(a0)
+    80002ed4:	60a2                	ld	ra,8(sp)
+    80002ed6:	6402                	ld	s0,0(sp)
+    80002ed8:	0141                	addi	sp,sp,16
+    80002eda:	8082                	ret
 
-0000000080002c8c <sys_fork>:
+0000000080002edc <sys_fork>:
 
 uint64
 sys_fork(void)
 {
-    80002c8c:	1141                	addi	sp,sp,-16
-    80002c8e:	e406                	sd	ra,8(sp)
-    80002c90:	e022                	sd	s0,0(sp)
-    80002c92:	0800                	addi	s0,sp,16
+    80002edc:	1141                	addi	sp,sp,-16
+    80002ede:	e406                	sd	ra,8(sp)
+    80002ee0:	e022                	sd	s0,0(sp)
+    80002ee2:	0800                	addi	s0,sp,16
   return fork();
-    80002c94:	fffff097          	auipc	ra,0xfffff
-    80002c98:	0e0080e7          	jalr	224(ra) # 80001d74 <fork>
+    80002ee4:	fffff097          	auipc	ra,0xfffff
+    80002ee8:	f3e080e7          	jalr	-194(ra) # 80001e22 <fork>
 }
-    80002c9c:	60a2                	ld	ra,8(sp)
-    80002c9e:	6402                	ld	s0,0(sp)
-    80002ca0:	0141                	addi	sp,sp,16
-    80002ca2:	8082                	ret
+    80002eec:	60a2                	ld	ra,8(sp)
+    80002eee:	6402                	ld	s0,0(sp)
+    80002ef0:	0141                	addi	sp,sp,16
+    80002ef2:	8082                	ret
 
-0000000080002ca4 <sys_wait>:
+0000000080002ef4 <sys_wait>:
 
 uint64
 sys_wait(void)
 {
-    80002ca4:	1101                	addi	sp,sp,-32
-    80002ca6:	ec06                	sd	ra,24(sp)
-    80002ca8:	e822                	sd	s0,16(sp)
-    80002caa:	1000                	addi	s0,sp,32
+    80002ef4:	1101                	addi	sp,sp,-32
+    80002ef6:	ec06                	sd	ra,24(sp)
+    80002ef8:	e822                	sd	s0,16(sp)
+    80002efa:	1000                	addi	s0,sp,32
   uint64 p;
   if(argaddr(0, &p) < 0)
-    80002cac:	fe840593          	addi	a1,s0,-24
-    80002cb0:	4501                	li	a0,0
-    80002cb2:	00000097          	auipc	ra,0x0
-    80002cb6:	ec0080e7          	jalr	-320(ra) # 80002b72 <argaddr>
-    80002cba:	87aa                	mv	a5,a0
+    80002efc:	fe840593          	addi	a1,s0,-24
+    80002f00:	4501                	li	a0,0
+    80002f02:	00000097          	auipc	ra,0x0
+    80002f06:	ec0080e7          	jalr	-320(ra) # 80002dc2 <argaddr>
+    80002f0a:	87aa                	mv	a5,a0
     return -1;
-    80002cbc:	557d                	li	a0,-1
+    80002f0c:	557d                	li	a0,-1
   if(argaddr(0, &p) < 0)
-    80002cbe:	0007c863          	bltz	a5,80002cce <sys_wait+0x2a>
+    80002f0e:	0007c863          	bltz	a5,80002f1e <sys_wait+0x2a>
   return wait(p);
-    80002cc2:	fe843503          	ld	a0,-24(s0)
-    80002cc6:	fffff097          	auipc	ra,0xfffff
-    80002cca:	404080e7          	jalr	1028(ra) # 800020ca <wait>
+    80002f12:	fe843503          	ld	a0,-24(s0)
+    80002f16:	fffff097          	auipc	ra,0xfffff
+    80002f1a:	34e080e7          	jalr	846(ra) # 80002264 <wait>
 }
-    80002cce:	60e2                	ld	ra,24(sp)
-    80002cd0:	6442                	ld	s0,16(sp)
-    80002cd2:	6105                	addi	sp,sp,32
-    80002cd4:	8082                	ret
+    80002f1e:	60e2                	ld	ra,24(sp)
+    80002f20:	6442                	ld	s0,16(sp)
+    80002f22:	6105                	addi	sp,sp,32
+    80002f24:	8082                	ret
 
-0000000080002cd6 <sys_sbrk>:
+0000000080002f26 <sys_sbrk>:
 
 uint64
 sys_sbrk(void)
 {
-    80002cd6:	7179                	addi	sp,sp,-48
-    80002cd8:	f406                	sd	ra,40(sp)
-    80002cda:	f022                	sd	s0,32(sp)
-    80002cdc:	ec26                	sd	s1,24(sp)
-    80002cde:	1800                	addi	s0,sp,48
+    80002f26:	7179                	addi	sp,sp,-48
+    80002f28:	f406                	sd	ra,40(sp)
+    80002f2a:	f022                	sd	s0,32(sp)
+    80002f2c:	ec26                	sd	s1,24(sp)
+    80002f2e:	1800                	addi	s0,sp,48
   int addr;
   int n;
 
   if(argint(0, &n) < 0)
-    80002ce0:	fdc40593          	addi	a1,s0,-36
-    80002ce4:	4501                	li	a0,0
-    80002ce6:	00000097          	auipc	ra,0x0
-    80002cea:	e6a080e7          	jalr	-406(ra) # 80002b50 <argint>
-    80002cee:	87aa                	mv	a5,a0
+    80002f30:	fdc40593          	addi	a1,s0,-36
+    80002f34:	4501                	li	a0,0
+    80002f36:	00000097          	auipc	ra,0x0
+    80002f3a:	e6a080e7          	jalr	-406(ra) # 80002da0 <argint>
+    80002f3e:	87aa                	mv	a5,a0
     return -1;
-    80002cf0:	557d                	li	a0,-1
+    80002f40:	557d                	li	a0,-1
   if(argint(0, &n) < 0)
-    80002cf2:	0207c063          	bltz	a5,80002d12 <sys_sbrk+0x3c>
+    80002f42:	0207c063          	bltz	a5,80002f62 <sys_sbrk+0x3c>
   addr = myproc()->sz;
-    80002cf6:	fffff097          	auipc	ra,0xfffff
-    80002cfa:	ca0080e7          	jalr	-864(ra) # 80001996 <myproc>
-    80002cfe:	4524                	lw	s1,72(a0)
+    80002f46:	fffff097          	auipc	ra,0xfffff
+    80002f4a:	afa080e7          	jalr	-1286(ra) # 80001a40 <myproc>
+    80002f4e:	4524                	lw	s1,72(a0)
   if(growproc(n) < 0)
-    80002d00:	fdc42503          	lw	a0,-36(s0)
-    80002d04:	fffff097          	auipc	ra,0xfffff
-    80002d08:	ff8080e7          	jalr	-8(ra) # 80001cfc <growproc>
-    80002d0c:	00054863          	bltz	a0,80002d1c <sys_sbrk+0x46>
+    80002f50:	fdc42503          	lw	a0,-36(s0)
+    80002f54:	fffff097          	auipc	ra,0xfffff
+    80002f58:	e56080e7          	jalr	-426(ra) # 80001daa <growproc>
+    80002f5c:	00054863          	bltz	a0,80002f6c <sys_sbrk+0x46>
     return -1;
   return addr;
-    80002d10:	8526                	mv	a0,s1
+    80002f60:	8526                	mv	a0,s1
 }
-    80002d12:	70a2                	ld	ra,40(sp)
-    80002d14:	7402                	ld	s0,32(sp)
-    80002d16:	64e2                	ld	s1,24(sp)
-    80002d18:	6145                	addi	sp,sp,48
-    80002d1a:	8082                	ret
+    80002f62:	70a2                	ld	ra,40(sp)
+    80002f64:	7402                	ld	s0,32(sp)
+    80002f66:	64e2                	ld	s1,24(sp)
+    80002f68:	6145                	addi	sp,sp,48
+    80002f6a:	8082                	ret
     return -1;
-    80002d1c:	557d                	li	a0,-1
-    80002d1e:	bfd5                	j	80002d12 <sys_sbrk+0x3c>
+    80002f6c:	557d                	li	a0,-1
+    80002f6e:	bfd5                	j	80002f62 <sys_sbrk+0x3c>
 
-0000000080002d20 <sys_sleep>:
+0000000080002f70 <sys_sleep>:
 
 uint64
 sys_sleep(void)
 {
-    80002d20:	7139                	addi	sp,sp,-64
-    80002d22:	fc06                	sd	ra,56(sp)
-    80002d24:	f822                	sd	s0,48(sp)
-    80002d26:	f426                	sd	s1,40(sp)
-    80002d28:	f04a                	sd	s2,32(sp)
-    80002d2a:	ec4e                	sd	s3,24(sp)
-    80002d2c:	0080                	addi	s0,sp,64
+    80002f70:	7139                	addi	sp,sp,-64
+    80002f72:	fc06                	sd	ra,56(sp)
+    80002f74:	f822                	sd	s0,48(sp)
+    80002f76:	f426                	sd	s1,40(sp)
+    80002f78:	f04a                	sd	s2,32(sp)
+    80002f7a:	ec4e                	sd	s3,24(sp)
+    80002f7c:	0080                	addi	s0,sp,64
   int n;
   uint ticks0;
 
   if(argint(0, &n) < 0)
-    80002d2e:	fcc40593          	addi	a1,s0,-52
-    80002d32:	4501                	li	a0,0
-    80002d34:	00000097          	auipc	ra,0x0
-    80002d38:	e1c080e7          	jalr	-484(ra) # 80002b50 <argint>
+    80002f7e:	fcc40593          	addi	a1,s0,-52
+    80002f82:	4501                	li	a0,0
+    80002f84:	00000097          	auipc	ra,0x0
+    80002f88:	e1c080e7          	jalr	-484(ra) # 80002da0 <argint>
     return -1;
-    80002d3c:	57fd                	li	a5,-1
+    80002f8c:	57fd                	li	a5,-1
   if(argint(0, &n) < 0)
-    80002d3e:	06054563          	bltz	a0,80002da8 <sys_sleep+0x88>
+    80002f8e:	06054563          	bltz	a0,80002ff8 <sys_sleep+0x88>
   acquire(&tickslock);
-    80002d42:	00014517          	auipc	a0,0x14
-    80002d46:	78e50513          	addi	a0,a0,1934 # 800174d0 <tickslock>
-    80002d4a:	ffffe097          	auipc	ra,0xffffe
-    80002d4e:	e86080e7          	jalr	-378(ra) # 80000bd0 <acquire>
+    80002f92:	00014517          	auipc	a0,0x14
+    80002f96:	53e50513          	addi	a0,a0,1342 # 800174d0 <tickslock>
+    80002f9a:	ffffe097          	auipc	ra,0xffffe
+    80002f9e:	c36080e7          	jalr	-970(ra) # 80000bd0 <acquire>
   ticks0 = ticks;
-    80002d52:	00006917          	auipc	s2,0x6
-    80002d56:	2de92903          	lw	s2,734(s2) # 80009030 <ticks>
+    80002fa2:	00006917          	auipc	s2,0x6
+    80002fa6:	09292903          	lw	s2,146(s2) # 80009034 <ticks>
   while(ticks - ticks0 < n){
-    80002d5a:	fcc42783          	lw	a5,-52(s0)
-    80002d5e:	cf85                	beqz	a5,80002d96 <sys_sleep+0x76>
+    80002faa:	fcc42783          	lw	a5,-52(s0)
+    80002fae:	cf85                	beqz	a5,80002fe6 <sys_sleep+0x76>
     if(myproc()->killed){
       release(&tickslock);
       return -1;
     }
     sleep(&ticks, &tickslock);
-    80002d60:	00014997          	auipc	s3,0x14
-    80002d64:	77098993          	addi	s3,s3,1904 # 800174d0 <tickslock>
-    80002d68:	00006497          	auipc	s1,0x6
-    80002d6c:	2c848493          	addi	s1,s1,712 # 80009030 <ticks>
+    80002fb0:	00014997          	auipc	s3,0x14
+    80002fb4:	52098993          	addi	s3,s3,1312 # 800174d0 <tickslock>
+    80002fb8:	00006497          	auipc	s1,0x6
+    80002fbc:	07c48493          	addi	s1,s1,124 # 80009034 <ticks>
     if(myproc()->killed){
-    80002d70:	fffff097          	auipc	ra,0xfffff
-    80002d74:	c26080e7          	jalr	-986(ra) # 80001996 <myproc>
-    80002d78:	551c                	lw	a5,40(a0)
-    80002d7a:	ef9d                	bnez	a5,80002db8 <sys_sleep+0x98>
+    80002fc0:	fffff097          	auipc	ra,0xfffff
+    80002fc4:	a80080e7          	jalr	-1408(ra) # 80001a40 <myproc>
+    80002fc8:	551c                	lw	a5,40(a0)
+    80002fca:	ef9d                	bnez	a5,80003008 <sys_sleep+0x98>
     sleep(&ticks, &tickslock);
-    80002d7c:	85ce                	mv	a1,s3
-    80002d7e:	8526                	mv	a0,s1
-    80002d80:	fffff097          	auipc	ra,0xfffff
-    80002d84:	2e6080e7          	jalr	742(ra) # 80002066 <sleep>
+    80002fcc:	85ce                	mv	a1,s3
+    80002fce:	8526                	mv	a0,s1
+    80002fd0:	fffff097          	auipc	ra,0xfffff
+    80002fd4:	230080e7          	jalr	560(ra) # 80002200 <sleep>
   while(ticks - ticks0 < n){
-    80002d88:	409c                	lw	a5,0(s1)
-    80002d8a:	412787bb          	subw	a5,a5,s2
-    80002d8e:	fcc42703          	lw	a4,-52(s0)
-    80002d92:	fce7efe3          	bltu	a5,a4,80002d70 <sys_sleep+0x50>
+    80002fd8:	409c                	lw	a5,0(s1)
+    80002fda:	412787bb          	subw	a5,a5,s2
+    80002fde:	fcc42703          	lw	a4,-52(s0)
+    80002fe2:	fce7efe3          	bltu	a5,a4,80002fc0 <sys_sleep+0x50>
   }
   release(&tickslock);
-    80002d96:	00014517          	auipc	a0,0x14
-    80002d9a:	73a50513          	addi	a0,a0,1850 # 800174d0 <tickslock>
-    80002d9e:	ffffe097          	auipc	ra,0xffffe
-    80002da2:	ee6080e7          	jalr	-282(ra) # 80000c84 <release>
+    80002fe6:	00014517          	auipc	a0,0x14
+    80002fea:	4ea50513          	addi	a0,a0,1258 # 800174d0 <tickslock>
+    80002fee:	ffffe097          	auipc	ra,0xffffe
+    80002ff2:	c96080e7          	jalr	-874(ra) # 80000c84 <release>
   return 0;
-    80002da6:	4781                	li	a5,0
+    80002ff6:	4781                	li	a5,0
 }
-    80002da8:	853e                	mv	a0,a5
-    80002daa:	70e2                	ld	ra,56(sp)
-    80002dac:	7442                	ld	s0,48(sp)
-    80002dae:	74a2                	ld	s1,40(sp)
-    80002db0:	7902                	ld	s2,32(sp)
-    80002db2:	69e2                	ld	s3,24(sp)
-    80002db4:	6121                	addi	sp,sp,64
-    80002db6:	8082                	ret
+    80002ff8:	853e                	mv	a0,a5
+    80002ffa:	70e2                	ld	ra,56(sp)
+    80002ffc:	7442                	ld	s0,48(sp)
+    80002ffe:	74a2                	ld	s1,40(sp)
+    80003000:	7902                	ld	s2,32(sp)
+    80003002:	69e2                	ld	s3,24(sp)
+    80003004:	6121                	addi	sp,sp,64
+    80003006:	8082                	ret
       release(&tickslock);
-    80002db8:	00014517          	auipc	a0,0x14
-    80002dbc:	71850513          	addi	a0,a0,1816 # 800174d0 <tickslock>
-    80002dc0:	ffffe097          	auipc	ra,0xffffe
-    80002dc4:	ec4080e7          	jalr	-316(ra) # 80000c84 <release>
+    80003008:	00014517          	auipc	a0,0x14
+    8000300c:	4c850513          	addi	a0,a0,1224 # 800174d0 <tickslock>
+    80003010:	ffffe097          	auipc	ra,0xffffe
+    80003014:	c74080e7          	jalr	-908(ra) # 80000c84 <release>
       return -1;
-    80002dc8:	57fd                	li	a5,-1
-    80002dca:	bff9                	j	80002da8 <sys_sleep+0x88>
+    80003018:	57fd                	li	a5,-1
+    8000301a:	bff9                	j	80002ff8 <sys_sleep+0x88>
 
-0000000080002dcc <sys_kill>:
+000000008000301c <sys_kill>:
 
 uint64
 sys_kill(void)
 {
-    80002dcc:	1101                	addi	sp,sp,-32
-    80002dce:	ec06                	sd	ra,24(sp)
-    80002dd0:	e822                	sd	s0,16(sp)
-    80002dd2:	1000                	addi	s0,sp,32
+    8000301c:	1101                	addi	sp,sp,-32
+    8000301e:	ec06                	sd	ra,24(sp)
+    80003020:	e822                	sd	s0,16(sp)
+    80003022:	1000                	addi	s0,sp,32
   int pid;
 
   if(argint(0, &pid) < 0)
-    80002dd4:	fec40593          	addi	a1,s0,-20
-    80002dd8:	4501                	li	a0,0
-    80002dda:	00000097          	auipc	ra,0x0
-    80002dde:	d76080e7          	jalr	-650(ra) # 80002b50 <argint>
-    80002de2:	87aa                	mv	a5,a0
+    80003024:	fec40593          	addi	a1,s0,-20
+    80003028:	4501                	li	a0,0
+    8000302a:	00000097          	auipc	ra,0x0
+    8000302e:	d76080e7          	jalr	-650(ra) # 80002da0 <argint>
+    80003032:	87aa                	mv	a5,a0
     return -1;
-    80002de4:	557d                	li	a0,-1
+    80003034:	557d                	li	a0,-1
   if(argint(0, &pid) < 0)
-    80002de6:	0007c863          	bltz	a5,80002df6 <sys_kill+0x2a>
+    80003036:	0007c863          	bltz	a5,80003046 <sys_kill+0x2a>
   return kill(pid);
-    80002dea:	fec42503          	lw	a0,-20(s0)
-    80002dee:	fffff097          	auipc	ra,0xfffff
-    80002df2:	5aa080e7          	jalr	1450(ra) # 80002398 <kill>
+    8000303a:	fec42503          	lw	a0,-20(s0)
+    8000303e:	fffff097          	auipc	ra,0xfffff
+    80003042:	4f4080e7          	jalr	1268(ra) # 80002532 <kill>
 }
-    80002df6:	60e2                	ld	ra,24(sp)
-    80002df8:	6442                	ld	s0,16(sp)
-    80002dfa:	6105                	addi	sp,sp,32
-    80002dfc:	8082                	ret
+    80003046:	60e2                	ld	ra,24(sp)
+    80003048:	6442                	ld	s0,16(sp)
+    8000304a:	6105                	addi	sp,sp,32
+    8000304c:	8082                	ret
 
-0000000080002dfe <sys_uptime>:
+000000008000304e <sys_uptime>:
 
 // return how many clock tick interrupts have occurred
 // since start.
 uint64
 sys_uptime(void)
 {
-    80002dfe:	1101                	addi	sp,sp,-32
-    80002e00:	ec06                	sd	ra,24(sp)
-    80002e02:	e822                	sd	s0,16(sp)
-    80002e04:	e426                	sd	s1,8(sp)
-    80002e06:	1000                	addi	s0,sp,32
+    8000304e:	1101                	addi	sp,sp,-32
+    80003050:	ec06                	sd	ra,24(sp)
+    80003052:	e822                	sd	s0,16(sp)
+    80003054:	e426                	sd	s1,8(sp)
+    80003056:	1000                	addi	s0,sp,32
   uint xticks;
 
   acquire(&tickslock);
-    80002e08:	00014517          	auipc	a0,0x14
-    80002e0c:	6c850513          	addi	a0,a0,1736 # 800174d0 <tickslock>
-    80002e10:	ffffe097          	auipc	ra,0xffffe
-    80002e14:	dc0080e7          	jalr	-576(ra) # 80000bd0 <acquire>
+    80003058:	00014517          	auipc	a0,0x14
+    8000305c:	47850513          	addi	a0,a0,1144 # 800174d0 <tickslock>
+    80003060:	ffffe097          	auipc	ra,0xffffe
+    80003064:	b70080e7          	jalr	-1168(ra) # 80000bd0 <acquire>
   xticks = ticks;
-    80002e18:	00006497          	auipc	s1,0x6
-    80002e1c:	2184a483          	lw	s1,536(s1) # 80009030 <ticks>
+    80003068:	00006497          	auipc	s1,0x6
+    8000306c:	fcc4a483          	lw	s1,-52(s1) # 80009034 <ticks>
   release(&tickslock);
-    80002e20:	00014517          	auipc	a0,0x14
-    80002e24:	6b050513          	addi	a0,a0,1712 # 800174d0 <tickslock>
-    80002e28:	ffffe097          	auipc	ra,0xffffe
-    80002e2c:	e5c080e7          	jalr	-420(ra) # 80000c84 <release>
+    80003070:	00014517          	auipc	a0,0x14
+    80003074:	46050513          	addi	a0,a0,1120 # 800174d0 <tickslock>
+    80003078:	ffffe097          	auipc	ra,0xffffe
+    8000307c:	c0c080e7          	jalr	-1012(ra) # 80000c84 <release>
   return xticks;
 }
-    80002e30:	02049513          	slli	a0,s1,0x20
-    80002e34:	9101                	srli	a0,a0,0x20
-    80002e36:	60e2                	ld	ra,24(sp)
-    80002e38:	6442                	ld	s0,16(sp)
-    80002e3a:	64a2                	ld	s1,8(sp)
-    80002e3c:	6105                	addi	sp,sp,32
-    80002e3e:	8082                	ret
+    80003080:	02049513          	slli	a0,s1,0x20
+    80003084:	9101                	srli	a0,a0,0x20
+    80003086:	60e2                	ld	ra,24(sp)
+    80003088:	6442                	ld	s0,16(sp)
+    8000308a:	64a2                	ld	s1,8(sp)
+    8000308c:	6105                	addi	sp,sp,32
+    8000308e:	8082                	ret
 
-0000000080002e40 <sys_getsyscallinfo>:
+0000000080003090 <sys_getsyscallinfo>:
 
 uint64
 sys_getsyscallinfo(void)
 {
-    80002e40:	1141                	addi	sp,sp,-16
-    80002e42:	e422                	sd	s0,8(sp)
-    80002e44:	0800                	addi	s0,sp,16
+    80003090:	1141                	addi	sp,sp,-16
+    80003092:	e422                	sd	s0,8(sp)
+    80003094:	0800                	addi	s0,sp,16
    return count_syscall;
 }
-    80002e46:	00006517          	auipc	a0,0x6
-    80002e4a:	1f253503          	ld	a0,498(a0) # 80009038 <count_syscall>
-    80002e4e:	6422                	ld	s0,8(sp)
-    80002e50:	0141                	addi	sp,sp,16
-    80002e52:	8082                	ret
+    80003096:	00006517          	auipc	a0,0x6
+    8000309a:	fa253503          	ld	a0,-94(a0) # 80009038 <count_syscall>
+    8000309e:	6422                	ld	s0,8(sp)
+    800030a0:	0141                	addi	sp,sp,16
+    800030a2:	8082                	ret
 
-0000000080002e54 <sys_cps>:
+00000000800030a4 <sys_cps>:
 
 uint64
 sys_cps(void)
 {
-    80002e54:	1141                	addi	sp,sp,-16
-    80002e56:	e406                	sd	ra,8(sp)
-    80002e58:	e022                	sd	s0,0(sp)
-    80002e5a:	0800                	addi	s0,sp,16
+    800030a4:	1141                	addi	sp,sp,-16
+    800030a6:	e406                	sd	ra,8(sp)
+    800030a8:	e022                	sd	s0,0(sp)
+    800030aa:	0800                	addi	s0,sp,16
 	return cps();
-    80002e5c:	fffff097          	auipc	ra,0xfffff
-    80002e60:	70a080e7          	jalr	1802(ra) # 80002566 <cps>
+    800030ac:	fffff097          	auipc	ra,0xfffff
+    800030b0:	654080e7          	jalr	1620(ra) # 80002700 <cps>
 }
-    80002e64:	60a2                	ld	ra,8(sp)
-    80002e66:	6402                	ld	s0,0(sp)
-    80002e68:	0141                	addi	sp,sp,16
-    80002e6a:	8082                	ret
+    800030b4:	60a2                	ld	ra,8(sp)
+    800030b6:	6402                	ld	s0,0(sp)
+    800030b8:	0141                	addi	sp,sp,16
+    800030ba:	8082                	ret
 
-0000000080002e6c <binit>:
+00000000800030bc <sys_settickets>:
+
+uint64
+sys_settickets(void)
+{
+    800030bc:	7179                	addi	sp,sp,-48
+    800030be:	f406                	sd	ra,40(sp)
+    800030c0:	f022                	sd	s0,32(sp)
+    800030c2:	ec26                	sd	s1,24(sp)
+    800030c4:	1800                	addi	s0,sp,48
+	int num;
+	int pid = myproc()->pid;
+    800030c6:	fffff097          	auipc	ra,0xfffff
+    800030ca:	97a080e7          	jalr	-1670(ra) # 80001a40 <myproc>
+    800030ce:	5904                	lw	s1,48(a0)
+	if (argint (0, &num) < 0)
+    800030d0:	fdc40593          	addi	a1,s0,-36
+    800030d4:	4501                	li	a0,0
+    800030d6:	00000097          	auipc	ra,0x0
+    800030da:	cca080e7          	jalr	-822(ra) # 80002da0 <argint>
+    800030de:	87aa                	mv	a5,a0
+		return -1;
+    800030e0:	557d                	li	a0,-1
+	if (argint (0, &num) < 0)
+    800030e2:	0007c963          	bltz	a5,800030f4 <sys_settickets+0x38>
+	return settickets (pid, num);
+    800030e6:	fdc42583          	lw	a1,-36(s0)
+    800030ea:	8526                	mv	a0,s1
+    800030ec:	fffff097          	auipc	ra,0xfffff
+    800030f0:	738080e7          	jalr	1848(ra) # 80002824 <settickets>
+}
+    800030f4:	70a2                	ld	ra,40(sp)
+    800030f6:	7402                	ld	s0,32(sp)
+    800030f8:	64e2                	ld	s1,24(sp)
+    800030fa:	6145                	addi	sp,sp,48
+    800030fc:	8082                	ret
+
+00000000800030fe <binit>:
   struct buf head;
 } bcache;
 
 void
 binit(void)
 {
-    80002e6c:	7179                	addi	sp,sp,-48
-    80002e6e:	f406                	sd	ra,40(sp)
-    80002e70:	f022                	sd	s0,32(sp)
-    80002e72:	ec26                	sd	s1,24(sp)
-    80002e74:	e84a                	sd	s2,16(sp)
-    80002e76:	e44e                	sd	s3,8(sp)
-    80002e78:	e052                	sd	s4,0(sp)
-    80002e7a:	1800                	addi	s0,sp,48
+    800030fe:	7179                	addi	sp,sp,-48
+    80003100:	f406                	sd	ra,40(sp)
+    80003102:	f022                	sd	s0,32(sp)
+    80003104:	ec26                	sd	s1,24(sp)
+    80003106:	e84a                	sd	s2,16(sp)
+    80003108:	e44e                	sd	s3,8(sp)
+    8000310a:	e052                	sd	s4,0(sp)
+    8000310c:	1800                	addi	s0,sp,48
   struct buf *b;
 
   initlock(&bcache.lock, "bcache");
-    80002e7c:	00005597          	auipc	a1,0x5
-    80002e80:	70458593          	addi	a1,a1,1796 # 80008580 <syscalls+0xc0>
-    80002e84:	00014517          	auipc	a0,0x14
-    80002e88:	66450513          	addi	a0,a0,1636 # 800174e8 <bcache>
-    80002e8c:	ffffe097          	auipc	ra,0xffffe
-    80002e90:	cb4080e7          	jalr	-844(ra) # 80000b40 <initlock>
+    8000310e:	00005597          	auipc	a1,0x5
+    80003112:	4ea58593          	addi	a1,a1,1258 # 800085f8 <syscalls+0xc8>
+    80003116:	00014517          	auipc	a0,0x14
+    8000311a:	3d250513          	addi	a0,a0,978 # 800174e8 <bcache>
+    8000311e:	ffffe097          	auipc	ra,0xffffe
+    80003122:	a22080e7          	jalr	-1502(ra) # 80000b40 <initlock>
 
   // Create linked list of buffers
   bcache.head.prev = &bcache.head;
-    80002e94:	0001c797          	auipc	a5,0x1c
-    80002e98:	65478793          	addi	a5,a5,1620 # 8001f4e8 <bcache+0x8000>
-    80002e9c:	0001d717          	auipc	a4,0x1d
-    80002ea0:	8b470713          	addi	a4,a4,-1868 # 8001f750 <bcache+0x8268>
-    80002ea4:	2ae7b823          	sd	a4,688(a5)
+    80003126:	0001c797          	auipc	a5,0x1c
+    8000312a:	3c278793          	addi	a5,a5,962 # 8001f4e8 <bcache+0x8000>
+    8000312e:	0001c717          	auipc	a4,0x1c
+    80003132:	62270713          	addi	a4,a4,1570 # 8001f750 <bcache+0x8268>
+    80003136:	2ae7b823          	sd	a4,688(a5)
   bcache.head.next = &bcache.head;
-    80002ea8:	2ae7bc23          	sd	a4,696(a5)
+    8000313a:	2ae7bc23          	sd	a4,696(a5)
   for(b = bcache.buf; b < bcache.buf+NBUF; b++){
-    80002eac:	00014497          	auipc	s1,0x14
-    80002eb0:	65448493          	addi	s1,s1,1620 # 80017500 <bcache+0x18>
+    8000313e:	00014497          	auipc	s1,0x14
+    80003142:	3c248493          	addi	s1,s1,962 # 80017500 <bcache+0x18>
     b->next = bcache.head.next;
-    80002eb4:	893e                	mv	s2,a5
+    80003146:	893e                	mv	s2,a5
     b->prev = &bcache.head;
-    80002eb6:	89ba                	mv	s3,a4
+    80003148:	89ba                	mv	s3,a4
     initsleeplock(&b->lock, "buffer");
-    80002eb8:	00005a17          	auipc	s4,0x5
-    80002ebc:	6d0a0a13          	addi	s4,s4,1744 # 80008588 <syscalls+0xc8>
+    8000314a:	00005a17          	auipc	s4,0x5
+    8000314e:	4b6a0a13          	addi	s4,s4,1206 # 80008600 <syscalls+0xd0>
     b->next = bcache.head.next;
-    80002ec0:	2b893783          	ld	a5,696(s2)
-    80002ec4:	e8bc                	sd	a5,80(s1)
+    80003152:	2b893783          	ld	a5,696(s2)
+    80003156:	e8bc                	sd	a5,80(s1)
     b->prev = &bcache.head;
-    80002ec6:	0534b423          	sd	s3,72(s1)
+    80003158:	0534b423          	sd	s3,72(s1)
     initsleeplock(&b->lock, "buffer");
-    80002eca:	85d2                	mv	a1,s4
-    80002ecc:	01048513          	addi	a0,s1,16
-    80002ed0:	00001097          	auipc	ra,0x1
-    80002ed4:	4c2080e7          	jalr	1218(ra) # 80004392 <initsleeplock>
+    8000315c:	85d2                	mv	a1,s4
+    8000315e:	01048513          	addi	a0,s1,16
+    80003162:	00001097          	auipc	ra,0x1
+    80003166:	4c2080e7          	jalr	1218(ra) # 80004624 <initsleeplock>
     bcache.head.next->prev = b;
-    80002ed8:	2b893783          	ld	a5,696(s2)
-    80002edc:	e7a4                	sd	s1,72(a5)
+    8000316a:	2b893783          	ld	a5,696(s2)
+    8000316e:	e7a4                	sd	s1,72(a5)
     bcache.head.next = b;
-    80002ede:	2a993c23          	sd	s1,696(s2)
+    80003170:	2a993c23          	sd	s1,696(s2)
   for(b = bcache.buf; b < bcache.buf+NBUF; b++){
-    80002ee2:	45848493          	addi	s1,s1,1112
-    80002ee6:	fd349de3          	bne	s1,s3,80002ec0 <binit+0x54>
+    80003174:	45848493          	addi	s1,s1,1112
+    80003178:	fd349de3          	bne	s1,s3,80003152 <binit+0x54>
   }
 }
-    80002eea:	70a2                	ld	ra,40(sp)
-    80002eec:	7402                	ld	s0,32(sp)
-    80002eee:	64e2                	ld	s1,24(sp)
-    80002ef0:	6942                	ld	s2,16(sp)
-    80002ef2:	69a2                	ld	s3,8(sp)
-    80002ef4:	6a02                	ld	s4,0(sp)
-    80002ef6:	6145                	addi	sp,sp,48
-    80002ef8:	8082                	ret
+    8000317c:	70a2                	ld	ra,40(sp)
+    8000317e:	7402                	ld	s0,32(sp)
+    80003180:	64e2                	ld	s1,24(sp)
+    80003182:	6942                	ld	s2,16(sp)
+    80003184:	69a2                	ld	s3,8(sp)
+    80003186:	6a02                	ld	s4,0(sp)
+    80003188:	6145                	addi	sp,sp,48
+    8000318a:	8082                	ret
 
-0000000080002efa <bread>:
+000000008000318c <bread>:
 }
 
 // Return a locked buf with the contents of the indicated block.
 struct buf*
 bread(uint dev, uint blockno)
 {
-    80002efa:	7179                	addi	sp,sp,-48
-    80002efc:	f406                	sd	ra,40(sp)
-    80002efe:	f022                	sd	s0,32(sp)
-    80002f00:	ec26                	sd	s1,24(sp)
-    80002f02:	e84a                	sd	s2,16(sp)
-    80002f04:	e44e                	sd	s3,8(sp)
-    80002f06:	1800                	addi	s0,sp,48
-    80002f08:	892a                	mv	s2,a0
-    80002f0a:	89ae                	mv	s3,a1
+    8000318c:	7179                	addi	sp,sp,-48
+    8000318e:	f406                	sd	ra,40(sp)
+    80003190:	f022                	sd	s0,32(sp)
+    80003192:	ec26                	sd	s1,24(sp)
+    80003194:	e84a                	sd	s2,16(sp)
+    80003196:	e44e                	sd	s3,8(sp)
+    80003198:	1800                	addi	s0,sp,48
+    8000319a:	892a                	mv	s2,a0
+    8000319c:	89ae                	mv	s3,a1
   acquire(&bcache.lock);
-    80002f0c:	00014517          	auipc	a0,0x14
-    80002f10:	5dc50513          	addi	a0,a0,1500 # 800174e8 <bcache>
-    80002f14:	ffffe097          	auipc	ra,0xffffe
-    80002f18:	cbc080e7          	jalr	-836(ra) # 80000bd0 <acquire>
+    8000319e:	00014517          	auipc	a0,0x14
+    800031a2:	34a50513          	addi	a0,a0,842 # 800174e8 <bcache>
+    800031a6:	ffffe097          	auipc	ra,0xffffe
+    800031aa:	a2a080e7          	jalr	-1494(ra) # 80000bd0 <acquire>
   for(b = bcache.head.next; b != &bcache.head; b = b->next){
-    80002f1c:	0001d497          	auipc	s1,0x1d
-    80002f20:	8844b483          	ld	s1,-1916(s1) # 8001f7a0 <bcache+0x82b8>
-    80002f24:	0001d797          	auipc	a5,0x1d
-    80002f28:	82c78793          	addi	a5,a5,-2004 # 8001f750 <bcache+0x8268>
-    80002f2c:	02f48f63          	beq	s1,a5,80002f6a <bread+0x70>
-    80002f30:	873e                	mv	a4,a5
-    80002f32:	a021                	j	80002f3a <bread+0x40>
-    80002f34:	68a4                	ld	s1,80(s1)
-    80002f36:	02e48a63          	beq	s1,a4,80002f6a <bread+0x70>
+    800031ae:	0001c497          	auipc	s1,0x1c
+    800031b2:	5f24b483          	ld	s1,1522(s1) # 8001f7a0 <bcache+0x82b8>
+    800031b6:	0001c797          	auipc	a5,0x1c
+    800031ba:	59a78793          	addi	a5,a5,1434 # 8001f750 <bcache+0x8268>
+    800031be:	02f48f63          	beq	s1,a5,800031fc <bread+0x70>
+    800031c2:	873e                	mv	a4,a5
+    800031c4:	a021                	j	800031cc <bread+0x40>
+    800031c6:	68a4                	ld	s1,80(s1)
+    800031c8:	02e48a63          	beq	s1,a4,800031fc <bread+0x70>
     if(b->dev == dev && b->blockno == blockno){
-    80002f3a:	449c                	lw	a5,8(s1)
-    80002f3c:	ff279ce3          	bne	a5,s2,80002f34 <bread+0x3a>
-    80002f40:	44dc                	lw	a5,12(s1)
-    80002f42:	ff3799e3          	bne	a5,s3,80002f34 <bread+0x3a>
+    800031cc:	449c                	lw	a5,8(s1)
+    800031ce:	ff279ce3          	bne	a5,s2,800031c6 <bread+0x3a>
+    800031d2:	44dc                	lw	a5,12(s1)
+    800031d4:	ff3799e3          	bne	a5,s3,800031c6 <bread+0x3a>
       b->refcnt++;
-    80002f46:	40bc                	lw	a5,64(s1)
-    80002f48:	2785                	addiw	a5,a5,1
-    80002f4a:	c0bc                	sw	a5,64(s1)
+    800031d8:	40bc                	lw	a5,64(s1)
+    800031da:	2785                	addiw	a5,a5,1
+    800031dc:	c0bc                	sw	a5,64(s1)
       release(&bcache.lock);
-    80002f4c:	00014517          	auipc	a0,0x14
-    80002f50:	59c50513          	addi	a0,a0,1436 # 800174e8 <bcache>
-    80002f54:	ffffe097          	auipc	ra,0xffffe
-    80002f58:	d30080e7          	jalr	-720(ra) # 80000c84 <release>
+    800031de:	00014517          	auipc	a0,0x14
+    800031e2:	30a50513          	addi	a0,a0,778 # 800174e8 <bcache>
+    800031e6:	ffffe097          	auipc	ra,0xffffe
+    800031ea:	a9e080e7          	jalr	-1378(ra) # 80000c84 <release>
       acquiresleep(&b->lock);
-    80002f5c:	01048513          	addi	a0,s1,16
-    80002f60:	00001097          	auipc	ra,0x1
-    80002f64:	46c080e7          	jalr	1132(ra) # 800043cc <acquiresleep>
+    800031ee:	01048513          	addi	a0,s1,16
+    800031f2:	00001097          	auipc	ra,0x1
+    800031f6:	46c080e7          	jalr	1132(ra) # 8000465e <acquiresleep>
       return b;
-    80002f68:	a8b9                	j	80002fc6 <bread+0xcc>
+    800031fa:	a8b9                	j	80003258 <bread+0xcc>
   for(b = bcache.head.prev; b != &bcache.head; b = b->prev){
-    80002f6a:	0001d497          	auipc	s1,0x1d
-    80002f6e:	82e4b483          	ld	s1,-2002(s1) # 8001f798 <bcache+0x82b0>
-    80002f72:	0001c797          	auipc	a5,0x1c
-    80002f76:	7de78793          	addi	a5,a5,2014 # 8001f750 <bcache+0x8268>
-    80002f7a:	00f48863          	beq	s1,a5,80002f8a <bread+0x90>
-    80002f7e:	873e                	mv	a4,a5
+    800031fc:	0001c497          	auipc	s1,0x1c
+    80003200:	59c4b483          	ld	s1,1436(s1) # 8001f798 <bcache+0x82b0>
+    80003204:	0001c797          	auipc	a5,0x1c
+    80003208:	54c78793          	addi	a5,a5,1356 # 8001f750 <bcache+0x8268>
+    8000320c:	00f48863          	beq	s1,a5,8000321c <bread+0x90>
+    80003210:	873e                	mv	a4,a5
     if(b->refcnt == 0) {
-    80002f80:	40bc                	lw	a5,64(s1)
-    80002f82:	cf81                	beqz	a5,80002f9a <bread+0xa0>
+    80003212:	40bc                	lw	a5,64(s1)
+    80003214:	cf81                	beqz	a5,8000322c <bread+0xa0>
   for(b = bcache.head.prev; b != &bcache.head; b = b->prev){
-    80002f84:	64a4                	ld	s1,72(s1)
-    80002f86:	fee49de3          	bne	s1,a4,80002f80 <bread+0x86>
+    80003216:	64a4                	ld	s1,72(s1)
+    80003218:	fee49de3          	bne	s1,a4,80003212 <bread+0x86>
   panic("bget: no buffers");
-    80002f8a:	00005517          	auipc	a0,0x5
-    80002f8e:	60650513          	addi	a0,a0,1542 # 80008590 <syscalls+0xd0>
-    80002f92:	ffffd097          	auipc	ra,0xffffd
-    80002f96:	5a8080e7          	jalr	1448(ra) # 8000053a <panic>
+    8000321c:	00005517          	auipc	a0,0x5
+    80003220:	3ec50513          	addi	a0,a0,1004 # 80008608 <syscalls+0xd8>
+    80003224:	ffffd097          	auipc	ra,0xffffd
+    80003228:	316080e7          	jalr	790(ra) # 8000053a <panic>
       b->dev = dev;
-    80002f9a:	0124a423          	sw	s2,8(s1)
+    8000322c:	0124a423          	sw	s2,8(s1)
       b->blockno = blockno;
-    80002f9e:	0134a623          	sw	s3,12(s1)
+    80003230:	0134a623          	sw	s3,12(s1)
       b->valid = 0;
-    80002fa2:	0004a023          	sw	zero,0(s1)
+    80003234:	0004a023          	sw	zero,0(s1)
       b->refcnt = 1;
-    80002fa6:	4785                	li	a5,1
-    80002fa8:	c0bc                	sw	a5,64(s1)
+    80003238:	4785                	li	a5,1
+    8000323a:	c0bc                	sw	a5,64(s1)
       release(&bcache.lock);
-    80002faa:	00014517          	auipc	a0,0x14
-    80002fae:	53e50513          	addi	a0,a0,1342 # 800174e8 <bcache>
-    80002fb2:	ffffe097          	auipc	ra,0xffffe
-    80002fb6:	cd2080e7          	jalr	-814(ra) # 80000c84 <release>
+    8000323c:	00014517          	auipc	a0,0x14
+    80003240:	2ac50513          	addi	a0,a0,684 # 800174e8 <bcache>
+    80003244:	ffffe097          	auipc	ra,0xffffe
+    80003248:	a40080e7          	jalr	-1472(ra) # 80000c84 <release>
       acquiresleep(&b->lock);
-    80002fba:	01048513          	addi	a0,s1,16
-    80002fbe:	00001097          	auipc	ra,0x1
-    80002fc2:	40e080e7          	jalr	1038(ra) # 800043cc <acquiresleep>
+    8000324c:	01048513          	addi	a0,s1,16
+    80003250:	00001097          	auipc	ra,0x1
+    80003254:	40e080e7          	jalr	1038(ra) # 8000465e <acquiresleep>
   struct buf *b;
 
   b = bget(dev, blockno);
   if(!b->valid) {
-    80002fc6:	409c                	lw	a5,0(s1)
-    80002fc8:	cb89                	beqz	a5,80002fda <bread+0xe0>
+    80003258:	409c                	lw	a5,0(s1)
+    8000325a:	cb89                	beqz	a5,8000326c <bread+0xe0>
     virtio_disk_rw(b, 0);
     b->valid = 1;
   }
   return b;
 }
-    80002fca:	8526                	mv	a0,s1
-    80002fcc:	70a2                	ld	ra,40(sp)
-    80002fce:	7402                	ld	s0,32(sp)
-    80002fd0:	64e2                	ld	s1,24(sp)
-    80002fd2:	6942                	ld	s2,16(sp)
-    80002fd4:	69a2                	ld	s3,8(sp)
-    80002fd6:	6145                	addi	sp,sp,48
-    80002fd8:	8082                	ret
+    8000325c:	8526                	mv	a0,s1
+    8000325e:	70a2                	ld	ra,40(sp)
+    80003260:	7402                	ld	s0,32(sp)
+    80003262:	64e2                	ld	s1,24(sp)
+    80003264:	6942                	ld	s2,16(sp)
+    80003266:	69a2                	ld	s3,8(sp)
+    80003268:	6145                	addi	sp,sp,48
+    8000326a:	8082                	ret
     virtio_disk_rw(b, 0);
-    80002fda:	4581                	li	a1,0
-    80002fdc:	8526                	mv	a0,s1
-    80002fde:	00003097          	auipc	ra,0x3
-    80002fe2:	f24080e7          	jalr	-220(ra) # 80005f02 <virtio_disk_rw>
+    8000326c:	4581                	li	a1,0
+    8000326e:	8526                	mv	a0,s1
+    80003270:	00003097          	auipc	ra,0x3
+    80003274:	f22080e7          	jalr	-222(ra) # 80006192 <virtio_disk_rw>
     b->valid = 1;
-    80002fe6:	4785                	li	a5,1
-    80002fe8:	c09c                	sw	a5,0(s1)
+    80003278:	4785                	li	a5,1
+    8000327a:	c09c                	sw	a5,0(s1)
   return b;
-    80002fea:	b7c5                	j	80002fca <bread+0xd0>
+    8000327c:	b7c5                	j	8000325c <bread+0xd0>
 
-0000000080002fec <bwrite>:
+000000008000327e <bwrite>:
 
 // Write b's contents to disk.  Must be locked.
 void
 bwrite(struct buf *b)
 {
-    80002fec:	1101                	addi	sp,sp,-32
-    80002fee:	ec06                	sd	ra,24(sp)
-    80002ff0:	e822                	sd	s0,16(sp)
-    80002ff2:	e426                	sd	s1,8(sp)
-    80002ff4:	1000                	addi	s0,sp,32
-    80002ff6:	84aa                	mv	s1,a0
+    8000327e:	1101                	addi	sp,sp,-32
+    80003280:	ec06                	sd	ra,24(sp)
+    80003282:	e822                	sd	s0,16(sp)
+    80003284:	e426                	sd	s1,8(sp)
+    80003286:	1000                	addi	s0,sp,32
+    80003288:	84aa                	mv	s1,a0
   if(!holdingsleep(&b->lock))
-    80002ff8:	0541                	addi	a0,a0,16
-    80002ffa:	00001097          	auipc	ra,0x1
-    80002ffe:	46c080e7          	jalr	1132(ra) # 80004466 <holdingsleep>
-    80003002:	cd01                	beqz	a0,8000301a <bwrite+0x2e>
+    8000328a:	0541                	addi	a0,a0,16
+    8000328c:	00001097          	auipc	ra,0x1
+    80003290:	46c080e7          	jalr	1132(ra) # 800046f8 <holdingsleep>
+    80003294:	cd01                	beqz	a0,800032ac <bwrite+0x2e>
     panic("bwrite");
   virtio_disk_rw(b, 1);
-    80003004:	4585                	li	a1,1
-    80003006:	8526                	mv	a0,s1
-    80003008:	00003097          	auipc	ra,0x3
-    8000300c:	efa080e7          	jalr	-262(ra) # 80005f02 <virtio_disk_rw>
+    80003296:	4585                	li	a1,1
+    80003298:	8526                	mv	a0,s1
+    8000329a:	00003097          	auipc	ra,0x3
+    8000329e:	ef8080e7          	jalr	-264(ra) # 80006192 <virtio_disk_rw>
 }
-    80003010:	60e2                	ld	ra,24(sp)
-    80003012:	6442                	ld	s0,16(sp)
-    80003014:	64a2                	ld	s1,8(sp)
-    80003016:	6105                	addi	sp,sp,32
-    80003018:	8082                	ret
+    800032a2:	60e2                	ld	ra,24(sp)
+    800032a4:	6442                	ld	s0,16(sp)
+    800032a6:	64a2                	ld	s1,8(sp)
+    800032a8:	6105                	addi	sp,sp,32
+    800032aa:	8082                	ret
     panic("bwrite");
-    8000301a:	00005517          	auipc	a0,0x5
-    8000301e:	58e50513          	addi	a0,a0,1422 # 800085a8 <syscalls+0xe8>
-    80003022:	ffffd097          	auipc	ra,0xffffd
-    80003026:	518080e7          	jalr	1304(ra) # 8000053a <panic>
+    800032ac:	00005517          	auipc	a0,0x5
+    800032b0:	37450513          	addi	a0,a0,884 # 80008620 <syscalls+0xf0>
+    800032b4:	ffffd097          	auipc	ra,0xffffd
+    800032b8:	286080e7          	jalr	646(ra) # 8000053a <panic>
 
-000000008000302a <brelse>:
+00000000800032bc <brelse>:
 
 // Release a locked buffer.
 // Move to the head of the most-recently-used list.
 void
 brelse(struct buf *b)
 {
-    8000302a:	1101                	addi	sp,sp,-32
-    8000302c:	ec06                	sd	ra,24(sp)
-    8000302e:	e822                	sd	s0,16(sp)
-    80003030:	e426                	sd	s1,8(sp)
-    80003032:	e04a                	sd	s2,0(sp)
-    80003034:	1000                	addi	s0,sp,32
-    80003036:	84aa                	mv	s1,a0
+    800032bc:	1101                	addi	sp,sp,-32
+    800032be:	ec06                	sd	ra,24(sp)
+    800032c0:	e822                	sd	s0,16(sp)
+    800032c2:	e426                	sd	s1,8(sp)
+    800032c4:	e04a                	sd	s2,0(sp)
+    800032c6:	1000                	addi	s0,sp,32
+    800032c8:	84aa                	mv	s1,a0
   if(!holdingsleep(&b->lock))
-    80003038:	01050913          	addi	s2,a0,16
-    8000303c:	854a                	mv	a0,s2
-    8000303e:	00001097          	auipc	ra,0x1
-    80003042:	428080e7          	jalr	1064(ra) # 80004466 <holdingsleep>
-    80003046:	c92d                	beqz	a0,800030b8 <brelse+0x8e>
+    800032ca:	01050913          	addi	s2,a0,16
+    800032ce:	854a                	mv	a0,s2
+    800032d0:	00001097          	auipc	ra,0x1
+    800032d4:	428080e7          	jalr	1064(ra) # 800046f8 <holdingsleep>
+    800032d8:	c92d                	beqz	a0,8000334a <brelse+0x8e>
     panic("brelse");
 
   releasesleep(&b->lock);
-    80003048:	854a                	mv	a0,s2
-    8000304a:	00001097          	auipc	ra,0x1
-    8000304e:	3d8080e7          	jalr	984(ra) # 80004422 <releasesleep>
+    800032da:	854a                	mv	a0,s2
+    800032dc:	00001097          	auipc	ra,0x1
+    800032e0:	3d8080e7          	jalr	984(ra) # 800046b4 <releasesleep>
 
   acquire(&bcache.lock);
-    80003052:	00014517          	auipc	a0,0x14
-    80003056:	49650513          	addi	a0,a0,1174 # 800174e8 <bcache>
-    8000305a:	ffffe097          	auipc	ra,0xffffe
-    8000305e:	b76080e7          	jalr	-1162(ra) # 80000bd0 <acquire>
+    800032e4:	00014517          	auipc	a0,0x14
+    800032e8:	20450513          	addi	a0,a0,516 # 800174e8 <bcache>
+    800032ec:	ffffe097          	auipc	ra,0xffffe
+    800032f0:	8e4080e7          	jalr	-1820(ra) # 80000bd0 <acquire>
   b->refcnt--;
-    80003062:	40bc                	lw	a5,64(s1)
-    80003064:	37fd                	addiw	a5,a5,-1
-    80003066:	0007871b          	sext.w	a4,a5
-    8000306a:	c0bc                	sw	a5,64(s1)
+    800032f4:	40bc                	lw	a5,64(s1)
+    800032f6:	37fd                	addiw	a5,a5,-1
+    800032f8:	0007871b          	sext.w	a4,a5
+    800032fc:	c0bc                	sw	a5,64(s1)
   if (b->refcnt == 0) {
-    8000306c:	eb05                	bnez	a4,8000309c <brelse+0x72>
+    800032fe:	eb05                	bnez	a4,8000332e <brelse+0x72>
     // no one is waiting for it.
     b->next->prev = b->prev;
-    8000306e:	68bc                	ld	a5,80(s1)
-    80003070:	64b8                	ld	a4,72(s1)
-    80003072:	e7b8                	sd	a4,72(a5)
+    80003300:	68bc                	ld	a5,80(s1)
+    80003302:	64b8                	ld	a4,72(s1)
+    80003304:	e7b8                	sd	a4,72(a5)
     b->prev->next = b->next;
-    80003074:	64bc                	ld	a5,72(s1)
-    80003076:	68b8                	ld	a4,80(s1)
-    80003078:	ebb8                	sd	a4,80(a5)
+    80003306:	64bc                	ld	a5,72(s1)
+    80003308:	68b8                	ld	a4,80(s1)
+    8000330a:	ebb8                	sd	a4,80(a5)
     b->next = bcache.head.next;
-    8000307a:	0001c797          	auipc	a5,0x1c
-    8000307e:	46e78793          	addi	a5,a5,1134 # 8001f4e8 <bcache+0x8000>
-    80003082:	2b87b703          	ld	a4,696(a5)
-    80003086:	e8b8                	sd	a4,80(s1)
+    8000330c:	0001c797          	auipc	a5,0x1c
+    80003310:	1dc78793          	addi	a5,a5,476 # 8001f4e8 <bcache+0x8000>
+    80003314:	2b87b703          	ld	a4,696(a5)
+    80003318:	e8b8                	sd	a4,80(s1)
     b->prev = &bcache.head;
-    80003088:	0001c717          	auipc	a4,0x1c
-    8000308c:	6c870713          	addi	a4,a4,1736 # 8001f750 <bcache+0x8268>
-    80003090:	e4b8                	sd	a4,72(s1)
+    8000331a:	0001c717          	auipc	a4,0x1c
+    8000331e:	43670713          	addi	a4,a4,1078 # 8001f750 <bcache+0x8268>
+    80003322:	e4b8                	sd	a4,72(s1)
     bcache.head.next->prev = b;
-    80003092:	2b87b703          	ld	a4,696(a5)
-    80003096:	e724                	sd	s1,72(a4)
+    80003324:	2b87b703          	ld	a4,696(a5)
+    80003328:	e724                	sd	s1,72(a4)
     bcache.head.next = b;
-    80003098:	2a97bc23          	sd	s1,696(a5)
+    8000332a:	2a97bc23          	sd	s1,696(a5)
   }
   
   release(&bcache.lock);
-    8000309c:	00014517          	auipc	a0,0x14
-    800030a0:	44c50513          	addi	a0,a0,1100 # 800174e8 <bcache>
-    800030a4:	ffffe097          	auipc	ra,0xffffe
-    800030a8:	be0080e7          	jalr	-1056(ra) # 80000c84 <release>
+    8000332e:	00014517          	auipc	a0,0x14
+    80003332:	1ba50513          	addi	a0,a0,442 # 800174e8 <bcache>
+    80003336:	ffffe097          	auipc	ra,0xffffe
+    8000333a:	94e080e7          	jalr	-1714(ra) # 80000c84 <release>
 }
-    800030ac:	60e2                	ld	ra,24(sp)
-    800030ae:	6442                	ld	s0,16(sp)
-    800030b0:	64a2                	ld	s1,8(sp)
-    800030b2:	6902                	ld	s2,0(sp)
-    800030b4:	6105                	addi	sp,sp,32
-    800030b6:	8082                	ret
+    8000333e:	60e2                	ld	ra,24(sp)
+    80003340:	6442                	ld	s0,16(sp)
+    80003342:	64a2                	ld	s1,8(sp)
+    80003344:	6902                	ld	s2,0(sp)
+    80003346:	6105                	addi	sp,sp,32
+    80003348:	8082                	ret
     panic("brelse");
-    800030b8:	00005517          	auipc	a0,0x5
-    800030bc:	4f850513          	addi	a0,a0,1272 # 800085b0 <syscalls+0xf0>
-    800030c0:	ffffd097          	auipc	ra,0xffffd
-    800030c4:	47a080e7          	jalr	1146(ra) # 8000053a <panic>
+    8000334a:	00005517          	auipc	a0,0x5
+    8000334e:	2de50513          	addi	a0,a0,734 # 80008628 <syscalls+0xf8>
+    80003352:	ffffd097          	auipc	ra,0xffffd
+    80003356:	1e8080e7          	jalr	488(ra) # 8000053a <panic>
 
-00000000800030c8 <bpin>:
+000000008000335a <bpin>:
 
 void
 bpin(struct buf *b) {
-    800030c8:	1101                	addi	sp,sp,-32
-    800030ca:	ec06                	sd	ra,24(sp)
-    800030cc:	e822                	sd	s0,16(sp)
-    800030ce:	e426                	sd	s1,8(sp)
-    800030d0:	1000                	addi	s0,sp,32
-    800030d2:	84aa                	mv	s1,a0
+    8000335a:	1101                	addi	sp,sp,-32
+    8000335c:	ec06                	sd	ra,24(sp)
+    8000335e:	e822                	sd	s0,16(sp)
+    80003360:	e426                	sd	s1,8(sp)
+    80003362:	1000                	addi	s0,sp,32
+    80003364:	84aa                	mv	s1,a0
   acquire(&bcache.lock);
-    800030d4:	00014517          	auipc	a0,0x14
-    800030d8:	41450513          	addi	a0,a0,1044 # 800174e8 <bcache>
-    800030dc:	ffffe097          	auipc	ra,0xffffe
-    800030e0:	af4080e7          	jalr	-1292(ra) # 80000bd0 <acquire>
+    80003366:	00014517          	auipc	a0,0x14
+    8000336a:	18250513          	addi	a0,a0,386 # 800174e8 <bcache>
+    8000336e:	ffffe097          	auipc	ra,0xffffe
+    80003372:	862080e7          	jalr	-1950(ra) # 80000bd0 <acquire>
   b->refcnt++;
-    800030e4:	40bc                	lw	a5,64(s1)
-    800030e6:	2785                	addiw	a5,a5,1
-    800030e8:	c0bc                	sw	a5,64(s1)
+    80003376:	40bc                	lw	a5,64(s1)
+    80003378:	2785                	addiw	a5,a5,1
+    8000337a:	c0bc                	sw	a5,64(s1)
   release(&bcache.lock);
-    800030ea:	00014517          	auipc	a0,0x14
-    800030ee:	3fe50513          	addi	a0,a0,1022 # 800174e8 <bcache>
-    800030f2:	ffffe097          	auipc	ra,0xffffe
-    800030f6:	b92080e7          	jalr	-1134(ra) # 80000c84 <release>
+    8000337c:	00014517          	auipc	a0,0x14
+    80003380:	16c50513          	addi	a0,a0,364 # 800174e8 <bcache>
+    80003384:	ffffe097          	auipc	ra,0xffffe
+    80003388:	900080e7          	jalr	-1792(ra) # 80000c84 <release>
 }
-    800030fa:	60e2                	ld	ra,24(sp)
-    800030fc:	6442                	ld	s0,16(sp)
-    800030fe:	64a2                	ld	s1,8(sp)
-    80003100:	6105                	addi	sp,sp,32
-    80003102:	8082                	ret
+    8000338c:	60e2                	ld	ra,24(sp)
+    8000338e:	6442                	ld	s0,16(sp)
+    80003390:	64a2                	ld	s1,8(sp)
+    80003392:	6105                	addi	sp,sp,32
+    80003394:	8082                	ret
 
-0000000080003104 <bunpin>:
+0000000080003396 <bunpin>:
 
 void
 bunpin(struct buf *b) {
-    80003104:	1101                	addi	sp,sp,-32
-    80003106:	ec06                	sd	ra,24(sp)
-    80003108:	e822                	sd	s0,16(sp)
-    8000310a:	e426                	sd	s1,8(sp)
-    8000310c:	1000                	addi	s0,sp,32
-    8000310e:	84aa                	mv	s1,a0
+    80003396:	1101                	addi	sp,sp,-32
+    80003398:	ec06                	sd	ra,24(sp)
+    8000339a:	e822                	sd	s0,16(sp)
+    8000339c:	e426                	sd	s1,8(sp)
+    8000339e:	1000                	addi	s0,sp,32
+    800033a0:	84aa                	mv	s1,a0
   acquire(&bcache.lock);
-    80003110:	00014517          	auipc	a0,0x14
-    80003114:	3d850513          	addi	a0,a0,984 # 800174e8 <bcache>
-    80003118:	ffffe097          	auipc	ra,0xffffe
-    8000311c:	ab8080e7          	jalr	-1352(ra) # 80000bd0 <acquire>
+    800033a2:	00014517          	auipc	a0,0x14
+    800033a6:	14650513          	addi	a0,a0,326 # 800174e8 <bcache>
+    800033aa:	ffffe097          	auipc	ra,0xffffe
+    800033ae:	826080e7          	jalr	-2010(ra) # 80000bd0 <acquire>
   b->refcnt--;
-    80003120:	40bc                	lw	a5,64(s1)
-    80003122:	37fd                	addiw	a5,a5,-1
-    80003124:	c0bc                	sw	a5,64(s1)
+    800033b2:	40bc                	lw	a5,64(s1)
+    800033b4:	37fd                	addiw	a5,a5,-1
+    800033b6:	c0bc                	sw	a5,64(s1)
   release(&bcache.lock);
-    80003126:	00014517          	auipc	a0,0x14
-    8000312a:	3c250513          	addi	a0,a0,962 # 800174e8 <bcache>
-    8000312e:	ffffe097          	auipc	ra,0xffffe
-    80003132:	b56080e7          	jalr	-1194(ra) # 80000c84 <release>
+    800033b8:	00014517          	auipc	a0,0x14
+    800033bc:	13050513          	addi	a0,a0,304 # 800174e8 <bcache>
+    800033c0:	ffffe097          	auipc	ra,0xffffe
+    800033c4:	8c4080e7          	jalr	-1852(ra) # 80000c84 <release>
 }
-    80003136:	60e2                	ld	ra,24(sp)
-    80003138:	6442                	ld	s0,16(sp)
-    8000313a:	64a2                	ld	s1,8(sp)
-    8000313c:	6105                	addi	sp,sp,32
-    8000313e:	8082                	ret
+    800033c8:	60e2                	ld	ra,24(sp)
+    800033ca:	6442                	ld	s0,16(sp)
+    800033cc:	64a2                	ld	s1,8(sp)
+    800033ce:	6105                	addi	sp,sp,32
+    800033d0:	8082                	ret
 
-0000000080003140 <bfree>:
+00000000800033d2 <bfree>:
 }
 
 // Free a disk block.
 static void
 bfree(int dev, uint b)
 {
-    80003140:	1101                	addi	sp,sp,-32
-    80003142:	ec06                	sd	ra,24(sp)
-    80003144:	e822                	sd	s0,16(sp)
-    80003146:	e426                	sd	s1,8(sp)
-    80003148:	e04a                	sd	s2,0(sp)
-    8000314a:	1000                	addi	s0,sp,32
-    8000314c:	84ae                	mv	s1,a1
+    800033d2:	1101                	addi	sp,sp,-32
+    800033d4:	ec06                	sd	ra,24(sp)
+    800033d6:	e822                	sd	s0,16(sp)
+    800033d8:	e426                	sd	s1,8(sp)
+    800033da:	e04a                	sd	s2,0(sp)
+    800033dc:	1000                	addi	s0,sp,32
+    800033de:	84ae                	mv	s1,a1
   struct buf *bp;
   int bi, m;
 
   bp = bread(dev, BBLOCK(b, sb));
-    8000314e:	00d5d59b          	srliw	a1,a1,0xd
-    80003152:	0001d797          	auipc	a5,0x1d
-    80003156:	a727a783          	lw	a5,-1422(a5) # 8001fbc4 <sb+0x1c>
-    8000315a:	9dbd                	addw	a1,a1,a5
-    8000315c:	00000097          	auipc	ra,0x0
-    80003160:	d9e080e7          	jalr	-610(ra) # 80002efa <bread>
+    800033e0:	00d5d59b          	srliw	a1,a1,0xd
+    800033e4:	0001c797          	auipc	a5,0x1c
+    800033e8:	7e07a783          	lw	a5,2016(a5) # 8001fbc4 <sb+0x1c>
+    800033ec:	9dbd                	addw	a1,a1,a5
+    800033ee:	00000097          	auipc	ra,0x0
+    800033f2:	d9e080e7          	jalr	-610(ra) # 8000318c <bread>
   bi = b % BPB;
   m = 1 << (bi % 8);
-    80003164:	0074f713          	andi	a4,s1,7
-    80003168:	4785                	li	a5,1
-    8000316a:	00e797bb          	sllw	a5,a5,a4
+    800033f6:	0074f713          	andi	a4,s1,7
+    800033fa:	4785                	li	a5,1
+    800033fc:	00e797bb          	sllw	a5,a5,a4
   if((bp->data[bi/8] & m) == 0)
-    8000316e:	14ce                	slli	s1,s1,0x33
-    80003170:	90d9                	srli	s1,s1,0x36
-    80003172:	00950733          	add	a4,a0,s1
-    80003176:	05874703          	lbu	a4,88(a4)
-    8000317a:	00e7f6b3          	and	a3,a5,a4
-    8000317e:	c69d                	beqz	a3,800031ac <bfree+0x6c>
-    80003180:	892a                	mv	s2,a0
+    80003400:	14ce                	slli	s1,s1,0x33
+    80003402:	90d9                	srli	s1,s1,0x36
+    80003404:	00950733          	add	a4,a0,s1
+    80003408:	05874703          	lbu	a4,88(a4)
+    8000340c:	00e7f6b3          	and	a3,a5,a4
+    80003410:	c69d                	beqz	a3,8000343e <bfree+0x6c>
+    80003412:	892a                	mv	s2,a0
     panic("freeing free block");
   bp->data[bi/8] &= ~m;
-    80003182:	94aa                	add	s1,s1,a0
-    80003184:	fff7c793          	not	a5,a5
-    80003188:	8f7d                	and	a4,a4,a5
-    8000318a:	04e48c23          	sb	a4,88(s1)
+    80003414:	94aa                	add	s1,s1,a0
+    80003416:	fff7c793          	not	a5,a5
+    8000341a:	8f7d                	and	a4,a4,a5
+    8000341c:	04e48c23          	sb	a4,88(s1)
   log_write(bp);
-    8000318e:	00001097          	auipc	ra,0x1
-    80003192:	120080e7          	jalr	288(ra) # 800042ae <log_write>
+    80003420:	00001097          	auipc	ra,0x1
+    80003424:	120080e7          	jalr	288(ra) # 80004540 <log_write>
   brelse(bp);
-    80003196:	854a                	mv	a0,s2
-    80003198:	00000097          	auipc	ra,0x0
-    8000319c:	e92080e7          	jalr	-366(ra) # 8000302a <brelse>
+    80003428:	854a                	mv	a0,s2
+    8000342a:	00000097          	auipc	ra,0x0
+    8000342e:	e92080e7          	jalr	-366(ra) # 800032bc <brelse>
 }
-    800031a0:	60e2                	ld	ra,24(sp)
-    800031a2:	6442                	ld	s0,16(sp)
-    800031a4:	64a2                	ld	s1,8(sp)
-    800031a6:	6902                	ld	s2,0(sp)
-    800031a8:	6105                	addi	sp,sp,32
-    800031aa:	8082                	ret
+    80003432:	60e2                	ld	ra,24(sp)
+    80003434:	6442                	ld	s0,16(sp)
+    80003436:	64a2                	ld	s1,8(sp)
+    80003438:	6902                	ld	s2,0(sp)
+    8000343a:	6105                	addi	sp,sp,32
+    8000343c:	8082                	ret
     panic("freeing free block");
-    800031ac:	00005517          	auipc	a0,0x5
-    800031b0:	40c50513          	addi	a0,a0,1036 # 800085b8 <syscalls+0xf8>
-    800031b4:	ffffd097          	auipc	ra,0xffffd
-    800031b8:	386080e7          	jalr	902(ra) # 8000053a <panic>
+    8000343e:	00005517          	auipc	a0,0x5
+    80003442:	1f250513          	addi	a0,a0,498 # 80008630 <syscalls+0x100>
+    80003446:	ffffd097          	auipc	ra,0xffffd
+    8000344a:	0f4080e7          	jalr	244(ra) # 8000053a <panic>
 
-00000000800031bc <balloc>:
+000000008000344e <balloc>:
 {
-    800031bc:	711d                	addi	sp,sp,-96
-    800031be:	ec86                	sd	ra,88(sp)
-    800031c0:	e8a2                	sd	s0,80(sp)
-    800031c2:	e4a6                	sd	s1,72(sp)
-    800031c4:	e0ca                	sd	s2,64(sp)
-    800031c6:	fc4e                	sd	s3,56(sp)
-    800031c8:	f852                	sd	s4,48(sp)
-    800031ca:	f456                	sd	s5,40(sp)
-    800031cc:	f05a                	sd	s6,32(sp)
-    800031ce:	ec5e                	sd	s7,24(sp)
-    800031d0:	e862                	sd	s8,16(sp)
-    800031d2:	e466                	sd	s9,8(sp)
-    800031d4:	1080                	addi	s0,sp,96
+    8000344e:	711d                	addi	sp,sp,-96
+    80003450:	ec86                	sd	ra,88(sp)
+    80003452:	e8a2                	sd	s0,80(sp)
+    80003454:	e4a6                	sd	s1,72(sp)
+    80003456:	e0ca                	sd	s2,64(sp)
+    80003458:	fc4e                	sd	s3,56(sp)
+    8000345a:	f852                	sd	s4,48(sp)
+    8000345c:	f456                	sd	s5,40(sp)
+    8000345e:	f05a                	sd	s6,32(sp)
+    80003460:	ec5e                	sd	s7,24(sp)
+    80003462:	e862                	sd	s8,16(sp)
+    80003464:	e466                	sd	s9,8(sp)
+    80003466:	1080                	addi	s0,sp,96
   for(b = 0; b < sb.size; b += BPB){
-    800031d6:	0001d797          	auipc	a5,0x1d
-    800031da:	9d67a783          	lw	a5,-1578(a5) # 8001fbac <sb+0x4>
-    800031de:	cbc1                	beqz	a5,8000326e <balloc+0xb2>
-    800031e0:	8baa                	mv	s7,a0
-    800031e2:	4a81                	li	s5,0
+    80003468:	0001c797          	auipc	a5,0x1c
+    8000346c:	7447a783          	lw	a5,1860(a5) # 8001fbac <sb+0x4>
+    80003470:	cbc1                	beqz	a5,80003500 <balloc+0xb2>
+    80003472:	8baa                	mv	s7,a0
+    80003474:	4a81                	li	s5,0
     bp = bread(dev, BBLOCK(b, sb));
-    800031e4:	0001db17          	auipc	s6,0x1d
-    800031e8:	9c4b0b13          	addi	s6,s6,-1596 # 8001fba8 <sb>
+    80003476:	0001cb17          	auipc	s6,0x1c
+    8000347a:	732b0b13          	addi	s6,s6,1842 # 8001fba8 <sb>
     for(bi = 0; bi < BPB && b + bi < sb.size; bi++){
-    800031ec:	4c01                	li	s8,0
+    8000347e:	4c01                	li	s8,0
       m = 1 << (bi % 8);
-    800031ee:	4985                	li	s3,1
+    80003480:	4985                	li	s3,1
     for(bi = 0; bi < BPB && b + bi < sb.size; bi++){
-    800031f0:	6a09                	lui	s4,0x2
+    80003482:	6a09                	lui	s4,0x2
   for(b = 0; b < sb.size; b += BPB){
-    800031f2:	6c89                	lui	s9,0x2
-    800031f4:	a831                	j	80003210 <balloc+0x54>
+    80003484:	6c89                	lui	s9,0x2
+    80003486:	a831                	j	800034a2 <balloc+0x54>
     brelse(bp);
-    800031f6:	854a                	mv	a0,s2
-    800031f8:	00000097          	auipc	ra,0x0
-    800031fc:	e32080e7          	jalr	-462(ra) # 8000302a <brelse>
+    80003488:	854a                	mv	a0,s2
+    8000348a:	00000097          	auipc	ra,0x0
+    8000348e:	e32080e7          	jalr	-462(ra) # 800032bc <brelse>
   for(b = 0; b < sb.size; b += BPB){
-    80003200:	015c87bb          	addw	a5,s9,s5
-    80003204:	00078a9b          	sext.w	s5,a5
-    80003208:	004b2703          	lw	a4,4(s6)
-    8000320c:	06eaf163          	bgeu	s5,a4,8000326e <balloc+0xb2>
+    80003492:	015c87bb          	addw	a5,s9,s5
+    80003496:	00078a9b          	sext.w	s5,a5
+    8000349a:	004b2703          	lw	a4,4(s6)
+    8000349e:	06eaf163          	bgeu	s5,a4,80003500 <balloc+0xb2>
     bp = bread(dev, BBLOCK(b, sb));
-    80003210:	41fad79b          	sraiw	a5,s5,0x1f
-    80003214:	0137d79b          	srliw	a5,a5,0x13
-    80003218:	015787bb          	addw	a5,a5,s5
-    8000321c:	40d7d79b          	sraiw	a5,a5,0xd
-    80003220:	01cb2583          	lw	a1,28(s6)
-    80003224:	9dbd                	addw	a1,a1,a5
-    80003226:	855e                	mv	a0,s7
-    80003228:	00000097          	auipc	ra,0x0
-    8000322c:	cd2080e7          	jalr	-814(ra) # 80002efa <bread>
-    80003230:	892a                	mv	s2,a0
+    800034a2:	41fad79b          	sraiw	a5,s5,0x1f
+    800034a6:	0137d79b          	srliw	a5,a5,0x13
+    800034aa:	015787bb          	addw	a5,a5,s5
+    800034ae:	40d7d79b          	sraiw	a5,a5,0xd
+    800034b2:	01cb2583          	lw	a1,28(s6)
+    800034b6:	9dbd                	addw	a1,a1,a5
+    800034b8:	855e                	mv	a0,s7
+    800034ba:	00000097          	auipc	ra,0x0
+    800034be:	cd2080e7          	jalr	-814(ra) # 8000318c <bread>
+    800034c2:	892a                	mv	s2,a0
     for(bi = 0; bi < BPB && b + bi < sb.size; bi++){
-    80003232:	004b2503          	lw	a0,4(s6)
-    80003236:	000a849b          	sext.w	s1,s5
-    8000323a:	8762                	mv	a4,s8
-    8000323c:	faa4fde3          	bgeu	s1,a0,800031f6 <balloc+0x3a>
+    800034c4:	004b2503          	lw	a0,4(s6)
+    800034c8:	000a849b          	sext.w	s1,s5
+    800034cc:	8762                	mv	a4,s8
+    800034ce:	faa4fde3          	bgeu	s1,a0,80003488 <balloc+0x3a>
       m = 1 << (bi % 8);
-    80003240:	00777693          	andi	a3,a4,7
-    80003244:	00d996bb          	sllw	a3,s3,a3
+    800034d2:	00777693          	andi	a3,a4,7
+    800034d6:	00d996bb          	sllw	a3,s3,a3
       if((bp->data[bi/8] & m) == 0){  // Is block free?
-    80003248:	41f7579b          	sraiw	a5,a4,0x1f
-    8000324c:	01d7d79b          	srliw	a5,a5,0x1d
-    80003250:	9fb9                	addw	a5,a5,a4
-    80003252:	4037d79b          	sraiw	a5,a5,0x3
-    80003256:	00f90633          	add	a2,s2,a5
-    8000325a:	05864603          	lbu	a2,88(a2)
-    8000325e:	00c6f5b3          	and	a1,a3,a2
-    80003262:	cd91                	beqz	a1,8000327e <balloc+0xc2>
+    800034da:	41f7579b          	sraiw	a5,a4,0x1f
+    800034de:	01d7d79b          	srliw	a5,a5,0x1d
+    800034e2:	9fb9                	addw	a5,a5,a4
+    800034e4:	4037d79b          	sraiw	a5,a5,0x3
+    800034e8:	00f90633          	add	a2,s2,a5
+    800034ec:	05864603          	lbu	a2,88(a2)
+    800034f0:	00c6f5b3          	and	a1,a3,a2
+    800034f4:	cd91                	beqz	a1,80003510 <balloc+0xc2>
     for(bi = 0; bi < BPB && b + bi < sb.size; bi++){
-    80003264:	2705                	addiw	a4,a4,1
-    80003266:	2485                	addiw	s1,s1,1
-    80003268:	fd471ae3          	bne	a4,s4,8000323c <balloc+0x80>
-    8000326c:	b769                	j	800031f6 <balloc+0x3a>
+    800034f6:	2705                	addiw	a4,a4,1
+    800034f8:	2485                	addiw	s1,s1,1
+    800034fa:	fd471ae3          	bne	a4,s4,800034ce <balloc+0x80>
+    800034fe:	b769                	j	80003488 <balloc+0x3a>
   panic("balloc: out of blocks");
-    8000326e:	00005517          	auipc	a0,0x5
-    80003272:	36250513          	addi	a0,a0,866 # 800085d0 <syscalls+0x110>
-    80003276:	ffffd097          	auipc	ra,0xffffd
-    8000327a:	2c4080e7          	jalr	708(ra) # 8000053a <panic>
+    80003500:	00005517          	auipc	a0,0x5
+    80003504:	14850513          	addi	a0,a0,328 # 80008648 <syscalls+0x118>
+    80003508:	ffffd097          	auipc	ra,0xffffd
+    8000350c:	032080e7          	jalr	50(ra) # 8000053a <panic>
         bp->data[bi/8] |= m;  // Mark block in use.
-    8000327e:	97ca                	add	a5,a5,s2
-    80003280:	8e55                	or	a2,a2,a3
-    80003282:	04c78c23          	sb	a2,88(a5)
+    80003510:	97ca                	add	a5,a5,s2
+    80003512:	8e55                	or	a2,a2,a3
+    80003514:	04c78c23          	sb	a2,88(a5)
         log_write(bp);
-    80003286:	854a                	mv	a0,s2
-    80003288:	00001097          	auipc	ra,0x1
-    8000328c:	026080e7          	jalr	38(ra) # 800042ae <log_write>
+    80003518:	854a                	mv	a0,s2
+    8000351a:	00001097          	auipc	ra,0x1
+    8000351e:	026080e7          	jalr	38(ra) # 80004540 <log_write>
         brelse(bp);
-    80003290:	854a                	mv	a0,s2
-    80003292:	00000097          	auipc	ra,0x0
-    80003296:	d98080e7          	jalr	-616(ra) # 8000302a <brelse>
+    80003522:	854a                	mv	a0,s2
+    80003524:	00000097          	auipc	ra,0x0
+    80003528:	d98080e7          	jalr	-616(ra) # 800032bc <brelse>
   bp = bread(dev, bno);
-    8000329a:	85a6                	mv	a1,s1
-    8000329c:	855e                	mv	a0,s7
-    8000329e:	00000097          	auipc	ra,0x0
-    800032a2:	c5c080e7          	jalr	-932(ra) # 80002efa <bread>
-    800032a6:	892a                	mv	s2,a0
+    8000352c:	85a6                	mv	a1,s1
+    8000352e:	855e                	mv	a0,s7
+    80003530:	00000097          	auipc	ra,0x0
+    80003534:	c5c080e7          	jalr	-932(ra) # 8000318c <bread>
+    80003538:	892a                	mv	s2,a0
   memset(bp->data, 0, BSIZE);
-    800032a8:	40000613          	li	a2,1024
-    800032ac:	4581                	li	a1,0
-    800032ae:	05850513          	addi	a0,a0,88
-    800032b2:	ffffe097          	auipc	ra,0xffffe
-    800032b6:	a1a080e7          	jalr	-1510(ra) # 80000ccc <memset>
+    8000353a:	40000613          	li	a2,1024
+    8000353e:	4581                	li	a1,0
+    80003540:	05850513          	addi	a0,a0,88
+    80003544:	ffffd097          	auipc	ra,0xffffd
+    80003548:	788080e7          	jalr	1928(ra) # 80000ccc <memset>
   log_write(bp);
-    800032ba:	854a                	mv	a0,s2
-    800032bc:	00001097          	auipc	ra,0x1
-    800032c0:	ff2080e7          	jalr	-14(ra) # 800042ae <log_write>
+    8000354c:	854a                	mv	a0,s2
+    8000354e:	00001097          	auipc	ra,0x1
+    80003552:	ff2080e7          	jalr	-14(ra) # 80004540 <log_write>
   brelse(bp);
-    800032c4:	854a                	mv	a0,s2
-    800032c6:	00000097          	auipc	ra,0x0
-    800032ca:	d64080e7          	jalr	-668(ra) # 8000302a <brelse>
+    80003556:	854a                	mv	a0,s2
+    80003558:	00000097          	auipc	ra,0x0
+    8000355c:	d64080e7          	jalr	-668(ra) # 800032bc <brelse>
 }
-    800032ce:	8526                	mv	a0,s1
-    800032d0:	60e6                	ld	ra,88(sp)
-    800032d2:	6446                	ld	s0,80(sp)
-    800032d4:	64a6                	ld	s1,72(sp)
-    800032d6:	6906                	ld	s2,64(sp)
-    800032d8:	79e2                	ld	s3,56(sp)
-    800032da:	7a42                	ld	s4,48(sp)
-    800032dc:	7aa2                	ld	s5,40(sp)
-    800032de:	7b02                	ld	s6,32(sp)
-    800032e0:	6be2                	ld	s7,24(sp)
-    800032e2:	6c42                	ld	s8,16(sp)
-    800032e4:	6ca2                	ld	s9,8(sp)
-    800032e6:	6125                	addi	sp,sp,96
-    800032e8:	8082                	ret
+    80003560:	8526                	mv	a0,s1
+    80003562:	60e6                	ld	ra,88(sp)
+    80003564:	6446                	ld	s0,80(sp)
+    80003566:	64a6                	ld	s1,72(sp)
+    80003568:	6906                	ld	s2,64(sp)
+    8000356a:	79e2                	ld	s3,56(sp)
+    8000356c:	7a42                	ld	s4,48(sp)
+    8000356e:	7aa2                	ld	s5,40(sp)
+    80003570:	7b02                	ld	s6,32(sp)
+    80003572:	6be2                	ld	s7,24(sp)
+    80003574:	6c42                	ld	s8,16(sp)
+    80003576:	6ca2                	ld	s9,8(sp)
+    80003578:	6125                	addi	sp,sp,96
+    8000357a:	8082                	ret
 
-00000000800032ea <bmap>:
+000000008000357c <bmap>:
 
 // Return the disk block address of the nth block in inode ip.
 // If there is no such block, bmap allocates one.
 static uint
 bmap(struct inode *ip, uint bn)
 {
-    800032ea:	7179                	addi	sp,sp,-48
-    800032ec:	f406                	sd	ra,40(sp)
-    800032ee:	f022                	sd	s0,32(sp)
-    800032f0:	ec26                	sd	s1,24(sp)
-    800032f2:	e84a                	sd	s2,16(sp)
-    800032f4:	e44e                	sd	s3,8(sp)
-    800032f6:	e052                	sd	s4,0(sp)
-    800032f8:	1800                	addi	s0,sp,48
-    800032fa:	892a                	mv	s2,a0
+    8000357c:	7179                	addi	sp,sp,-48
+    8000357e:	f406                	sd	ra,40(sp)
+    80003580:	f022                	sd	s0,32(sp)
+    80003582:	ec26                	sd	s1,24(sp)
+    80003584:	e84a                	sd	s2,16(sp)
+    80003586:	e44e                	sd	s3,8(sp)
+    80003588:	e052                	sd	s4,0(sp)
+    8000358a:	1800                	addi	s0,sp,48
+    8000358c:	892a                	mv	s2,a0
   uint addr, *a;
   struct buf *bp;
 
   if(bn < NDIRECT){
-    800032fc:	47ad                	li	a5,11
-    800032fe:	04b7fe63          	bgeu	a5,a1,8000335a <bmap+0x70>
+    8000358e:	47ad                	li	a5,11
+    80003590:	04b7fe63          	bgeu	a5,a1,800035ec <bmap+0x70>
     if((addr = ip->addrs[bn]) == 0)
       ip->addrs[bn] = addr = balloc(ip->dev);
     return addr;
   }
   bn -= NDIRECT;
-    80003302:	ff45849b          	addiw	s1,a1,-12
-    80003306:	0004871b          	sext.w	a4,s1
+    80003594:	ff45849b          	addiw	s1,a1,-12
+    80003598:	0004871b          	sext.w	a4,s1
 
   if(bn < NINDIRECT){
-    8000330a:	0ff00793          	li	a5,255
-    8000330e:	0ae7e463          	bltu	a5,a4,800033b6 <bmap+0xcc>
+    8000359c:	0ff00793          	li	a5,255
+    800035a0:	0ae7e463          	bltu	a5,a4,80003648 <bmap+0xcc>
     // Load indirect block, allocating if necessary.
     if((addr = ip->addrs[NDIRECT]) == 0)
-    80003312:	08052583          	lw	a1,128(a0)
-    80003316:	c5b5                	beqz	a1,80003382 <bmap+0x98>
+    800035a4:	08052583          	lw	a1,128(a0)
+    800035a8:	c5b5                	beqz	a1,80003614 <bmap+0x98>
       ip->addrs[NDIRECT] = addr = balloc(ip->dev);
     bp = bread(ip->dev, addr);
-    80003318:	00092503          	lw	a0,0(s2)
-    8000331c:	00000097          	auipc	ra,0x0
-    80003320:	bde080e7          	jalr	-1058(ra) # 80002efa <bread>
-    80003324:	8a2a                	mv	s4,a0
+    800035aa:	00092503          	lw	a0,0(s2)
+    800035ae:	00000097          	auipc	ra,0x0
+    800035b2:	bde080e7          	jalr	-1058(ra) # 8000318c <bread>
+    800035b6:	8a2a                	mv	s4,a0
     a = (uint*)bp->data;
-    80003326:	05850793          	addi	a5,a0,88
+    800035b8:	05850793          	addi	a5,a0,88
     if((addr = a[bn]) == 0){
-    8000332a:	02049713          	slli	a4,s1,0x20
-    8000332e:	01e75593          	srli	a1,a4,0x1e
-    80003332:	00b784b3          	add	s1,a5,a1
-    80003336:	0004a983          	lw	s3,0(s1)
-    8000333a:	04098e63          	beqz	s3,80003396 <bmap+0xac>
+    800035bc:	02049713          	slli	a4,s1,0x20
+    800035c0:	01e75593          	srli	a1,a4,0x1e
+    800035c4:	00b784b3          	add	s1,a5,a1
+    800035c8:	0004a983          	lw	s3,0(s1)
+    800035cc:	04098e63          	beqz	s3,80003628 <bmap+0xac>
       a[bn] = addr = balloc(ip->dev);
       log_write(bp);
     }
     brelse(bp);
-    8000333e:	8552                	mv	a0,s4
-    80003340:	00000097          	auipc	ra,0x0
-    80003344:	cea080e7          	jalr	-790(ra) # 8000302a <brelse>
+    800035d0:	8552                	mv	a0,s4
+    800035d2:	00000097          	auipc	ra,0x0
+    800035d6:	cea080e7          	jalr	-790(ra) # 800032bc <brelse>
     return addr;
   }
 
   panic("bmap: out of range");
 }
-    80003348:	854e                	mv	a0,s3
-    8000334a:	70a2                	ld	ra,40(sp)
-    8000334c:	7402                	ld	s0,32(sp)
-    8000334e:	64e2                	ld	s1,24(sp)
-    80003350:	6942                	ld	s2,16(sp)
-    80003352:	69a2                	ld	s3,8(sp)
-    80003354:	6a02                	ld	s4,0(sp)
-    80003356:	6145                	addi	sp,sp,48
-    80003358:	8082                	ret
+    800035da:	854e                	mv	a0,s3
+    800035dc:	70a2                	ld	ra,40(sp)
+    800035de:	7402                	ld	s0,32(sp)
+    800035e0:	64e2                	ld	s1,24(sp)
+    800035e2:	6942                	ld	s2,16(sp)
+    800035e4:	69a2                	ld	s3,8(sp)
+    800035e6:	6a02                	ld	s4,0(sp)
+    800035e8:	6145                	addi	sp,sp,48
+    800035ea:	8082                	ret
     if((addr = ip->addrs[bn]) == 0)
-    8000335a:	02059793          	slli	a5,a1,0x20
-    8000335e:	01e7d593          	srli	a1,a5,0x1e
-    80003362:	00b504b3          	add	s1,a0,a1
-    80003366:	0504a983          	lw	s3,80(s1)
-    8000336a:	fc099fe3          	bnez	s3,80003348 <bmap+0x5e>
+    800035ec:	02059793          	slli	a5,a1,0x20
+    800035f0:	01e7d593          	srli	a1,a5,0x1e
+    800035f4:	00b504b3          	add	s1,a0,a1
+    800035f8:	0504a983          	lw	s3,80(s1)
+    800035fc:	fc099fe3          	bnez	s3,800035da <bmap+0x5e>
       ip->addrs[bn] = addr = balloc(ip->dev);
-    8000336e:	4108                	lw	a0,0(a0)
-    80003370:	00000097          	auipc	ra,0x0
-    80003374:	e4c080e7          	jalr	-436(ra) # 800031bc <balloc>
-    80003378:	0005099b          	sext.w	s3,a0
-    8000337c:	0534a823          	sw	s3,80(s1)
-    80003380:	b7e1                	j	80003348 <bmap+0x5e>
+    80003600:	4108                	lw	a0,0(a0)
+    80003602:	00000097          	auipc	ra,0x0
+    80003606:	e4c080e7          	jalr	-436(ra) # 8000344e <balloc>
+    8000360a:	0005099b          	sext.w	s3,a0
+    8000360e:	0534a823          	sw	s3,80(s1)
+    80003612:	b7e1                	j	800035da <bmap+0x5e>
       ip->addrs[NDIRECT] = addr = balloc(ip->dev);
-    80003382:	4108                	lw	a0,0(a0)
-    80003384:	00000097          	auipc	ra,0x0
-    80003388:	e38080e7          	jalr	-456(ra) # 800031bc <balloc>
-    8000338c:	0005059b          	sext.w	a1,a0
-    80003390:	08b92023          	sw	a1,128(s2)
-    80003394:	b751                	j	80003318 <bmap+0x2e>
+    80003614:	4108                	lw	a0,0(a0)
+    80003616:	00000097          	auipc	ra,0x0
+    8000361a:	e38080e7          	jalr	-456(ra) # 8000344e <balloc>
+    8000361e:	0005059b          	sext.w	a1,a0
+    80003622:	08b92023          	sw	a1,128(s2)
+    80003626:	b751                	j	800035aa <bmap+0x2e>
       a[bn] = addr = balloc(ip->dev);
-    80003396:	00092503          	lw	a0,0(s2)
-    8000339a:	00000097          	auipc	ra,0x0
-    8000339e:	e22080e7          	jalr	-478(ra) # 800031bc <balloc>
-    800033a2:	0005099b          	sext.w	s3,a0
-    800033a6:	0134a023          	sw	s3,0(s1)
+    80003628:	00092503          	lw	a0,0(s2)
+    8000362c:	00000097          	auipc	ra,0x0
+    80003630:	e22080e7          	jalr	-478(ra) # 8000344e <balloc>
+    80003634:	0005099b          	sext.w	s3,a0
+    80003638:	0134a023          	sw	s3,0(s1)
       log_write(bp);
-    800033aa:	8552                	mv	a0,s4
-    800033ac:	00001097          	auipc	ra,0x1
-    800033b0:	f02080e7          	jalr	-254(ra) # 800042ae <log_write>
-    800033b4:	b769                	j	8000333e <bmap+0x54>
+    8000363c:	8552                	mv	a0,s4
+    8000363e:	00001097          	auipc	ra,0x1
+    80003642:	f02080e7          	jalr	-254(ra) # 80004540 <log_write>
+    80003646:	b769                	j	800035d0 <bmap+0x54>
   panic("bmap: out of range");
-    800033b6:	00005517          	auipc	a0,0x5
-    800033ba:	23250513          	addi	a0,a0,562 # 800085e8 <syscalls+0x128>
-    800033be:	ffffd097          	auipc	ra,0xffffd
-    800033c2:	17c080e7          	jalr	380(ra) # 8000053a <panic>
+    80003648:	00005517          	auipc	a0,0x5
+    8000364c:	01850513          	addi	a0,a0,24 # 80008660 <syscalls+0x130>
+    80003650:	ffffd097          	auipc	ra,0xffffd
+    80003654:	eea080e7          	jalr	-278(ra) # 8000053a <panic>
 
-00000000800033c6 <iget>:
+0000000080003658 <iget>:
 {
-    800033c6:	7179                	addi	sp,sp,-48
-    800033c8:	f406                	sd	ra,40(sp)
-    800033ca:	f022                	sd	s0,32(sp)
-    800033cc:	ec26                	sd	s1,24(sp)
-    800033ce:	e84a                	sd	s2,16(sp)
-    800033d0:	e44e                	sd	s3,8(sp)
-    800033d2:	e052                	sd	s4,0(sp)
-    800033d4:	1800                	addi	s0,sp,48
-    800033d6:	89aa                	mv	s3,a0
-    800033d8:	8a2e                	mv	s4,a1
+    80003658:	7179                	addi	sp,sp,-48
+    8000365a:	f406                	sd	ra,40(sp)
+    8000365c:	f022                	sd	s0,32(sp)
+    8000365e:	ec26                	sd	s1,24(sp)
+    80003660:	e84a                	sd	s2,16(sp)
+    80003662:	e44e                	sd	s3,8(sp)
+    80003664:	e052                	sd	s4,0(sp)
+    80003666:	1800                	addi	s0,sp,48
+    80003668:	89aa                	mv	s3,a0
+    8000366a:	8a2e                	mv	s4,a1
   acquire(&itable.lock);
-    800033da:	0001c517          	auipc	a0,0x1c
-    800033de:	7ee50513          	addi	a0,a0,2030 # 8001fbc8 <itable>
-    800033e2:	ffffd097          	auipc	ra,0xffffd
-    800033e6:	7ee080e7          	jalr	2030(ra) # 80000bd0 <acquire>
+    8000366c:	0001c517          	auipc	a0,0x1c
+    80003670:	55c50513          	addi	a0,a0,1372 # 8001fbc8 <itable>
+    80003674:	ffffd097          	auipc	ra,0xffffd
+    80003678:	55c080e7          	jalr	1372(ra) # 80000bd0 <acquire>
   empty = 0;
-    800033ea:	4901                	li	s2,0
+    8000367c:	4901                	li	s2,0
   for(ip = &itable.inode[0]; ip < &itable.inode[NINODE]; ip++){
-    800033ec:	0001c497          	auipc	s1,0x1c
-    800033f0:	7f448493          	addi	s1,s1,2036 # 8001fbe0 <itable+0x18>
-    800033f4:	0001e697          	auipc	a3,0x1e
-    800033f8:	27c68693          	addi	a3,a3,636 # 80021670 <log>
-    800033fc:	a039                	j	8000340a <iget+0x44>
+    8000367e:	0001c497          	auipc	s1,0x1c
+    80003682:	56248493          	addi	s1,s1,1378 # 8001fbe0 <itable+0x18>
+    80003686:	0001e697          	auipc	a3,0x1e
+    8000368a:	fea68693          	addi	a3,a3,-22 # 80021670 <log>
+    8000368e:	a039                	j	8000369c <iget+0x44>
     if(empty == 0 && ip->ref == 0)    // Remember empty slot.
-    800033fe:	02090b63          	beqz	s2,80003434 <iget+0x6e>
+    80003690:	02090b63          	beqz	s2,800036c6 <iget+0x6e>
   for(ip = &itable.inode[0]; ip < &itable.inode[NINODE]; ip++){
-    80003402:	08848493          	addi	s1,s1,136
-    80003406:	02d48a63          	beq	s1,a3,8000343a <iget+0x74>
+    80003694:	08848493          	addi	s1,s1,136
+    80003698:	02d48a63          	beq	s1,a3,800036cc <iget+0x74>
     if(ip->ref > 0 && ip->dev == dev && ip->inum == inum){
-    8000340a:	449c                	lw	a5,8(s1)
-    8000340c:	fef059e3          	blez	a5,800033fe <iget+0x38>
-    80003410:	4098                	lw	a4,0(s1)
-    80003412:	ff3716e3          	bne	a4,s3,800033fe <iget+0x38>
-    80003416:	40d8                	lw	a4,4(s1)
-    80003418:	ff4713e3          	bne	a4,s4,800033fe <iget+0x38>
+    8000369c:	449c                	lw	a5,8(s1)
+    8000369e:	fef059e3          	blez	a5,80003690 <iget+0x38>
+    800036a2:	4098                	lw	a4,0(s1)
+    800036a4:	ff3716e3          	bne	a4,s3,80003690 <iget+0x38>
+    800036a8:	40d8                	lw	a4,4(s1)
+    800036aa:	ff4713e3          	bne	a4,s4,80003690 <iget+0x38>
       ip->ref++;
-    8000341c:	2785                	addiw	a5,a5,1
-    8000341e:	c49c                	sw	a5,8(s1)
+    800036ae:	2785                	addiw	a5,a5,1
+    800036b0:	c49c                	sw	a5,8(s1)
       release(&itable.lock);
-    80003420:	0001c517          	auipc	a0,0x1c
-    80003424:	7a850513          	addi	a0,a0,1960 # 8001fbc8 <itable>
-    80003428:	ffffe097          	auipc	ra,0xffffe
-    8000342c:	85c080e7          	jalr	-1956(ra) # 80000c84 <release>
+    800036b2:	0001c517          	auipc	a0,0x1c
+    800036b6:	51650513          	addi	a0,a0,1302 # 8001fbc8 <itable>
+    800036ba:	ffffd097          	auipc	ra,0xffffd
+    800036be:	5ca080e7          	jalr	1482(ra) # 80000c84 <release>
       return ip;
-    80003430:	8926                	mv	s2,s1
-    80003432:	a03d                	j	80003460 <iget+0x9a>
+    800036c2:	8926                	mv	s2,s1
+    800036c4:	a03d                	j	800036f2 <iget+0x9a>
     if(empty == 0 && ip->ref == 0)    // Remember empty slot.
-    80003434:	f7f9                	bnez	a5,80003402 <iget+0x3c>
-    80003436:	8926                	mv	s2,s1
-    80003438:	b7e9                	j	80003402 <iget+0x3c>
+    800036c6:	f7f9                	bnez	a5,80003694 <iget+0x3c>
+    800036c8:	8926                	mv	s2,s1
+    800036ca:	b7e9                	j	80003694 <iget+0x3c>
   if(empty == 0)
-    8000343a:	02090c63          	beqz	s2,80003472 <iget+0xac>
+    800036cc:	02090c63          	beqz	s2,80003704 <iget+0xac>
   ip->dev = dev;
-    8000343e:	01392023          	sw	s3,0(s2)
+    800036d0:	01392023          	sw	s3,0(s2)
   ip->inum = inum;
-    80003442:	01492223          	sw	s4,4(s2)
+    800036d4:	01492223          	sw	s4,4(s2)
   ip->ref = 1;
-    80003446:	4785                	li	a5,1
-    80003448:	00f92423          	sw	a5,8(s2)
+    800036d8:	4785                	li	a5,1
+    800036da:	00f92423          	sw	a5,8(s2)
   ip->valid = 0;
-    8000344c:	04092023          	sw	zero,64(s2)
+    800036de:	04092023          	sw	zero,64(s2)
   release(&itable.lock);
-    80003450:	0001c517          	auipc	a0,0x1c
-    80003454:	77850513          	addi	a0,a0,1912 # 8001fbc8 <itable>
-    80003458:	ffffe097          	auipc	ra,0xffffe
-    8000345c:	82c080e7          	jalr	-2004(ra) # 80000c84 <release>
+    800036e2:	0001c517          	auipc	a0,0x1c
+    800036e6:	4e650513          	addi	a0,a0,1254 # 8001fbc8 <itable>
+    800036ea:	ffffd097          	auipc	ra,0xffffd
+    800036ee:	59a080e7          	jalr	1434(ra) # 80000c84 <release>
 }
-    80003460:	854a                	mv	a0,s2
-    80003462:	70a2                	ld	ra,40(sp)
-    80003464:	7402                	ld	s0,32(sp)
-    80003466:	64e2                	ld	s1,24(sp)
-    80003468:	6942                	ld	s2,16(sp)
-    8000346a:	69a2                	ld	s3,8(sp)
-    8000346c:	6a02                	ld	s4,0(sp)
-    8000346e:	6145                	addi	sp,sp,48
-    80003470:	8082                	ret
+    800036f2:	854a                	mv	a0,s2
+    800036f4:	70a2                	ld	ra,40(sp)
+    800036f6:	7402                	ld	s0,32(sp)
+    800036f8:	64e2                	ld	s1,24(sp)
+    800036fa:	6942                	ld	s2,16(sp)
+    800036fc:	69a2                	ld	s3,8(sp)
+    800036fe:	6a02                	ld	s4,0(sp)
+    80003700:	6145                	addi	sp,sp,48
+    80003702:	8082                	ret
     panic("iget: no inodes");
-    80003472:	00005517          	auipc	a0,0x5
-    80003476:	18e50513          	addi	a0,a0,398 # 80008600 <syscalls+0x140>
-    8000347a:	ffffd097          	auipc	ra,0xffffd
-    8000347e:	0c0080e7          	jalr	192(ra) # 8000053a <panic>
+    80003704:	00005517          	auipc	a0,0x5
+    80003708:	f7450513          	addi	a0,a0,-140 # 80008678 <syscalls+0x148>
+    8000370c:	ffffd097          	auipc	ra,0xffffd
+    80003710:	e2e080e7          	jalr	-466(ra) # 8000053a <panic>
 
-0000000080003482 <fsinit>:
+0000000080003714 <fsinit>:
 fsinit(int dev) {
-    80003482:	7179                	addi	sp,sp,-48
-    80003484:	f406                	sd	ra,40(sp)
-    80003486:	f022                	sd	s0,32(sp)
-    80003488:	ec26                	sd	s1,24(sp)
-    8000348a:	e84a                	sd	s2,16(sp)
-    8000348c:	e44e                	sd	s3,8(sp)
-    8000348e:	1800                	addi	s0,sp,48
-    80003490:	892a                	mv	s2,a0
+    80003714:	7179                	addi	sp,sp,-48
+    80003716:	f406                	sd	ra,40(sp)
+    80003718:	f022                	sd	s0,32(sp)
+    8000371a:	ec26                	sd	s1,24(sp)
+    8000371c:	e84a                	sd	s2,16(sp)
+    8000371e:	e44e                	sd	s3,8(sp)
+    80003720:	1800                	addi	s0,sp,48
+    80003722:	892a                	mv	s2,a0
   bp = bread(dev, 1);
-    80003492:	4585                	li	a1,1
-    80003494:	00000097          	auipc	ra,0x0
-    80003498:	a66080e7          	jalr	-1434(ra) # 80002efa <bread>
-    8000349c:	84aa                	mv	s1,a0
+    80003724:	4585                	li	a1,1
+    80003726:	00000097          	auipc	ra,0x0
+    8000372a:	a66080e7          	jalr	-1434(ra) # 8000318c <bread>
+    8000372e:	84aa                	mv	s1,a0
   memmove(sb, bp->data, sizeof(*sb));
-    8000349e:	0001c997          	auipc	s3,0x1c
-    800034a2:	70a98993          	addi	s3,s3,1802 # 8001fba8 <sb>
-    800034a6:	02000613          	li	a2,32
-    800034aa:	05850593          	addi	a1,a0,88
-    800034ae:	854e                	mv	a0,s3
-    800034b0:	ffffe097          	auipc	ra,0xffffe
-    800034b4:	878080e7          	jalr	-1928(ra) # 80000d28 <memmove>
+    80003730:	0001c997          	auipc	s3,0x1c
+    80003734:	47898993          	addi	s3,s3,1144 # 8001fba8 <sb>
+    80003738:	02000613          	li	a2,32
+    8000373c:	05850593          	addi	a1,a0,88
+    80003740:	854e                	mv	a0,s3
+    80003742:	ffffd097          	auipc	ra,0xffffd
+    80003746:	5e6080e7          	jalr	1510(ra) # 80000d28 <memmove>
   brelse(bp);
-    800034b8:	8526                	mv	a0,s1
-    800034ba:	00000097          	auipc	ra,0x0
-    800034be:	b70080e7          	jalr	-1168(ra) # 8000302a <brelse>
+    8000374a:	8526                	mv	a0,s1
+    8000374c:	00000097          	auipc	ra,0x0
+    80003750:	b70080e7          	jalr	-1168(ra) # 800032bc <brelse>
   if(sb.magic != FSMAGIC)
-    800034c2:	0009a703          	lw	a4,0(s3)
-    800034c6:	102037b7          	lui	a5,0x10203
-    800034ca:	04078793          	addi	a5,a5,64 # 10203040 <_entry-0x6fdfcfc0>
-    800034ce:	02f71263          	bne	a4,a5,800034f2 <fsinit+0x70>
+    80003754:	0009a703          	lw	a4,0(s3)
+    80003758:	102037b7          	lui	a5,0x10203
+    8000375c:	04078793          	addi	a5,a5,64 # 10203040 <_entry-0x6fdfcfc0>
+    80003760:	02f71263          	bne	a4,a5,80003784 <fsinit+0x70>
   initlog(dev, &sb);
-    800034d2:	0001c597          	auipc	a1,0x1c
-    800034d6:	6d658593          	addi	a1,a1,1750 # 8001fba8 <sb>
-    800034da:	854a                	mv	a0,s2
-    800034dc:	00001097          	auipc	ra,0x1
-    800034e0:	b56080e7          	jalr	-1194(ra) # 80004032 <initlog>
+    80003764:	0001c597          	auipc	a1,0x1c
+    80003768:	44458593          	addi	a1,a1,1092 # 8001fba8 <sb>
+    8000376c:	854a                	mv	a0,s2
+    8000376e:	00001097          	auipc	ra,0x1
+    80003772:	b56080e7          	jalr	-1194(ra) # 800042c4 <initlog>
 }
-    800034e4:	70a2                	ld	ra,40(sp)
-    800034e6:	7402                	ld	s0,32(sp)
-    800034e8:	64e2                	ld	s1,24(sp)
-    800034ea:	6942                	ld	s2,16(sp)
-    800034ec:	69a2                	ld	s3,8(sp)
-    800034ee:	6145                	addi	sp,sp,48
-    800034f0:	8082                	ret
+    80003776:	70a2                	ld	ra,40(sp)
+    80003778:	7402                	ld	s0,32(sp)
+    8000377a:	64e2                	ld	s1,24(sp)
+    8000377c:	6942                	ld	s2,16(sp)
+    8000377e:	69a2                	ld	s3,8(sp)
+    80003780:	6145                	addi	sp,sp,48
+    80003782:	8082                	ret
     panic("invalid file system");
-    800034f2:	00005517          	auipc	a0,0x5
-    800034f6:	11e50513          	addi	a0,a0,286 # 80008610 <syscalls+0x150>
-    800034fa:	ffffd097          	auipc	ra,0xffffd
-    800034fe:	040080e7          	jalr	64(ra) # 8000053a <panic>
+    80003784:	00005517          	auipc	a0,0x5
+    80003788:	f0450513          	addi	a0,a0,-252 # 80008688 <syscalls+0x158>
+    8000378c:	ffffd097          	auipc	ra,0xffffd
+    80003790:	dae080e7          	jalr	-594(ra) # 8000053a <panic>
 
-0000000080003502 <iinit>:
+0000000080003794 <iinit>:
 {
-    80003502:	7179                	addi	sp,sp,-48
-    80003504:	f406                	sd	ra,40(sp)
-    80003506:	f022                	sd	s0,32(sp)
-    80003508:	ec26                	sd	s1,24(sp)
-    8000350a:	e84a                	sd	s2,16(sp)
-    8000350c:	e44e                	sd	s3,8(sp)
-    8000350e:	1800                	addi	s0,sp,48
+    80003794:	7179                	addi	sp,sp,-48
+    80003796:	f406                	sd	ra,40(sp)
+    80003798:	f022                	sd	s0,32(sp)
+    8000379a:	ec26                	sd	s1,24(sp)
+    8000379c:	e84a                	sd	s2,16(sp)
+    8000379e:	e44e                	sd	s3,8(sp)
+    800037a0:	1800                	addi	s0,sp,48
   initlock(&itable.lock, "itable");
-    80003510:	00005597          	auipc	a1,0x5
-    80003514:	11858593          	addi	a1,a1,280 # 80008628 <syscalls+0x168>
-    80003518:	0001c517          	auipc	a0,0x1c
-    8000351c:	6b050513          	addi	a0,a0,1712 # 8001fbc8 <itable>
-    80003520:	ffffd097          	auipc	ra,0xffffd
-    80003524:	620080e7          	jalr	1568(ra) # 80000b40 <initlock>
+    800037a2:	00005597          	auipc	a1,0x5
+    800037a6:	efe58593          	addi	a1,a1,-258 # 800086a0 <syscalls+0x170>
+    800037aa:	0001c517          	auipc	a0,0x1c
+    800037ae:	41e50513          	addi	a0,a0,1054 # 8001fbc8 <itable>
+    800037b2:	ffffd097          	auipc	ra,0xffffd
+    800037b6:	38e080e7          	jalr	910(ra) # 80000b40 <initlock>
   for(i = 0; i < NINODE; i++) {
-    80003528:	0001c497          	auipc	s1,0x1c
-    8000352c:	6c848493          	addi	s1,s1,1736 # 8001fbf0 <itable+0x28>
-    80003530:	0001e997          	auipc	s3,0x1e
-    80003534:	15098993          	addi	s3,s3,336 # 80021680 <log+0x10>
+    800037ba:	0001c497          	auipc	s1,0x1c
+    800037be:	43648493          	addi	s1,s1,1078 # 8001fbf0 <itable+0x28>
+    800037c2:	0001e997          	auipc	s3,0x1e
+    800037c6:	ebe98993          	addi	s3,s3,-322 # 80021680 <log+0x10>
     initsleeplock(&itable.inode[i].lock, "inode");
-    80003538:	00005917          	auipc	s2,0x5
-    8000353c:	0f890913          	addi	s2,s2,248 # 80008630 <syscalls+0x170>
-    80003540:	85ca                	mv	a1,s2
-    80003542:	8526                	mv	a0,s1
-    80003544:	00001097          	auipc	ra,0x1
-    80003548:	e4e080e7          	jalr	-434(ra) # 80004392 <initsleeplock>
+    800037ca:	00005917          	auipc	s2,0x5
+    800037ce:	ede90913          	addi	s2,s2,-290 # 800086a8 <syscalls+0x178>
+    800037d2:	85ca                	mv	a1,s2
+    800037d4:	8526                	mv	a0,s1
+    800037d6:	00001097          	auipc	ra,0x1
+    800037da:	e4e080e7          	jalr	-434(ra) # 80004624 <initsleeplock>
   for(i = 0; i < NINODE; i++) {
-    8000354c:	08848493          	addi	s1,s1,136
-    80003550:	ff3498e3          	bne	s1,s3,80003540 <iinit+0x3e>
+    800037de:	08848493          	addi	s1,s1,136
+    800037e2:	ff3498e3          	bne	s1,s3,800037d2 <iinit+0x3e>
 }
-    80003554:	70a2                	ld	ra,40(sp)
-    80003556:	7402                	ld	s0,32(sp)
-    80003558:	64e2                	ld	s1,24(sp)
-    8000355a:	6942                	ld	s2,16(sp)
-    8000355c:	69a2                	ld	s3,8(sp)
-    8000355e:	6145                	addi	sp,sp,48
-    80003560:	8082                	ret
+    800037e6:	70a2                	ld	ra,40(sp)
+    800037e8:	7402                	ld	s0,32(sp)
+    800037ea:	64e2                	ld	s1,24(sp)
+    800037ec:	6942                	ld	s2,16(sp)
+    800037ee:	69a2                	ld	s3,8(sp)
+    800037f0:	6145                	addi	sp,sp,48
+    800037f2:	8082                	ret
 
-0000000080003562 <ialloc>:
+00000000800037f4 <ialloc>:
 {
-    80003562:	715d                	addi	sp,sp,-80
-    80003564:	e486                	sd	ra,72(sp)
-    80003566:	e0a2                	sd	s0,64(sp)
-    80003568:	fc26                	sd	s1,56(sp)
-    8000356a:	f84a                	sd	s2,48(sp)
-    8000356c:	f44e                	sd	s3,40(sp)
-    8000356e:	f052                	sd	s4,32(sp)
-    80003570:	ec56                	sd	s5,24(sp)
-    80003572:	e85a                	sd	s6,16(sp)
-    80003574:	e45e                	sd	s7,8(sp)
-    80003576:	0880                	addi	s0,sp,80
+    800037f4:	715d                	addi	sp,sp,-80
+    800037f6:	e486                	sd	ra,72(sp)
+    800037f8:	e0a2                	sd	s0,64(sp)
+    800037fa:	fc26                	sd	s1,56(sp)
+    800037fc:	f84a                	sd	s2,48(sp)
+    800037fe:	f44e                	sd	s3,40(sp)
+    80003800:	f052                	sd	s4,32(sp)
+    80003802:	ec56                	sd	s5,24(sp)
+    80003804:	e85a                	sd	s6,16(sp)
+    80003806:	e45e                	sd	s7,8(sp)
+    80003808:	0880                	addi	s0,sp,80
   for(inum = 1; inum < sb.ninodes; inum++){
-    80003578:	0001c717          	auipc	a4,0x1c
-    8000357c:	63c72703          	lw	a4,1596(a4) # 8001fbb4 <sb+0xc>
-    80003580:	4785                	li	a5,1
-    80003582:	04e7fa63          	bgeu	a5,a4,800035d6 <ialloc+0x74>
-    80003586:	8aaa                	mv	s5,a0
-    80003588:	8bae                	mv	s7,a1
-    8000358a:	4485                	li	s1,1
+    8000380a:	0001c717          	auipc	a4,0x1c
+    8000380e:	3aa72703          	lw	a4,938(a4) # 8001fbb4 <sb+0xc>
+    80003812:	4785                	li	a5,1
+    80003814:	04e7fa63          	bgeu	a5,a4,80003868 <ialloc+0x74>
+    80003818:	8aaa                	mv	s5,a0
+    8000381a:	8bae                	mv	s7,a1
+    8000381c:	4485                	li	s1,1
     bp = bread(dev, IBLOCK(inum, sb));
-    8000358c:	0001ca17          	auipc	s4,0x1c
-    80003590:	61ca0a13          	addi	s4,s4,1564 # 8001fba8 <sb>
-    80003594:	00048b1b          	sext.w	s6,s1
-    80003598:	0044d593          	srli	a1,s1,0x4
-    8000359c:	018a2783          	lw	a5,24(s4)
-    800035a0:	9dbd                	addw	a1,a1,a5
-    800035a2:	8556                	mv	a0,s5
-    800035a4:	00000097          	auipc	ra,0x0
-    800035a8:	956080e7          	jalr	-1706(ra) # 80002efa <bread>
-    800035ac:	892a                	mv	s2,a0
+    8000381e:	0001ca17          	auipc	s4,0x1c
+    80003822:	38aa0a13          	addi	s4,s4,906 # 8001fba8 <sb>
+    80003826:	00048b1b          	sext.w	s6,s1
+    8000382a:	0044d593          	srli	a1,s1,0x4
+    8000382e:	018a2783          	lw	a5,24(s4)
+    80003832:	9dbd                	addw	a1,a1,a5
+    80003834:	8556                	mv	a0,s5
+    80003836:	00000097          	auipc	ra,0x0
+    8000383a:	956080e7          	jalr	-1706(ra) # 8000318c <bread>
+    8000383e:	892a                	mv	s2,a0
     dip = (struct dinode*)bp->data + inum%IPB;
-    800035ae:	05850993          	addi	s3,a0,88
-    800035b2:	00f4f793          	andi	a5,s1,15
-    800035b6:	079a                	slli	a5,a5,0x6
-    800035b8:	99be                	add	s3,s3,a5
+    80003840:	05850993          	addi	s3,a0,88
+    80003844:	00f4f793          	andi	a5,s1,15
+    80003848:	079a                	slli	a5,a5,0x6
+    8000384a:	99be                	add	s3,s3,a5
     if(dip->type == 0){  // a free inode
-    800035ba:	00099783          	lh	a5,0(s3)
-    800035be:	c785                	beqz	a5,800035e6 <ialloc+0x84>
+    8000384c:	00099783          	lh	a5,0(s3)
+    80003850:	c785                	beqz	a5,80003878 <ialloc+0x84>
     brelse(bp);
-    800035c0:	00000097          	auipc	ra,0x0
-    800035c4:	a6a080e7          	jalr	-1430(ra) # 8000302a <brelse>
+    80003852:	00000097          	auipc	ra,0x0
+    80003856:	a6a080e7          	jalr	-1430(ra) # 800032bc <brelse>
   for(inum = 1; inum < sb.ninodes; inum++){
-    800035c8:	0485                	addi	s1,s1,1
-    800035ca:	00ca2703          	lw	a4,12(s4)
-    800035ce:	0004879b          	sext.w	a5,s1
-    800035d2:	fce7e1e3          	bltu	a5,a4,80003594 <ialloc+0x32>
+    8000385a:	0485                	addi	s1,s1,1
+    8000385c:	00ca2703          	lw	a4,12(s4)
+    80003860:	0004879b          	sext.w	a5,s1
+    80003864:	fce7e1e3          	bltu	a5,a4,80003826 <ialloc+0x32>
   panic("ialloc: no inodes");
-    800035d6:	00005517          	auipc	a0,0x5
-    800035da:	06250513          	addi	a0,a0,98 # 80008638 <syscalls+0x178>
-    800035de:	ffffd097          	auipc	ra,0xffffd
-    800035e2:	f5c080e7          	jalr	-164(ra) # 8000053a <panic>
+    80003868:	00005517          	auipc	a0,0x5
+    8000386c:	e4850513          	addi	a0,a0,-440 # 800086b0 <syscalls+0x180>
+    80003870:	ffffd097          	auipc	ra,0xffffd
+    80003874:	cca080e7          	jalr	-822(ra) # 8000053a <panic>
       memset(dip, 0, sizeof(*dip));
-    800035e6:	04000613          	li	a2,64
-    800035ea:	4581                	li	a1,0
-    800035ec:	854e                	mv	a0,s3
-    800035ee:	ffffd097          	auipc	ra,0xffffd
-    800035f2:	6de080e7          	jalr	1758(ra) # 80000ccc <memset>
+    80003878:	04000613          	li	a2,64
+    8000387c:	4581                	li	a1,0
+    8000387e:	854e                	mv	a0,s3
+    80003880:	ffffd097          	auipc	ra,0xffffd
+    80003884:	44c080e7          	jalr	1100(ra) # 80000ccc <memset>
       dip->type = type;
-    800035f6:	01799023          	sh	s7,0(s3)
+    80003888:	01799023          	sh	s7,0(s3)
       log_write(bp);   // mark it allocated on the disk
-    800035fa:	854a                	mv	a0,s2
-    800035fc:	00001097          	auipc	ra,0x1
-    80003600:	cb2080e7          	jalr	-846(ra) # 800042ae <log_write>
+    8000388c:	854a                	mv	a0,s2
+    8000388e:	00001097          	auipc	ra,0x1
+    80003892:	cb2080e7          	jalr	-846(ra) # 80004540 <log_write>
       brelse(bp);
-    80003604:	854a                	mv	a0,s2
-    80003606:	00000097          	auipc	ra,0x0
-    8000360a:	a24080e7          	jalr	-1500(ra) # 8000302a <brelse>
+    80003896:	854a                	mv	a0,s2
+    80003898:	00000097          	auipc	ra,0x0
+    8000389c:	a24080e7          	jalr	-1500(ra) # 800032bc <brelse>
       return iget(dev, inum);
-    8000360e:	85da                	mv	a1,s6
-    80003610:	8556                	mv	a0,s5
-    80003612:	00000097          	auipc	ra,0x0
-    80003616:	db4080e7          	jalr	-588(ra) # 800033c6 <iget>
+    800038a0:	85da                	mv	a1,s6
+    800038a2:	8556                	mv	a0,s5
+    800038a4:	00000097          	auipc	ra,0x0
+    800038a8:	db4080e7          	jalr	-588(ra) # 80003658 <iget>
 }
-    8000361a:	60a6                	ld	ra,72(sp)
-    8000361c:	6406                	ld	s0,64(sp)
-    8000361e:	74e2                	ld	s1,56(sp)
-    80003620:	7942                	ld	s2,48(sp)
-    80003622:	79a2                	ld	s3,40(sp)
-    80003624:	7a02                	ld	s4,32(sp)
-    80003626:	6ae2                	ld	s5,24(sp)
-    80003628:	6b42                	ld	s6,16(sp)
-    8000362a:	6ba2                	ld	s7,8(sp)
-    8000362c:	6161                	addi	sp,sp,80
-    8000362e:	8082                	ret
+    800038ac:	60a6                	ld	ra,72(sp)
+    800038ae:	6406                	ld	s0,64(sp)
+    800038b0:	74e2                	ld	s1,56(sp)
+    800038b2:	7942                	ld	s2,48(sp)
+    800038b4:	79a2                	ld	s3,40(sp)
+    800038b6:	7a02                	ld	s4,32(sp)
+    800038b8:	6ae2                	ld	s5,24(sp)
+    800038ba:	6b42                	ld	s6,16(sp)
+    800038bc:	6ba2                	ld	s7,8(sp)
+    800038be:	6161                	addi	sp,sp,80
+    800038c0:	8082                	ret
 
-0000000080003630 <iupdate>:
+00000000800038c2 <iupdate>:
 {
-    80003630:	1101                	addi	sp,sp,-32
-    80003632:	ec06                	sd	ra,24(sp)
-    80003634:	e822                	sd	s0,16(sp)
-    80003636:	e426                	sd	s1,8(sp)
-    80003638:	e04a                	sd	s2,0(sp)
-    8000363a:	1000                	addi	s0,sp,32
-    8000363c:	84aa                	mv	s1,a0
+    800038c2:	1101                	addi	sp,sp,-32
+    800038c4:	ec06                	sd	ra,24(sp)
+    800038c6:	e822                	sd	s0,16(sp)
+    800038c8:	e426                	sd	s1,8(sp)
+    800038ca:	e04a                	sd	s2,0(sp)
+    800038cc:	1000                	addi	s0,sp,32
+    800038ce:	84aa                	mv	s1,a0
   bp = bread(ip->dev, IBLOCK(ip->inum, sb));
-    8000363e:	415c                	lw	a5,4(a0)
-    80003640:	0047d79b          	srliw	a5,a5,0x4
-    80003644:	0001c597          	auipc	a1,0x1c
-    80003648:	57c5a583          	lw	a1,1404(a1) # 8001fbc0 <sb+0x18>
-    8000364c:	9dbd                	addw	a1,a1,a5
-    8000364e:	4108                	lw	a0,0(a0)
-    80003650:	00000097          	auipc	ra,0x0
-    80003654:	8aa080e7          	jalr	-1878(ra) # 80002efa <bread>
-    80003658:	892a                	mv	s2,a0
+    800038d0:	415c                	lw	a5,4(a0)
+    800038d2:	0047d79b          	srliw	a5,a5,0x4
+    800038d6:	0001c597          	auipc	a1,0x1c
+    800038da:	2ea5a583          	lw	a1,746(a1) # 8001fbc0 <sb+0x18>
+    800038de:	9dbd                	addw	a1,a1,a5
+    800038e0:	4108                	lw	a0,0(a0)
+    800038e2:	00000097          	auipc	ra,0x0
+    800038e6:	8aa080e7          	jalr	-1878(ra) # 8000318c <bread>
+    800038ea:	892a                	mv	s2,a0
   dip = (struct dinode*)bp->data + ip->inum%IPB;
-    8000365a:	05850793          	addi	a5,a0,88
-    8000365e:	40d8                	lw	a4,4(s1)
-    80003660:	8b3d                	andi	a4,a4,15
-    80003662:	071a                	slli	a4,a4,0x6
-    80003664:	97ba                	add	a5,a5,a4
+    800038ec:	05850793          	addi	a5,a0,88
+    800038f0:	40d8                	lw	a4,4(s1)
+    800038f2:	8b3d                	andi	a4,a4,15
+    800038f4:	071a                	slli	a4,a4,0x6
+    800038f6:	97ba                	add	a5,a5,a4
   dip->type = ip->type;
-    80003666:	04449703          	lh	a4,68(s1)
-    8000366a:	00e79023          	sh	a4,0(a5)
+    800038f8:	04449703          	lh	a4,68(s1)
+    800038fc:	00e79023          	sh	a4,0(a5)
   dip->major = ip->major;
-    8000366e:	04649703          	lh	a4,70(s1)
-    80003672:	00e79123          	sh	a4,2(a5)
+    80003900:	04649703          	lh	a4,70(s1)
+    80003904:	00e79123          	sh	a4,2(a5)
   dip->minor = ip->minor;
-    80003676:	04849703          	lh	a4,72(s1)
-    8000367a:	00e79223          	sh	a4,4(a5)
+    80003908:	04849703          	lh	a4,72(s1)
+    8000390c:	00e79223          	sh	a4,4(a5)
   dip->nlink = ip->nlink;
-    8000367e:	04a49703          	lh	a4,74(s1)
-    80003682:	00e79323          	sh	a4,6(a5)
+    80003910:	04a49703          	lh	a4,74(s1)
+    80003914:	00e79323          	sh	a4,6(a5)
   dip->size = ip->size;
-    80003686:	44f8                	lw	a4,76(s1)
-    80003688:	c798                	sw	a4,8(a5)
+    80003918:	44f8                	lw	a4,76(s1)
+    8000391a:	c798                	sw	a4,8(a5)
   memmove(dip->addrs, ip->addrs, sizeof(ip->addrs));
-    8000368a:	03400613          	li	a2,52
-    8000368e:	05048593          	addi	a1,s1,80
-    80003692:	00c78513          	addi	a0,a5,12
-    80003696:	ffffd097          	auipc	ra,0xffffd
-    8000369a:	692080e7          	jalr	1682(ra) # 80000d28 <memmove>
+    8000391c:	03400613          	li	a2,52
+    80003920:	05048593          	addi	a1,s1,80
+    80003924:	00c78513          	addi	a0,a5,12
+    80003928:	ffffd097          	auipc	ra,0xffffd
+    8000392c:	400080e7          	jalr	1024(ra) # 80000d28 <memmove>
   log_write(bp);
-    8000369e:	854a                	mv	a0,s2
-    800036a0:	00001097          	auipc	ra,0x1
-    800036a4:	c0e080e7          	jalr	-1010(ra) # 800042ae <log_write>
+    80003930:	854a                	mv	a0,s2
+    80003932:	00001097          	auipc	ra,0x1
+    80003936:	c0e080e7          	jalr	-1010(ra) # 80004540 <log_write>
   brelse(bp);
-    800036a8:	854a                	mv	a0,s2
-    800036aa:	00000097          	auipc	ra,0x0
-    800036ae:	980080e7          	jalr	-1664(ra) # 8000302a <brelse>
+    8000393a:	854a                	mv	a0,s2
+    8000393c:	00000097          	auipc	ra,0x0
+    80003940:	980080e7          	jalr	-1664(ra) # 800032bc <brelse>
 }
-    800036b2:	60e2                	ld	ra,24(sp)
-    800036b4:	6442                	ld	s0,16(sp)
-    800036b6:	64a2                	ld	s1,8(sp)
-    800036b8:	6902                	ld	s2,0(sp)
-    800036ba:	6105                	addi	sp,sp,32
-    800036bc:	8082                	ret
+    80003944:	60e2                	ld	ra,24(sp)
+    80003946:	6442                	ld	s0,16(sp)
+    80003948:	64a2                	ld	s1,8(sp)
+    8000394a:	6902                	ld	s2,0(sp)
+    8000394c:	6105                	addi	sp,sp,32
+    8000394e:	8082                	ret
 
-00000000800036be <idup>:
+0000000080003950 <idup>:
 {
-    800036be:	1101                	addi	sp,sp,-32
-    800036c0:	ec06                	sd	ra,24(sp)
-    800036c2:	e822                	sd	s0,16(sp)
-    800036c4:	e426                	sd	s1,8(sp)
-    800036c6:	1000                	addi	s0,sp,32
-    800036c8:	84aa                	mv	s1,a0
+    80003950:	1101                	addi	sp,sp,-32
+    80003952:	ec06                	sd	ra,24(sp)
+    80003954:	e822                	sd	s0,16(sp)
+    80003956:	e426                	sd	s1,8(sp)
+    80003958:	1000                	addi	s0,sp,32
+    8000395a:	84aa                	mv	s1,a0
   acquire(&itable.lock);
-    800036ca:	0001c517          	auipc	a0,0x1c
-    800036ce:	4fe50513          	addi	a0,a0,1278 # 8001fbc8 <itable>
-    800036d2:	ffffd097          	auipc	ra,0xffffd
-    800036d6:	4fe080e7          	jalr	1278(ra) # 80000bd0 <acquire>
+    8000395c:	0001c517          	auipc	a0,0x1c
+    80003960:	26c50513          	addi	a0,a0,620 # 8001fbc8 <itable>
+    80003964:	ffffd097          	auipc	ra,0xffffd
+    80003968:	26c080e7          	jalr	620(ra) # 80000bd0 <acquire>
   ip->ref++;
-    800036da:	449c                	lw	a5,8(s1)
-    800036dc:	2785                	addiw	a5,a5,1
-    800036de:	c49c                	sw	a5,8(s1)
+    8000396c:	449c                	lw	a5,8(s1)
+    8000396e:	2785                	addiw	a5,a5,1
+    80003970:	c49c                	sw	a5,8(s1)
   release(&itable.lock);
-    800036e0:	0001c517          	auipc	a0,0x1c
-    800036e4:	4e850513          	addi	a0,a0,1256 # 8001fbc8 <itable>
-    800036e8:	ffffd097          	auipc	ra,0xffffd
-    800036ec:	59c080e7          	jalr	1436(ra) # 80000c84 <release>
+    80003972:	0001c517          	auipc	a0,0x1c
+    80003976:	25650513          	addi	a0,a0,598 # 8001fbc8 <itable>
+    8000397a:	ffffd097          	auipc	ra,0xffffd
+    8000397e:	30a080e7          	jalr	778(ra) # 80000c84 <release>
 }
-    800036f0:	8526                	mv	a0,s1
-    800036f2:	60e2                	ld	ra,24(sp)
-    800036f4:	6442                	ld	s0,16(sp)
-    800036f6:	64a2                	ld	s1,8(sp)
-    800036f8:	6105                	addi	sp,sp,32
-    800036fa:	8082                	ret
+    80003982:	8526                	mv	a0,s1
+    80003984:	60e2                	ld	ra,24(sp)
+    80003986:	6442                	ld	s0,16(sp)
+    80003988:	64a2                	ld	s1,8(sp)
+    8000398a:	6105                	addi	sp,sp,32
+    8000398c:	8082                	ret
 
-00000000800036fc <ilock>:
+000000008000398e <ilock>:
 {
-    800036fc:	1101                	addi	sp,sp,-32
-    800036fe:	ec06                	sd	ra,24(sp)
-    80003700:	e822                	sd	s0,16(sp)
-    80003702:	e426                	sd	s1,8(sp)
-    80003704:	e04a                	sd	s2,0(sp)
-    80003706:	1000                	addi	s0,sp,32
+    8000398e:	1101                	addi	sp,sp,-32
+    80003990:	ec06                	sd	ra,24(sp)
+    80003992:	e822                	sd	s0,16(sp)
+    80003994:	e426                	sd	s1,8(sp)
+    80003996:	e04a                	sd	s2,0(sp)
+    80003998:	1000                	addi	s0,sp,32
   if(ip == 0 || ip->ref < 1)
-    80003708:	c115                	beqz	a0,8000372c <ilock+0x30>
-    8000370a:	84aa                	mv	s1,a0
-    8000370c:	451c                	lw	a5,8(a0)
-    8000370e:	00f05f63          	blez	a5,8000372c <ilock+0x30>
+    8000399a:	c115                	beqz	a0,800039be <ilock+0x30>
+    8000399c:	84aa                	mv	s1,a0
+    8000399e:	451c                	lw	a5,8(a0)
+    800039a0:	00f05f63          	blez	a5,800039be <ilock+0x30>
   acquiresleep(&ip->lock);
-    80003712:	0541                	addi	a0,a0,16
-    80003714:	00001097          	auipc	ra,0x1
-    80003718:	cb8080e7          	jalr	-840(ra) # 800043cc <acquiresleep>
+    800039a4:	0541                	addi	a0,a0,16
+    800039a6:	00001097          	auipc	ra,0x1
+    800039aa:	cb8080e7          	jalr	-840(ra) # 8000465e <acquiresleep>
   if(ip->valid == 0){
-    8000371c:	40bc                	lw	a5,64(s1)
-    8000371e:	cf99                	beqz	a5,8000373c <ilock+0x40>
+    800039ae:	40bc                	lw	a5,64(s1)
+    800039b0:	cf99                	beqz	a5,800039ce <ilock+0x40>
 }
-    80003720:	60e2                	ld	ra,24(sp)
-    80003722:	6442                	ld	s0,16(sp)
-    80003724:	64a2                	ld	s1,8(sp)
-    80003726:	6902                	ld	s2,0(sp)
-    80003728:	6105                	addi	sp,sp,32
-    8000372a:	8082                	ret
+    800039b2:	60e2                	ld	ra,24(sp)
+    800039b4:	6442                	ld	s0,16(sp)
+    800039b6:	64a2                	ld	s1,8(sp)
+    800039b8:	6902                	ld	s2,0(sp)
+    800039ba:	6105                	addi	sp,sp,32
+    800039bc:	8082                	ret
     panic("ilock");
-    8000372c:	00005517          	auipc	a0,0x5
-    80003730:	f2450513          	addi	a0,a0,-220 # 80008650 <syscalls+0x190>
-    80003734:	ffffd097          	auipc	ra,0xffffd
-    80003738:	e06080e7          	jalr	-506(ra) # 8000053a <panic>
+    800039be:	00005517          	auipc	a0,0x5
+    800039c2:	d0a50513          	addi	a0,a0,-758 # 800086c8 <syscalls+0x198>
+    800039c6:	ffffd097          	auipc	ra,0xffffd
+    800039ca:	b74080e7          	jalr	-1164(ra) # 8000053a <panic>
     bp = bread(ip->dev, IBLOCK(ip->inum, sb));
-    8000373c:	40dc                	lw	a5,4(s1)
-    8000373e:	0047d79b          	srliw	a5,a5,0x4
-    80003742:	0001c597          	auipc	a1,0x1c
-    80003746:	47e5a583          	lw	a1,1150(a1) # 8001fbc0 <sb+0x18>
-    8000374a:	9dbd                	addw	a1,a1,a5
-    8000374c:	4088                	lw	a0,0(s1)
-    8000374e:	fffff097          	auipc	ra,0xfffff
-    80003752:	7ac080e7          	jalr	1964(ra) # 80002efa <bread>
-    80003756:	892a                	mv	s2,a0
+    800039ce:	40dc                	lw	a5,4(s1)
+    800039d0:	0047d79b          	srliw	a5,a5,0x4
+    800039d4:	0001c597          	auipc	a1,0x1c
+    800039d8:	1ec5a583          	lw	a1,492(a1) # 8001fbc0 <sb+0x18>
+    800039dc:	9dbd                	addw	a1,a1,a5
+    800039de:	4088                	lw	a0,0(s1)
+    800039e0:	fffff097          	auipc	ra,0xfffff
+    800039e4:	7ac080e7          	jalr	1964(ra) # 8000318c <bread>
+    800039e8:	892a                	mv	s2,a0
     dip = (struct dinode*)bp->data + ip->inum%IPB;
-    80003758:	05850593          	addi	a1,a0,88
-    8000375c:	40dc                	lw	a5,4(s1)
-    8000375e:	8bbd                	andi	a5,a5,15
-    80003760:	079a                	slli	a5,a5,0x6
-    80003762:	95be                	add	a1,a1,a5
+    800039ea:	05850593          	addi	a1,a0,88
+    800039ee:	40dc                	lw	a5,4(s1)
+    800039f0:	8bbd                	andi	a5,a5,15
+    800039f2:	079a                	slli	a5,a5,0x6
+    800039f4:	95be                	add	a1,a1,a5
     ip->type = dip->type;
-    80003764:	00059783          	lh	a5,0(a1)
-    80003768:	04f49223          	sh	a5,68(s1)
+    800039f6:	00059783          	lh	a5,0(a1)
+    800039fa:	04f49223          	sh	a5,68(s1)
     ip->major = dip->major;
-    8000376c:	00259783          	lh	a5,2(a1)
-    80003770:	04f49323          	sh	a5,70(s1)
+    800039fe:	00259783          	lh	a5,2(a1)
+    80003a02:	04f49323          	sh	a5,70(s1)
     ip->minor = dip->minor;
-    80003774:	00459783          	lh	a5,4(a1)
-    80003778:	04f49423          	sh	a5,72(s1)
+    80003a06:	00459783          	lh	a5,4(a1)
+    80003a0a:	04f49423          	sh	a5,72(s1)
     ip->nlink = dip->nlink;
-    8000377c:	00659783          	lh	a5,6(a1)
-    80003780:	04f49523          	sh	a5,74(s1)
+    80003a0e:	00659783          	lh	a5,6(a1)
+    80003a12:	04f49523          	sh	a5,74(s1)
     ip->size = dip->size;
-    80003784:	459c                	lw	a5,8(a1)
-    80003786:	c4fc                	sw	a5,76(s1)
+    80003a16:	459c                	lw	a5,8(a1)
+    80003a18:	c4fc                	sw	a5,76(s1)
     memmove(ip->addrs, dip->addrs, sizeof(ip->addrs));
-    80003788:	03400613          	li	a2,52
-    8000378c:	05b1                	addi	a1,a1,12
-    8000378e:	05048513          	addi	a0,s1,80
-    80003792:	ffffd097          	auipc	ra,0xffffd
-    80003796:	596080e7          	jalr	1430(ra) # 80000d28 <memmove>
+    80003a1a:	03400613          	li	a2,52
+    80003a1e:	05b1                	addi	a1,a1,12
+    80003a20:	05048513          	addi	a0,s1,80
+    80003a24:	ffffd097          	auipc	ra,0xffffd
+    80003a28:	304080e7          	jalr	772(ra) # 80000d28 <memmove>
     brelse(bp);
-    8000379a:	854a                	mv	a0,s2
-    8000379c:	00000097          	auipc	ra,0x0
-    800037a0:	88e080e7          	jalr	-1906(ra) # 8000302a <brelse>
+    80003a2c:	854a                	mv	a0,s2
+    80003a2e:	00000097          	auipc	ra,0x0
+    80003a32:	88e080e7          	jalr	-1906(ra) # 800032bc <brelse>
     ip->valid = 1;
-    800037a4:	4785                	li	a5,1
-    800037a6:	c0bc                	sw	a5,64(s1)
+    80003a36:	4785                	li	a5,1
+    80003a38:	c0bc                	sw	a5,64(s1)
     if(ip->type == 0)
-    800037a8:	04449783          	lh	a5,68(s1)
-    800037ac:	fbb5                	bnez	a5,80003720 <ilock+0x24>
+    80003a3a:	04449783          	lh	a5,68(s1)
+    80003a3e:	fbb5                	bnez	a5,800039b2 <ilock+0x24>
       panic("ilock: no type");
-    800037ae:	00005517          	auipc	a0,0x5
-    800037b2:	eaa50513          	addi	a0,a0,-342 # 80008658 <syscalls+0x198>
-    800037b6:	ffffd097          	auipc	ra,0xffffd
-    800037ba:	d84080e7          	jalr	-636(ra) # 8000053a <panic>
+    80003a40:	00005517          	auipc	a0,0x5
+    80003a44:	c9050513          	addi	a0,a0,-880 # 800086d0 <syscalls+0x1a0>
+    80003a48:	ffffd097          	auipc	ra,0xffffd
+    80003a4c:	af2080e7          	jalr	-1294(ra) # 8000053a <panic>
 
-00000000800037be <iunlock>:
+0000000080003a50 <iunlock>:
 {
-    800037be:	1101                	addi	sp,sp,-32
-    800037c0:	ec06                	sd	ra,24(sp)
-    800037c2:	e822                	sd	s0,16(sp)
-    800037c4:	e426                	sd	s1,8(sp)
-    800037c6:	e04a                	sd	s2,0(sp)
-    800037c8:	1000                	addi	s0,sp,32
+    80003a50:	1101                	addi	sp,sp,-32
+    80003a52:	ec06                	sd	ra,24(sp)
+    80003a54:	e822                	sd	s0,16(sp)
+    80003a56:	e426                	sd	s1,8(sp)
+    80003a58:	e04a                	sd	s2,0(sp)
+    80003a5a:	1000                	addi	s0,sp,32
   if(ip == 0 || !holdingsleep(&ip->lock) || ip->ref < 1)
-    800037ca:	c905                	beqz	a0,800037fa <iunlock+0x3c>
-    800037cc:	84aa                	mv	s1,a0
-    800037ce:	01050913          	addi	s2,a0,16
-    800037d2:	854a                	mv	a0,s2
-    800037d4:	00001097          	auipc	ra,0x1
-    800037d8:	c92080e7          	jalr	-878(ra) # 80004466 <holdingsleep>
-    800037dc:	cd19                	beqz	a0,800037fa <iunlock+0x3c>
-    800037de:	449c                	lw	a5,8(s1)
-    800037e0:	00f05d63          	blez	a5,800037fa <iunlock+0x3c>
+    80003a5c:	c905                	beqz	a0,80003a8c <iunlock+0x3c>
+    80003a5e:	84aa                	mv	s1,a0
+    80003a60:	01050913          	addi	s2,a0,16
+    80003a64:	854a                	mv	a0,s2
+    80003a66:	00001097          	auipc	ra,0x1
+    80003a6a:	c92080e7          	jalr	-878(ra) # 800046f8 <holdingsleep>
+    80003a6e:	cd19                	beqz	a0,80003a8c <iunlock+0x3c>
+    80003a70:	449c                	lw	a5,8(s1)
+    80003a72:	00f05d63          	blez	a5,80003a8c <iunlock+0x3c>
   releasesleep(&ip->lock);
-    800037e4:	854a                	mv	a0,s2
-    800037e6:	00001097          	auipc	ra,0x1
-    800037ea:	c3c080e7          	jalr	-964(ra) # 80004422 <releasesleep>
+    80003a76:	854a                	mv	a0,s2
+    80003a78:	00001097          	auipc	ra,0x1
+    80003a7c:	c3c080e7          	jalr	-964(ra) # 800046b4 <releasesleep>
 }
-    800037ee:	60e2                	ld	ra,24(sp)
-    800037f0:	6442                	ld	s0,16(sp)
-    800037f2:	64a2                	ld	s1,8(sp)
-    800037f4:	6902                	ld	s2,0(sp)
-    800037f6:	6105                	addi	sp,sp,32
-    800037f8:	8082                	ret
+    80003a80:	60e2                	ld	ra,24(sp)
+    80003a82:	6442                	ld	s0,16(sp)
+    80003a84:	64a2                	ld	s1,8(sp)
+    80003a86:	6902                	ld	s2,0(sp)
+    80003a88:	6105                	addi	sp,sp,32
+    80003a8a:	8082                	ret
     panic("iunlock");
-    800037fa:	00005517          	auipc	a0,0x5
-    800037fe:	e6e50513          	addi	a0,a0,-402 # 80008668 <syscalls+0x1a8>
-    80003802:	ffffd097          	auipc	ra,0xffffd
-    80003806:	d38080e7          	jalr	-712(ra) # 8000053a <panic>
+    80003a8c:	00005517          	auipc	a0,0x5
+    80003a90:	c5450513          	addi	a0,a0,-940 # 800086e0 <syscalls+0x1b0>
+    80003a94:	ffffd097          	auipc	ra,0xffffd
+    80003a98:	aa6080e7          	jalr	-1370(ra) # 8000053a <panic>
 
-000000008000380a <itrunc>:
+0000000080003a9c <itrunc>:
 
 // Truncate inode (discard contents).
 // Caller must hold ip->lock.
 void
 itrunc(struct inode *ip)
 {
-    8000380a:	7179                	addi	sp,sp,-48
-    8000380c:	f406                	sd	ra,40(sp)
-    8000380e:	f022                	sd	s0,32(sp)
-    80003810:	ec26                	sd	s1,24(sp)
-    80003812:	e84a                	sd	s2,16(sp)
-    80003814:	e44e                	sd	s3,8(sp)
-    80003816:	e052                	sd	s4,0(sp)
-    80003818:	1800                	addi	s0,sp,48
-    8000381a:	89aa                	mv	s3,a0
+    80003a9c:	7179                	addi	sp,sp,-48
+    80003a9e:	f406                	sd	ra,40(sp)
+    80003aa0:	f022                	sd	s0,32(sp)
+    80003aa2:	ec26                	sd	s1,24(sp)
+    80003aa4:	e84a                	sd	s2,16(sp)
+    80003aa6:	e44e                	sd	s3,8(sp)
+    80003aa8:	e052                	sd	s4,0(sp)
+    80003aaa:	1800                	addi	s0,sp,48
+    80003aac:	89aa                	mv	s3,a0
   int i, j;
   struct buf *bp;
   uint *a;
 
   for(i = 0; i < NDIRECT; i++){
-    8000381c:	05050493          	addi	s1,a0,80
-    80003820:	08050913          	addi	s2,a0,128
-    80003824:	a021                	j	8000382c <itrunc+0x22>
-    80003826:	0491                	addi	s1,s1,4
-    80003828:	01248d63          	beq	s1,s2,80003842 <itrunc+0x38>
+    80003aae:	05050493          	addi	s1,a0,80
+    80003ab2:	08050913          	addi	s2,a0,128
+    80003ab6:	a021                	j	80003abe <itrunc+0x22>
+    80003ab8:	0491                	addi	s1,s1,4
+    80003aba:	01248d63          	beq	s1,s2,80003ad4 <itrunc+0x38>
     if(ip->addrs[i]){
-    8000382c:	408c                	lw	a1,0(s1)
-    8000382e:	dde5                	beqz	a1,80003826 <itrunc+0x1c>
+    80003abe:	408c                	lw	a1,0(s1)
+    80003ac0:	dde5                	beqz	a1,80003ab8 <itrunc+0x1c>
       bfree(ip->dev, ip->addrs[i]);
-    80003830:	0009a503          	lw	a0,0(s3)
-    80003834:	00000097          	auipc	ra,0x0
-    80003838:	90c080e7          	jalr	-1780(ra) # 80003140 <bfree>
+    80003ac2:	0009a503          	lw	a0,0(s3)
+    80003ac6:	00000097          	auipc	ra,0x0
+    80003aca:	90c080e7          	jalr	-1780(ra) # 800033d2 <bfree>
       ip->addrs[i] = 0;
-    8000383c:	0004a023          	sw	zero,0(s1)
-    80003840:	b7dd                	j	80003826 <itrunc+0x1c>
+    80003ace:	0004a023          	sw	zero,0(s1)
+    80003ad2:	b7dd                	j	80003ab8 <itrunc+0x1c>
     }
   }
 
   if(ip->addrs[NDIRECT]){
-    80003842:	0809a583          	lw	a1,128(s3)
-    80003846:	e185                	bnez	a1,80003866 <itrunc+0x5c>
+    80003ad4:	0809a583          	lw	a1,128(s3)
+    80003ad8:	e185                	bnez	a1,80003af8 <itrunc+0x5c>
     brelse(bp);
     bfree(ip->dev, ip->addrs[NDIRECT]);
     ip->addrs[NDIRECT] = 0;
   }
 
   ip->size = 0;
-    80003848:	0409a623          	sw	zero,76(s3)
+    80003ada:	0409a623          	sw	zero,76(s3)
   iupdate(ip);
-    8000384c:	854e                	mv	a0,s3
-    8000384e:	00000097          	auipc	ra,0x0
-    80003852:	de2080e7          	jalr	-542(ra) # 80003630 <iupdate>
+    80003ade:	854e                	mv	a0,s3
+    80003ae0:	00000097          	auipc	ra,0x0
+    80003ae4:	de2080e7          	jalr	-542(ra) # 800038c2 <iupdate>
 }
-    80003856:	70a2                	ld	ra,40(sp)
-    80003858:	7402                	ld	s0,32(sp)
-    8000385a:	64e2                	ld	s1,24(sp)
-    8000385c:	6942                	ld	s2,16(sp)
-    8000385e:	69a2                	ld	s3,8(sp)
-    80003860:	6a02                	ld	s4,0(sp)
-    80003862:	6145                	addi	sp,sp,48
-    80003864:	8082                	ret
+    80003ae8:	70a2                	ld	ra,40(sp)
+    80003aea:	7402                	ld	s0,32(sp)
+    80003aec:	64e2                	ld	s1,24(sp)
+    80003aee:	6942                	ld	s2,16(sp)
+    80003af0:	69a2                	ld	s3,8(sp)
+    80003af2:	6a02                	ld	s4,0(sp)
+    80003af4:	6145                	addi	sp,sp,48
+    80003af6:	8082                	ret
     bp = bread(ip->dev, ip->addrs[NDIRECT]);
-    80003866:	0009a503          	lw	a0,0(s3)
-    8000386a:	fffff097          	auipc	ra,0xfffff
-    8000386e:	690080e7          	jalr	1680(ra) # 80002efa <bread>
-    80003872:	8a2a                	mv	s4,a0
+    80003af8:	0009a503          	lw	a0,0(s3)
+    80003afc:	fffff097          	auipc	ra,0xfffff
+    80003b00:	690080e7          	jalr	1680(ra) # 8000318c <bread>
+    80003b04:	8a2a                	mv	s4,a0
     for(j = 0; j < NINDIRECT; j++){
-    80003874:	05850493          	addi	s1,a0,88
-    80003878:	45850913          	addi	s2,a0,1112
-    8000387c:	a021                	j	80003884 <itrunc+0x7a>
-    8000387e:	0491                	addi	s1,s1,4
-    80003880:	01248b63          	beq	s1,s2,80003896 <itrunc+0x8c>
+    80003b06:	05850493          	addi	s1,a0,88
+    80003b0a:	45850913          	addi	s2,a0,1112
+    80003b0e:	a021                	j	80003b16 <itrunc+0x7a>
+    80003b10:	0491                	addi	s1,s1,4
+    80003b12:	01248b63          	beq	s1,s2,80003b28 <itrunc+0x8c>
       if(a[j])
-    80003884:	408c                	lw	a1,0(s1)
-    80003886:	dde5                	beqz	a1,8000387e <itrunc+0x74>
+    80003b16:	408c                	lw	a1,0(s1)
+    80003b18:	dde5                	beqz	a1,80003b10 <itrunc+0x74>
         bfree(ip->dev, a[j]);
-    80003888:	0009a503          	lw	a0,0(s3)
-    8000388c:	00000097          	auipc	ra,0x0
-    80003890:	8b4080e7          	jalr	-1868(ra) # 80003140 <bfree>
-    80003894:	b7ed                	j	8000387e <itrunc+0x74>
+    80003b1a:	0009a503          	lw	a0,0(s3)
+    80003b1e:	00000097          	auipc	ra,0x0
+    80003b22:	8b4080e7          	jalr	-1868(ra) # 800033d2 <bfree>
+    80003b26:	b7ed                	j	80003b10 <itrunc+0x74>
     brelse(bp);
-    80003896:	8552                	mv	a0,s4
-    80003898:	fffff097          	auipc	ra,0xfffff
-    8000389c:	792080e7          	jalr	1938(ra) # 8000302a <brelse>
+    80003b28:	8552                	mv	a0,s4
+    80003b2a:	fffff097          	auipc	ra,0xfffff
+    80003b2e:	792080e7          	jalr	1938(ra) # 800032bc <brelse>
     bfree(ip->dev, ip->addrs[NDIRECT]);
-    800038a0:	0809a583          	lw	a1,128(s3)
-    800038a4:	0009a503          	lw	a0,0(s3)
-    800038a8:	00000097          	auipc	ra,0x0
-    800038ac:	898080e7          	jalr	-1896(ra) # 80003140 <bfree>
+    80003b32:	0809a583          	lw	a1,128(s3)
+    80003b36:	0009a503          	lw	a0,0(s3)
+    80003b3a:	00000097          	auipc	ra,0x0
+    80003b3e:	898080e7          	jalr	-1896(ra) # 800033d2 <bfree>
     ip->addrs[NDIRECT] = 0;
-    800038b0:	0809a023          	sw	zero,128(s3)
-    800038b4:	bf51                	j	80003848 <itrunc+0x3e>
+    80003b42:	0809a023          	sw	zero,128(s3)
+    80003b46:	bf51                	j	80003ada <itrunc+0x3e>
 
-00000000800038b6 <iput>:
+0000000080003b48 <iput>:
 {
-    800038b6:	1101                	addi	sp,sp,-32
-    800038b8:	ec06                	sd	ra,24(sp)
-    800038ba:	e822                	sd	s0,16(sp)
-    800038bc:	e426                	sd	s1,8(sp)
-    800038be:	e04a                	sd	s2,0(sp)
-    800038c0:	1000                	addi	s0,sp,32
-    800038c2:	84aa                	mv	s1,a0
+    80003b48:	1101                	addi	sp,sp,-32
+    80003b4a:	ec06                	sd	ra,24(sp)
+    80003b4c:	e822                	sd	s0,16(sp)
+    80003b4e:	e426                	sd	s1,8(sp)
+    80003b50:	e04a                	sd	s2,0(sp)
+    80003b52:	1000                	addi	s0,sp,32
+    80003b54:	84aa                	mv	s1,a0
   acquire(&itable.lock);
-    800038c4:	0001c517          	auipc	a0,0x1c
-    800038c8:	30450513          	addi	a0,a0,772 # 8001fbc8 <itable>
-    800038cc:	ffffd097          	auipc	ra,0xffffd
-    800038d0:	304080e7          	jalr	772(ra) # 80000bd0 <acquire>
+    80003b56:	0001c517          	auipc	a0,0x1c
+    80003b5a:	07250513          	addi	a0,a0,114 # 8001fbc8 <itable>
+    80003b5e:	ffffd097          	auipc	ra,0xffffd
+    80003b62:	072080e7          	jalr	114(ra) # 80000bd0 <acquire>
   if(ip->ref == 1 && ip->valid && ip->nlink == 0){
-    800038d4:	4498                	lw	a4,8(s1)
-    800038d6:	4785                	li	a5,1
-    800038d8:	02f70363          	beq	a4,a5,800038fe <iput+0x48>
+    80003b66:	4498                	lw	a4,8(s1)
+    80003b68:	4785                	li	a5,1
+    80003b6a:	02f70363          	beq	a4,a5,80003b90 <iput+0x48>
   ip->ref--;
-    800038dc:	449c                	lw	a5,8(s1)
-    800038de:	37fd                	addiw	a5,a5,-1
-    800038e0:	c49c                	sw	a5,8(s1)
+    80003b6e:	449c                	lw	a5,8(s1)
+    80003b70:	37fd                	addiw	a5,a5,-1
+    80003b72:	c49c                	sw	a5,8(s1)
   release(&itable.lock);
-    800038e2:	0001c517          	auipc	a0,0x1c
-    800038e6:	2e650513          	addi	a0,a0,742 # 8001fbc8 <itable>
-    800038ea:	ffffd097          	auipc	ra,0xffffd
-    800038ee:	39a080e7          	jalr	922(ra) # 80000c84 <release>
+    80003b74:	0001c517          	auipc	a0,0x1c
+    80003b78:	05450513          	addi	a0,a0,84 # 8001fbc8 <itable>
+    80003b7c:	ffffd097          	auipc	ra,0xffffd
+    80003b80:	108080e7          	jalr	264(ra) # 80000c84 <release>
 }
-    800038f2:	60e2                	ld	ra,24(sp)
-    800038f4:	6442                	ld	s0,16(sp)
-    800038f6:	64a2                	ld	s1,8(sp)
-    800038f8:	6902                	ld	s2,0(sp)
-    800038fa:	6105                	addi	sp,sp,32
-    800038fc:	8082                	ret
+    80003b84:	60e2                	ld	ra,24(sp)
+    80003b86:	6442                	ld	s0,16(sp)
+    80003b88:	64a2                	ld	s1,8(sp)
+    80003b8a:	6902                	ld	s2,0(sp)
+    80003b8c:	6105                	addi	sp,sp,32
+    80003b8e:	8082                	ret
   if(ip->ref == 1 && ip->valid && ip->nlink == 0){
-    800038fe:	40bc                	lw	a5,64(s1)
-    80003900:	dff1                	beqz	a5,800038dc <iput+0x26>
-    80003902:	04a49783          	lh	a5,74(s1)
-    80003906:	fbf9                	bnez	a5,800038dc <iput+0x26>
+    80003b90:	40bc                	lw	a5,64(s1)
+    80003b92:	dff1                	beqz	a5,80003b6e <iput+0x26>
+    80003b94:	04a49783          	lh	a5,74(s1)
+    80003b98:	fbf9                	bnez	a5,80003b6e <iput+0x26>
     acquiresleep(&ip->lock);
-    80003908:	01048913          	addi	s2,s1,16
-    8000390c:	854a                	mv	a0,s2
-    8000390e:	00001097          	auipc	ra,0x1
-    80003912:	abe080e7          	jalr	-1346(ra) # 800043cc <acquiresleep>
+    80003b9a:	01048913          	addi	s2,s1,16
+    80003b9e:	854a                	mv	a0,s2
+    80003ba0:	00001097          	auipc	ra,0x1
+    80003ba4:	abe080e7          	jalr	-1346(ra) # 8000465e <acquiresleep>
     release(&itable.lock);
-    80003916:	0001c517          	auipc	a0,0x1c
-    8000391a:	2b250513          	addi	a0,a0,690 # 8001fbc8 <itable>
-    8000391e:	ffffd097          	auipc	ra,0xffffd
-    80003922:	366080e7          	jalr	870(ra) # 80000c84 <release>
+    80003ba8:	0001c517          	auipc	a0,0x1c
+    80003bac:	02050513          	addi	a0,a0,32 # 8001fbc8 <itable>
+    80003bb0:	ffffd097          	auipc	ra,0xffffd
+    80003bb4:	0d4080e7          	jalr	212(ra) # 80000c84 <release>
     itrunc(ip);
-    80003926:	8526                	mv	a0,s1
-    80003928:	00000097          	auipc	ra,0x0
-    8000392c:	ee2080e7          	jalr	-286(ra) # 8000380a <itrunc>
+    80003bb8:	8526                	mv	a0,s1
+    80003bba:	00000097          	auipc	ra,0x0
+    80003bbe:	ee2080e7          	jalr	-286(ra) # 80003a9c <itrunc>
     ip->type = 0;
-    80003930:	04049223          	sh	zero,68(s1)
+    80003bc2:	04049223          	sh	zero,68(s1)
     iupdate(ip);
-    80003934:	8526                	mv	a0,s1
-    80003936:	00000097          	auipc	ra,0x0
-    8000393a:	cfa080e7          	jalr	-774(ra) # 80003630 <iupdate>
+    80003bc6:	8526                	mv	a0,s1
+    80003bc8:	00000097          	auipc	ra,0x0
+    80003bcc:	cfa080e7          	jalr	-774(ra) # 800038c2 <iupdate>
     ip->valid = 0;
-    8000393e:	0404a023          	sw	zero,64(s1)
+    80003bd0:	0404a023          	sw	zero,64(s1)
     releasesleep(&ip->lock);
-    80003942:	854a                	mv	a0,s2
-    80003944:	00001097          	auipc	ra,0x1
-    80003948:	ade080e7          	jalr	-1314(ra) # 80004422 <releasesleep>
+    80003bd4:	854a                	mv	a0,s2
+    80003bd6:	00001097          	auipc	ra,0x1
+    80003bda:	ade080e7          	jalr	-1314(ra) # 800046b4 <releasesleep>
     acquire(&itable.lock);
-    8000394c:	0001c517          	auipc	a0,0x1c
-    80003950:	27c50513          	addi	a0,a0,636 # 8001fbc8 <itable>
-    80003954:	ffffd097          	auipc	ra,0xffffd
-    80003958:	27c080e7          	jalr	636(ra) # 80000bd0 <acquire>
-    8000395c:	b741                	j	800038dc <iput+0x26>
+    80003bde:	0001c517          	auipc	a0,0x1c
+    80003be2:	fea50513          	addi	a0,a0,-22 # 8001fbc8 <itable>
+    80003be6:	ffffd097          	auipc	ra,0xffffd
+    80003bea:	fea080e7          	jalr	-22(ra) # 80000bd0 <acquire>
+    80003bee:	b741                	j	80003b6e <iput+0x26>
 
-000000008000395e <iunlockput>:
+0000000080003bf0 <iunlockput>:
 {
-    8000395e:	1101                	addi	sp,sp,-32
-    80003960:	ec06                	sd	ra,24(sp)
-    80003962:	e822                	sd	s0,16(sp)
-    80003964:	e426                	sd	s1,8(sp)
-    80003966:	1000                	addi	s0,sp,32
-    80003968:	84aa                	mv	s1,a0
+    80003bf0:	1101                	addi	sp,sp,-32
+    80003bf2:	ec06                	sd	ra,24(sp)
+    80003bf4:	e822                	sd	s0,16(sp)
+    80003bf6:	e426                	sd	s1,8(sp)
+    80003bf8:	1000                	addi	s0,sp,32
+    80003bfa:	84aa                	mv	s1,a0
   iunlock(ip);
-    8000396a:	00000097          	auipc	ra,0x0
-    8000396e:	e54080e7          	jalr	-428(ra) # 800037be <iunlock>
+    80003bfc:	00000097          	auipc	ra,0x0
+    80003c00:	e54080e7          	jalr	-428(ra) # 80003a50 <iunlock>
   iput(ip);
-    80003972:	8526                	mv	a0,s1
-    80003974:	00000097          	auipc	ra,0x0
-    80003978:	f42080e7          	jalr	-190(ra) # 800038b6 <iput>
+    80003c04:	8526                	mv	a0,s1
+    80003c06:	00000097          	auipc	ra,0x0
+    80003c0a:	f42080e7          	jalr	-190(ra) # 80003b48 <iput>
 }
-    8000397c:	60e2                	ld	ra,24(sp)
-    8000397e:	6442                	ld	s0,16(sp)
-    80003980:	64a2                	ld	s1,8(sp)
-    80003982:	6105                	addi	sp,sp,32
-    80003984:	8082                	ret
+    80003c0e:	60e2                	ld	ra,24(sp)
+    80003c10:	6442                	ld	s0,16(sp)
+    80003c12:	64a2                	ld	s1,8(sp)
+    80003c14:	6105                	addi	sp,sp,32
+    80003c16:	8082                	ret
 
-0000000080003986 <stati>:
+0000000080003c18 <stati>:
 
 // Copy stat information from inode.
 // Caller must hold ip->lock.
 void
 stati(struct inode *ip, struct stat *st)
 {
-    80003986:	1141                	addi	sp,sp,-16
-    80003988:	e422                	sd	s0,8(sp)
-    8000398a:	0800                	addi	s0,sp,16
+    80003c18:	1141                	addi	sp,sp,-16
+    80003c1a:	e422                	sd	s0,8(sp)
+    80003c1c:	0800                	addi	s0,sp,16
   st->dev = ip->dev;
-    8000398c:	411c                	lw	a5,0(a0)
-    8000398e:	c19c                	sw	a5,0(a1)
+    80003c1e:	411c                	lw	a5,0(a0)
+    80003c20:	c19c                	sw	a5,0(a1)
   st->ino = ip->inum;
-    80003990:	415c                	lw	a5,4(a0)
-    80003992:	c1dc                	sw	a5,4(a1)
+    80003c22:	415c                	lw	a5,4(a0)
+    80003c24:	c1dc                	sw	a5,4(a1)
   st->type = ip->type;
-    80003994:	04451783          	lh	a5,68(a0)
-    80003998:	00f59423          	sh	a5,8(a1)
+    80003c26:	04451783          	lh	a5,68(a0)
+    80003c2a:	00f59423          	sh	a5,8(a1)
   st->nlink = ip->nlink;
-    8000399c:	04a51783          	lh	a5,74(a0)
-    800039a0:	00f59523          	sh	a5,10(a1)
+    80003c2e:	04a51783          	lh	a5,74(a0)
+    80003c32:	00f59523          	sh	a5,10(a1)
   st->size = ip->size;
-    800039a4:	04c56783          	lwu	a5,76(a0)
-    800039a8:	e99c                	sd	a5,16(a1)
+    80003c36:	04c56783          	lwu	a5,76(a0)
+    80003c3a:	e99c                	sd	a5,16(a1)
 }
-    800039aa:	6422                	ld	s0,8(sp)
-    800039ac:	0141                	addi	sp,sp,16
-    800039ae:	8082                	ret
+    80003c3c:	6422                	ld	s0,8(sp)
+    80003c3e:	0141                	addi	sp,sp,16
+    80003c40:	8082                	ret
 
-00000000800039b0 <readi>:
+0000000080003c42 <readi>:
 readi(struct inode *ip, int user_dst, uint64 dst, uint off, uint n)
 {
   uint tot, m;
   struct buf *bp;
 
   if(off > ip->size || off + n < off)
-    800039b0:	457c                	lw	a5,76(a0)
-    800039b2:	0ed7e963          	bltu	a5,a3,80003aa4 <readi+0xf4>
+    80003c42:	457c                	lw	a5,76(a0)
+    80003c44:	0ed7e963          	bltu	a5,a3,80003d36 <readi+0xf4>
 {
-    800039b6:	7159                	addi	sp,sp,-112
-    800039b8:	f486                	sd	ra,104(sp)
-    800039ba:	f0a2                	sd	s0,96(sp)
-    800039bc:	eca6                	sd	s1,88(sp)
-    800039be:	e8ca                	sd	s2,80(sp)
-    800039c0:	e4ce                	sd	s3,72(sp)
-    800039c2:	e0d2                	sd	s4,64(sp)
-    800039c4:	fc56                	sd	s5,56(sp)
-    800039c6:	f85a                	sd	s6,48(sp)
-    800039c8:	f45e                	sd	s7,40(sp)
-    800039ca:	f062                	sd	s8,32(sp)
-    800039cc:	ec66                	sd	s9,24(sp)
-    800039ce:	e86a                	sd	s10,16(sp)
-    800039d0:	e46e                	sd	s11,8(sp)
-    800039d2:	1880                	addi	s0,sp,112
-    800039d4:	8baa                	mv	s7,a0
-    800039d6:	8c2e                	mv	s8,a1
-    800039d8:	8ab2                	mv	s5,a2
-    800039da:	84b6                	mv	s1,a3
-    800039dc:	8b3a                	mv	s6,a4
+    80003c48:	7159                	addi	sp,sp,-112
+    80003c4a:	f486                	sd	ra,104(sp)
+    80003c4c:	f0a2                	sd	s0,96(sp)
+    80003c4e:	eca6                	sd	s1,88(sp)
+    80003c50:	e8ca                	sd	s2,80(sp)
+    80003c52:	e4ce                	sd	s3,72(sp)
+    80003c54:	e0d2                	sd	s4,64(sp)
+    80003c56:	fc56                	sd	s5,56(sp)
+    80003c58:	f85a                	sd	s6,48(sp)
+    80003c5a:	f45e                	sd	s7,40(sp)
+    80003c5c:	f062                	sd	s8,32(sp)
+    80003c5e:	ec66                	sd	s9,24(sp)
+    80003c60:	e86a                	sd	s10,16(sp)
+    80003c62:	e46e                	sd	s11,8(sp)
+    80003c64:	1880                	addi	s0,sp,112
+    80003c66:	8baa                	mv	s7,a0
+    80003c68:	8c2e                	mv	s8,a1
+    80003c6a:	8ab2                	mv	s5,a2
+    80003c6c:	84b6                	mv	s1,a3
+    80003c6e:	8b3a                	mv	s6,a4
   if(off > ip->size || off + n < off)
-    800039de:	9f35                	addw	a4,a4,a3
+    80003c70:	9f35                	addw	a4,a4,a3
     return 0;
-    800039e0:	4501                	li	a0,0
+    80003c72:	4501                	li	a0,0
   if(off > ip->size || off + n < off)
-    800039e2:	0ad76063          	bltu	a4,a3,80003a82 <readi+0xd2>
+    80003c74:	0ad76063          	bltu	a4,a3,80003d14 <readi+0xd2>
   if(off + n > ip->size)
-    800039e6:	00e7f463          	bgeu	a5,a4,800039ee <readi+0x3e>
+    80003c78:	00e7f463          	bgeu	a5,a4,80003c80 <readi+0x3e>
     n = ip->size - off;
-    800039ea:	40d78b3b          	subw	s6,a5,a3
+    80003c7c:	40d78b3b          	subw	s6,a5,a3
 
   for(tot=0; tot<n; tot+=m, off+=m, dst+=m){
-    800039ee:	0a0b0963          	beqz	s6,80003aa0 <readi+0xf0>
-    800039f2:	4981                	li	s3,0
+    80003c80:	0a0b0963          	beqz	s6,80003d32 <readi+0xf0>
+    80003c84:	4981                	li	s3,0
     bp = bread(ip->dev, bmap(ip, off/BSIZE));
     m = min(n - tot, BSIZE - off%BSIZE);
-    800039f4:	40000d13          	li	s10,1024
+    80003c86:	40000d13          	li	s10,1024
     if(either_copyout(user_dst, dst, bp->data + (off % BSIZE), m) == -1) {
-    800039f8:	5cfd                	li	s9,-1
-    800039fa:	a82d                	j	80003a34 <readi+0x84>
-    800039fc:	020a1d93          	slli	s11,s4,0x20
-    80003a00:	020ddd93          	srli	s11,s11,0x20
-    80003a04:	05890613          	addi	a2,s2,88
-    80003a08:	86ee                	mv	a3,s11
-    80003a0a:	963a                	add	a2,a2,a4
-    80003a0c:	85d6                	mv	a1,s5
-    80003a0e:	8562                	mv	a0,s8
-    80003a10:	fffff097          	auipc	ra,0xfffff
-    80003a14:	9fa080e7          	jalr	-1542(ra) # 8000240a <either_copyout>
-    80003a18:	05950d63          	beq	a0,s9,80003a72 <readi+0xc2>
+    80003c8a:	5cfd                	li	s9,-1
+    80003c8c:	a82d                	j	80003cc6 <readi+0x84>
+    80003c8e:	020a1d93          	slli	s11,s4,0x20
+    80003c92:	020ddd93          	srli	s11,s11,0x20
+    80003c96:	05890613          	addi	a2,s2,88
+    80003c9a:	86ee                	mv	a3,s11
+    80003c9c:	963a                	add	a2,a2,a4
+    80003c9e:	85d6                	mv	a1,s5
+    80003ca0:	8562                	mv	a0,s8
+    80003ca2:	fffff097          	auipc	ra,0xfffff
+    80003ca6:	902080e7          	jalr	-1790(ra) # 800025a4 <either_copyout>
+    80003caa:	05950d63          	beq	a0,s9,80003d04 <readi+0xc2>
       brelse(bp);
       tot = -1;
       break;
     }
     brelse(bp);
-    80003a1c:	854a                	mv	a0,s2
-    80003a1e:	fffff097          	auipc	ra,0xfffff
-    80003a22:	60c080e7          	jalr	1548(ra) # 8000302a <brelse>
+    80003cae:	854a                	mv	a0,s2
+    80003cb0:	fffff097          	auipc	ra,0xfffff
+    80003cb4:	60c080e7          	jalr	1548(ra) # 800032bc <brelse>
   for(tot=0; tot<n; tot+=m, off+=m, dst+=m){
-    80003a26:	013a09bb          	addw	s3,s4,s3
-    80003a2a:	009a04bb          	addw	s1,s4,s1
-    80003a2e:	9aee                	add	s5,s5,s11
-    80003a30:	0569f763          	bgeu	s3,s6,80003a7e <readi+0xce>
+    80003cb8:	013a09bb          	addw	s3,s4,s3
+    80003cbc:	009a04bb          	addw	s1,s4,s1
+    80003cc0:	9aee                	add	s5,s5,s11
+    80003cc2:	0569f763          	bgeu	s3,s6,80003d10 <readi+0xce>
     bp = bread(ip->dev, bmap(ip, off/BSIZE));
-    80003a34:	000ba903          	lw	s2,0(s7)
-    80003a38:	00a4d59b          	srliw	a1,s1,0xa
-    80003a3c:	855e                	mv	a0,s7
-    80003a3e:	00000097          	auipc	ra,0x0
-    80003a42:	8ac080e7          	jalr	-1876(ra) # 800032ea <bmap>
-    80003a46:	0005059b          	sext.w	a1,a0
-    80003a4a:	854a                	mv	a0,s2
-    80003a4c:	fffff097          	auipc	ra,0xfffff
-    80003a50:	4ae080e7          	jalr	1198(ra) # 80002efa <bread>
-    80003a54:	892a                	mv	s2,a0
+    80003cc6:	000ba903          	lw	s2,0(s7)
+    80003cca:	00a4d59b          	srliw	a1,s1,0xa
+    80003cce:	855e                	mv	a0,s7
+    80003cd0:	00000097          	auipc	ra,0x0
+    80003cd4:	8ac080e7          	jalr	-1876(ra) # 8000357c <bmap>
+    80003cd8:	0005059b          	sext.w	a1,a0
+    80003cdc:	854a                	mv	a0,s2
+    80003cde:	fffff097          	auipc	ra,0xfffff
+    80003ce2:	4ae080e7          	jalr	1198(ra) # 8000318c <bread>
+    80003ce6:	892a                	mv	s2,a0
     m = min(n - tot, BSIZE - off%BSIZE);
-    80003a56:	3ff4f713          	andi	a4,s1,1023
-    80003a5a:	40ed07bb          	subw	a5,s10,a4
-    80003a5e:	413b06bb          	subw	a3,s6,s3
-    80003a62:	8a3e                	mv	s4,a5
-    80003a64:	2781                	sext.w	a5,a5
-    80003a66:	0006861b          	sext.w	a2,a3
-    80003a6a:	f8f679e3          	bgeu	a2,a5,800039fc <readi+0x4c>
-    80003a6e:	8a36                	mv	s4,a3
-    80003a70:	b771                	j	800039fc <readi+0x4c>
+    80003ce8:	3ff4f713          	andi	a4,s1,1023
+    80003cec:	40ed07bb          	subw	a5,s10,a4
+    80003cf0:	413b06bb          	subw	a3,s6,s3
+    80003cf4:	8a3e                	mv	s4,a5
+    80003cf6:	2781                	sext.w	a5,a5
+    80003cf8:	0006861b          	sext.w	a2,a3
+    80003cfc:	f8f679e3          	bgeu	a2,a5,80003c8e <readi+0x4c>
+    80003d00:	8a36                	mv	s4,a3
+    80003d02:	b771                	j	80003c8e <readi+0x4c>
       brelse(bp);
-    80003a72:	854a                	mv	a0,s2
-    80003a74:	fffff097          	auipc	ra,0xfffff
-    80003a78:	5b6080e7          	jalr	1462(ra) # 8000302a <brelse>
+    80003d04:	854a                	mv	a0,s2
+    80003d06:	fffff097          	auipc	ra,0xfffff
+    80003d0a:	5b6080e7          	jalr	1462(ra) # 800032bc <brelse>
       tot = -1;
-    80003a7c:	59fd                	li	s3,-1
+    80003d0e:	59fd                	li	s3,-1
   }
   return tot;
-    80003a7e:	0009851b          	sext.w	a0,s3
+    80003d10:	0009851b          	sext.w	a0,s3
 }
-    80003a82:	70a6                	ld	ra,104(sp)
-    80003a84:	7406                	ld	s0,96(sp)
-    80003a86:	64e6                	ld	s1,88(sp)
-    80003a88:	6946                	ld	s2,80(sp)
-    80003a8a:	69a6                	ld	s3,72(sp)
-    80003a8c:	6a06                	ld	s4,64(sp)
-    80003a8e:	7ae2                	ld	s5,56(sp)
-    80003a90:	7b42                	ld	s6,48(sp)
-    80003a92:	7ba2                	ld	s7,40(sp)
-    80003a94:	7c02                	ld	s8,32(sp)
-    80003a96:	6ce2                	ld	s9,24(sp)
-    80003a98:	6d42                	ld	s10,16(sp)
-    80003a9a:	6da2                	ld	s11,8(sp)
-    80003a9c:	6165                	addi	sp,sp,112
-    80003a9e:	8082                	ret
+    80003d14:	70a6                	ld	ra,104(sp)
+    80003d16:	7406                	ld	s0,96(sp)
+    80003d18:	64e6                	ld	s1,88(sp)
+    80003d1a:	6946                	ld	s2,80(sp)
+    80003d1c:	69a6                	ld	s3,72(sp)
+    80003d1e:	6a06                	ld	s4,64(sp)
+    80003d20:	7ae2                	ld	s5,56(sp)
+    80003d22:	7b42                	ld	s6,48(sp)
+    80003d24:	7ba2                	ld	s7,40(sp)
+    80003d26:	7c02                	ld	s8,32(sp)
+    80003d28:	6ce2                	ld	s9,24(sp)
+    80003d2a:	6d42                	ld	s10,16(sp)
+    80003d2c:	6da2                	ld	s11,8(sp)
+    80003d2e:	6165                	addi	sp,sp,112
+    80003d30:	8082                	ret
   for(tot=0; tot<n; tot+=m, off+=m, dst+=m){
-    80003aa0:	89da                	mv	s3,s6
-    80003aa2:	bff1                	j	80003a7e <readi+0xce>
+    80003d32:	89da                	mv	s3,s6
+    80003d34:	bff1                	j	80003d10 <readi+0xce>
     return 0;
-    80003aa4:	4501                	li	a0,0
+    80003d36:	4501                	li	a0,0
 }
-    80003aa6:	8082                	ret
+    80003d38:	8082                	ret
 
-0000000080003aa8 <writei>:
+0000000080003d3a <writei>:
 writei(struct inode *ip, int user_src, uint64 src, uint off, uint n)
 {
   uint tot, m;
   struct buf *bp;
 
   if(off > ip->size || off + n < off)
-    80003aa8:	457c                	lw	a5,76(a0)
-    80003aaa:	10d7e863          	bltu	a5,a3,80003bba <writei+0x112>
+    80003d3a:	457c                	lw	a5,76(a0)
+    80003d3c:	10d7e863          	bltu	a5,a3,80003e4c <writei+0x112>
 {
-    80003aae:	7159                	addi	sp,sp,-112
-    80003ab0:	f486                	sd	ra,104(sp)
-    80003ab2:	f0a2                	sd	s0,96(sp)
-    80003ab4:	eca6                	sd	s1,88(sp)
-    80003ab6:	e8ca                	sd	s2,80(sp)
-    80003ab8:	e4ce                	sd	s3,72(sp)
-    80003aba:	e0d2                	sd	s4,64(sp)
-    80003abc:	fc56                	sd	s5,56(sp)
-    80003abe:	f85a                	sd	s6,48(sp)
-    80003ac0:	f45e                	sd	s7,40(sp)
-    80003ac2:	f062                	sd	s8,32(sp)
-    80003ac4:	ec66                	sd	s9,24(sp)
-    80003ac6:	e86a                	sd	s10,16(sp)
-    80003ac8:	e46e                	sd	s11,8(sp)
-    80003aca:	1880                	addi	s0,sp,112
-    80003acc:	8b2a                	mv	s6,a0
-    80003ace:	8c2e                	mv	s8,a1
-    80003ad0:	8ab2                	mv	s5,a2
-    80003ad2:	8936                	mv	s2,a3
-    80003ad4:	8bba                	mv	s7,a4
+    80003d40:	7159                	addi	sp,sp,-112
+    80003d42:	f486                	sd	ra,104(sp)
+    80003d44:	f0a2                	sd	s0,96(sp)
+    80003d46:	eca6                	sd	s1,88(sp)
+    80003d48:	e8ca                	sd	s2,80(sp)
+    80003d4a:	e4ce                	sd	s3,72(sp)
+    80003d4c:	e0d2                	sd	s4,64(sp)
+    80003d4e:	fc56                	sd	s5,56(sp)
+    80003d50:	f85a                	sd	s6,48(sp)
+    80003d52:	f45e                	sd	s7,40(sp)
+    80003d54:	f062                	sd	s8,32(sp)
+    80003d56:	ec66                	sd	s9,24(sp)
+    80003d58:	e86a                	sd	s10,16(sp)
+    80003d5a:	e46e                	sd	s11,8(sp)
+    80003d5c:	1880                	addi	s0,sp,112
+    80003d5e:	8b2a                	mv	s6,a0
+    80003d60:	8c2e                	mv	s8,a1
+    80003d62:	8ab2                	mv	s5,a2
+    80003d64:	8936                	mv	s2,a3
+    80003d66:	8bba                	mv	s7,a4
   if(off > ip->size || off + n < off)
-    80003ad6:	00e687bb          	addw	a5,a3,a4
-    80003ada:	0ed7e263          	bltu	a5,a3,80003bbe <writei+0x116>
+    80003d68:	00e687bb          	addw	a5,a3,a4
+    80003d6c:	0ed7e263          	bltu	a5,a3,80003e50 <writei+0x116>
     return -1;
   if(off + n > MAXFILE*BSIZE)
-    80003ade:	00043737          	lui	a4,0x43
-    80003ae2:	0ef76063          	bltu	a4,a5,80003bc2 <writei+0x11a>
+    80003d70:	00043737          	lui	a4,0x43
+    80003d74:	0ef76063          	bltu	a4,a5,80003e54 <writei+0x11a>
     return -1;
 
   for(tot=0; tot<n; tot+=m, off+=m, src+=m){
-    80003ae6:	0c0b8863          	beqz	s7,80003bb6 <writei+0x10e>
-    80003aea:	4a01                	li	s4,0
+    80003d78:	0c0b8863          	beqz	s7,80003e48 <writei+0x10e>
+    80003d7c:	4a01                	li	s4,0
     bp = bread(ip->dev, bmap(ip, off/BSIZE));
     m = min(n - tot, BSIZE - off%BSIZE);
-    80003aec:	40000d13          	li	s10,1024
+    80003d7e:	40000d13          	li	s10,1024
     if(either_copyin(bp->data + (off % BSIZE), user_src, src, m) == -1) {
-    80003af0:	5cfd                	li	s9,-1
-    80003af2:	a091                	j	80003b36 <writei+0x8e>
-    80003af4:	02099d93          	slli	s11,s3,0x20
-    80003af8:	020ddd93          	srli	s11,s11,0x20
-    80003afc:	05848513          	addi	a0,s1,88
-    80003b00:	86ee                	mv	a3,s11
-    80003b02:	8656                	mv	a2,s5
-    80003b04:	85e2                	mv	a1,s8
-    80003b06:	953a                	add	a0,a0,a4
-    80003b08:	fffff097          	auipc	ra,0xfffff
-    80003b0c:	958080e7          	jalr	-1704(ra) # 80002460 <either_copyin>
-    80003b10:	07950263          	beq	a0,s9,80003b74 <writei+0xcc>
+    80003d82:	5cfd                	li	s9,-1
+    80003d84:	a091                	j	80003dc8 <writei+0x8e>
+    80003d86:	02099d93          	slli	s11,s3,0x20
+    80003d8a:	020ddd93          	srli	s11,s11,0x20
+    80003d8e:	05848513          	addi	a0,s1,88
+    80003d92:	86ee                	mv	a3,s11
+    80003d94:	8656                	mv	a2,s5
+    80003d96:	85e2                	mv	a1,s8
+    80003d98:	953a                	add	a0,a0,a4
+    80003d9a:	fffff097          	auipc	ra,0xfffff
+    80003d9e:	860080e7          	jalr	-1952(ra) # 800025fa <either_copyin>
+    80003da2:	07950263          	beq	a0,s9,80003e06 <writei+0xcc>
       brelse(bp);
       break;
     }
     log_write(bp);
-    80003b14:	8526                	mv	a0,s1
-    80003b16:	00000097          	auipc	ra,0x0
-    80003b1a:	798080e7          	jalr	1944(ra) # 800042ae <log_write>
+    80003da6:	8526                	mv	a0,s1
+    80003da8:	00000097          	auipc	ra,0x0
+    80003dac:	798080e7          	jalr	1944(ra) # 80004540 <log_write>
     brelse(bp);
-    80003b1e:	8526                	mv	a0,s1
-    80003b20:	fffff097          	auipc	ra,0xfffff
-    80003b24:	50a080e7          	jalr	1290(ra) # 8000302a <brelse>
+    80003db0:	8526                	mv	a0,s1
+    80003db2:	fffff097          	auipc	ra,0xfffff
+    80003db6:	50a080e7          	jalr	1290(ra) # 800032bc <brelse>
   for(tot=0; tot<n; tot+=m, off+=m, src+=m){
-    80003b28:	01498a3b          	addw	s4,s3,s4
-    80003b2c:	0129893b          	addw	s2,s3,s2
-    80003b30:	9aee                	add	s5,s5,s11
-    80003b32:	057a7663          	bgeu	s4,s7,80003b7e <writei+0xd6>
+    80003dba:	01498a3b          	addw	s4,s3,s4
+    80003dbe:	0129893b          	addw	s2,s3,s2
+    80003dc2:	9aee                	add	s5,s5,s11
+    80003dc4:	057a7663          	bgeu	s4,s7,80003e10 <writei+0xd6>
     bp = bread(ip->dev, bmap(ip, off/BSIZE));
-    80003b36:	000b2483          	lw	s1,0(s6)
-    80003b3a:	00a9559b          	srliw	a1,s2,0xa
-    80003b3e:	855a                	mv	a0,s6
-    80003b40:	fffff097          	auipc	ra,0xfffff
-    80003b44:	7aa080e7          	jalr	1962(ra) # 800032ea <bmap>
-    80003b48:	0005059b          	sext.w	a1,a0
-    80003b4c:	8526                	mv	a0,s1
-    80003b4e:	fffff097          	auipc	ra,0xfffff
-    80003b52:	3ac080e7          	jalr	940(ra) # 80002efa <bread>
-    80003b56:	84aa                	mv	s1,a0
+    80003dc8:	000b2483          	lw	s1,0(s6)
+    80003dcc:	00a9559b          	srliw	a1,s2,0xa
+    80003dd0:	855a                	mv	a0,s6
+    80003dd2:	fffff097          	auipc	ra,0xfffff
+    80003dd6:	7aa080e7          	jalr	1962(ra) # 8000357c <bmap>
+    80003dda:	0005059b          	sext.w	a1,a0
+    80003dde:	8526                	mv	a0,s1
+    80003de0:	fffff097          	auipc	ra,0xfffff
+    80003de4:	3ac080e7          	jalr	940(ra) # 8000318c <bread>
+    80003de8:	84aa                	mv	s1,a0
     m = min(n - tot, BSIZE - off%BSIZE);
-    80003b58:	3ff97713          	andi	a4,s2,1023
-    80003b5c:	40ed07bb          	subw	a5,s10,a4
-    80003b60:	414b86bb          	subw	a3,s7,s4
-    80003b64:	89be                	mv	s3,a5
-    80003b66:	2781                	sext.w	a5,a5
-    80003b68:	0006861b          	sext.w	a2,a3
-    80003b6c:	f8f674e3          	bgeu	a2,a5,80003af4 <writei+0x4c>
-    80003b70:	89b6                	mv	s3,a3
-    80003b72:	b749                	j	80003af4 <writei+0x4c>
+    80003dea:	3ff97713          	andi	a4,s2,1023
+    80003dee:	40ed07bb          	subw	a5,s10,a4
+    80003df2:	414b86bb          	subw	a3,s7,s4
+    80003df6:	89be                	mv	s3,a5
+    80003df8:	2781                	sext.w	a5,a5
+    80003dfa:	0006861b          	sext.w	a2,a3
+    80003dfe:	f8f674e3          	bgeu	a2,a5,80003d86 <writei+0x4c>
+    80003e02:	89b6                	mv	s3,a3
+    80003e04:	b749                	j	80003d86 <writei+0x4c>
       brelse(bp);
-    80003b74:	8526                	mv	a0,s1
-    80003b76:	fffff097          	auipc	ra,0xfffff
-    80003b7a:	4b4080e7          	jalr	1204(ra) # 8000302a <brelse>
+    80003e06:	8526                	mv	a0,s1
+    80003e08:	fffff097          	auipc	ra,0xfffff
+    80003e0c:	4b4080e7          	jalr	1204(ra) # 800032bc <brelse>
   }
 
   if(off > ip->size)
-    80003b7e:	04cb2783          	lw	a5,76(s6)
-    80003b82:	0127f463          	bgeu	a5,s2,80003b8a <writei+0xe2>
+    80003e10:	04cb2783          	lw	a5,76(s6)
+    80003e14:	0127f463          	bgeu	a5,s2,80003e1c <writei+0xe2>
     ip->size = off;
-    80003b86:	052b2623          	sw	s2,76(s6)
+    80003e18:	052b2623          	sw	s2,76(s6)
 
   // write the i-node back to disk even if the size didn't change
   // because the loop above might have called bmap() and added a new
   // block to ip->addrs[].
   iupdate(ip);
-    80003b8a:	855a                	mv	a0,s6
-    80003b8c:	00000097          	auipc	ra,0x0
-    80003b90:	aa4080e7          	jalr	-1372(ra) # 80003630 <iupdate>
+    80003e1c:	855a                	mv	a0,s6
+    80003e1e:	00000097          	auipc	ra,0x0
+    80003e22:	aa4080e7          	jalr	-1372(ra) # 800038c2 <iupdate>
 
   return tot;
-    80003b94:	000a051b          	sext.w	a0,s4
+    80003e26:	000a051b          	sext.w	a0,s4
 }
-    80003b98:	70a6                	ld	ra,104(sp)
-    80003b9a:	7406                	ld	s0,96(sp)
-    80003b9c:	64e6                	ld	s1,88(sp)
-    80003b9e:	6946                	ld	s2,80(sp)
-    80003ba0:	69a6                	ld	s3,72(sp)
-    80003ba2:	6a06                	ld	s4,64(sp)
-    80003ba4:	7ae2                	ld	s5,56(sp)
-    80003ba6:	7b42                	ld	s6,48(sp)
-    80003ba8:	7ba2                	ld	s7,40(sp)
-    80003baa:	7c02                	ld	s8,32(sp)
-    80003bac:	6ce2                	ld	s9,24(sp)
-    80003bae:	6d42                	ld	s10,16(sp)
-    80003bb0:	6da2                	ld	s11,8(sp)
-    80003bb2:	6165                	addi	sp,sp,112
-    80003bb4:	8082                	ret
+    80003e2a:	70a6                	ld	ra,104(sp)
+    80003e2c:	7406                	ld	s0,96(sp)
+    80003e2e:	64e6                	ld	s1,88(sp)
+    80003e30:	6946                	ld	s2,80(sp)
+    80003e32:	69a6                	ld	s3,72(sp)
+    80003e34:	6a06                	ld	s4,64(sp)
+    80003e36:	7ae2                	ld	s5,56(sp)
+    80003e38:	7b42                	ld	s6,48(sp)
+    80003e3a:	7ba2                	ld	s7,40(sp)
+    80003e3c:	7c02                	ld	s8,32(sp)
+    80003e3e:	6ce2                	ld	s9,24(sp)
+    80003e40:	6d42                	ld	s10,16(sp)
+    80003e42:	6da2                	ld	s11,8(sp)
+    80003e44:	6165                	addi	sp,sp,112
+    80003e46:	8082                	ret
   for(tot=0; tot<n; tot+=m, off+=m, src+=m){
-    80003bb6:	8a5e                	mv	s4,s7
-    80003bb8:	bfc9                	j	80003b8a <writei+0xe2>
+    80003e48:	8a5e                	mv	s4,s7
+    80003e4a:	bfc9                	j	80003e1c <writei+0xe2>
     return -1;
-    80003bba:	557d                	li	a0,-1
+    80003e4c:	557d                	li	a0,-1
 }
-    80003bbc:	8082                	ret
+    80003e4e:	8082                	ret
     return -1;
-    80003bbe:	557d                	li	a0,-1
-    80003bc0:	bfe1                	j	80003b98 <writei+0xf0>
+    80003e50:	557d                	li	a0,-1
+    80003e52:	bfe1                	j	80003e2a <writei+0xf0>
     return -1;
-    80003bc2:	557d                	li	a0,-1
-    80003bc4:	bfd1                	j	80003b98 <writei+0xf0>
+    80003e54:	557d                	li	a0,-1
+    80003e56:	bfd1                	j	80003e2a <writei+0xf0>
 
-0000000080003bc6 <namecmp>:
+0000000080003e58 <namecmp>:
 
 // Directories
 
 int
 namecmp(const char *s, const char *t)
 {
-    80003bc6:	1141                	addi	sp,sp,-16
-    80003bc8:	e406                	sd	ra,8(sp)
-    80003bca:	e022                	sd	s0,0(sp)
-    80003bcc:	0800                	addi	s0,sp,16
+    80003e58:	1141                	addi	sp,sp,-16
+    80003e5a:	e406                	sd	ra,8(sp)
+    80003e5c:	e022                	sd	s0,0(sp)
+    80003e5e:	0800                	addi	s0,sp,16
   return strncmp(s, t, DIRSIZ);
-    80003bce:	4639                	li	a2,14
-    80003bd0:	ffffd097          	auipc	ra,0xffffd
-    80003bd4:	1cc080e7          	jalr	460(ra) # 80000d9c <strncmp>
+    80003e60:	4639                	li	a2,14
+    80003e62:	ffffd097          	auipc	ra,0xffffd
+    80003e66:	f3a080e7          	jalr	-198(ra) # 80000d9c <strncmp>
 }
-    80003bd8:	60a2                	ld	ra,8(sp)
-    80003bda:	6402                	ld	s0,0(sp)
-    80003bdc:	0141                	addi	sp,sp,16
-    80003bde:	8082                	ret
+    80003e6a:	60a2                	ld	ra,8(sp)
+    80003e6c:	6402                	ld	s0,0(sp)
+    80003e6e:	0141                	addi	sp,sp,16
+    80003e70:	8082                	ret
 
-0000000080003be0 <dirlookup>:
+0000000080003e72 <dirlookup>:
 
 // Look for a directory entry in a directory.
 // If found, set *poff to byte offset of entry.
 struct inode*
 dirlookup(struct inode *dp, char *name, uint *poff)
 {
-    80003be0:	7139                	addi	sp,sp,-64
-    80003be2:	fc06                	sd	ra,56(sp)
-    80003be4:	f822                	sd	s0,48(sp)
-    80003be6:	f426                	sd	s1,40(sp)
-    80003be8:	f04a                	sd	s2,32(sp)
-    80003bea:	ec4e                	sd	s3,24(sp)
-    80003bec:	e852                	sd	s4,16(sp)
-    80003bee:	0080                	addi	s0,sp,64
+    80003e72:	7139                	addi	sp,sp,-64
+    80003e74:	fc06                	sd	ra,56(sp)
+    80003e76:	f822                	sd	s0,48(sp)
+    80003e78:	f426                	sd	s1,40(sp)
+    80003e7a:	f04a                	sd	s2,32(sp)
+    80003e7c:	ec4e                	sd	s3,24(sp)
+    80003e7e:	e852                	sd	s4,16(sp)
+    80003e80:	0080                	addi	s0,sp,64
   uint off, inum;
   struct dirent de;
 
   if(dp->type != T_DIR)
-    80003bf0:	04451703          	lh	a4,68(a0)
-    80003bf4:	4785                	li	a5,1
-    80003bf6:	00f71a63          	bne	a4,a5,80003c0a <dirlookup+0x2a>
-    80003bfa:	892a                	mv	s2,a0
-    80003bfc:	89ae                	mv	s3,a1
-    80003bfe:	8a32                	mv	s4,a2
+    80003e82:	04451703          	lh	a4,68(a0)
+    80003e86:	4785                	li	a5,1
+    80003e88:	00f71a63          	bne	a4,a5,80003e9c <dirlookup+0x2a>
+    80003e8c:	892a                	mv	s2,a0
+    80003e8e:	89ae                	mv	s3,a1
+    80003e90:	8a32                	mv	s4,a2
     panic("dirlookup not DIR");
 
   for(off = 0; off < dp->size; off += sizeof(de)){
-    80003c00:	457c                	lw	a5,76(a0)
-    80003c02:	4481                	li	s1,0
+    80003e92:	457c                	lw	a5,76(a0)
+    80003e94:	4481                	li	s1,0
       inum = de.inum;
       return iget(dp->dev, inum);
     }
   }
 
   return 0;
-    80003c04:	4501                	li	a0,0
+    80003e96:	4501                	li	a0,0
   for(off = 0; off < dp->size; off += sizeof(de)){
-    80003c06:	e79d                	bnez	a5,80003c34 <dirlookup+0x54>
-    80003c08:	a8a5                	j	80003c80 <dirlookup+0xa0>
+    80003e98:	e79d                	bnez	a5,80003ec6 <dirlookup+0x54>
+    80003e9a:	a8a5                	j	80003f12 <dirlookup+0xa0>
     panic("dirlookup not DIR");
-    80003c0a:	00005517          	auipc	a0,0x5
-    80003c0e:	a6650513          	addi	a0,a0,-1434 # 80008670 <syscalls+0x1b0>
-    80003c12:	ffffd097          	auipc	ra,0xffffd
-    80003c16:	928080e7          	jalr	-1752(ra) # 8000053a <panic>
+    80003e9c:	00005517          	auipc	a0,0x5
+    80003ea0:	84c50513          	addi	a0,a0,-1972 # 800086e8 <syscalls+0x1b8>
+    80003ea4:	ffffc097          	auipc	ra,0xffffc
+    80003ea8:	696080e7          	jalr	1686(ra) # 8000053a <panic>
       panic("dirlookup read");
-    80003c1a:	00005517          	auipc	a0,0x5
-    80003c1e:	a6e50513          	addi	a0,a0,-1426 # 80008688 <syscalls+0x1c8>
-    80003c22:	ffffd097          	auipc	ra,0xffffd
-    80003c26:	918080e7          	jalr	-1768(ra) # 8000053a <panic>
+    80003eac:	00005517          	auipc	a0,0x5
+    80003eb0:	85450513          	addi	a0,a0,-1964 # 80008700 <syscalls+0x1d0>
+    80003eb4:	ffffc097          	auipc	ra,0xffffc
+    80003eb8:	686080e7          	jalr	1670(ra) # 8000053a <panic>
   for(off = 0; off < dp->size; off += sizeof(de)){
-    80003c2a:	24c1                	addiw	s1,s1,16
-    80003c2c:	04c92783          	lw	a5,76(s2)
-    80003c30:	04f4f763          	bgeu	s1,a5,80003c7e <dirlookup+0x9e>
+    80003ebc:	24c1                	addiw	s1,s1,16
+    80003ebe:	04c92783          	lw	a5,76(s2)
+    80003ec2:	04f4f763          	bgeu	s1,a5,80003f10 <dirlookup+0x9e>
     if(readi(dp, 0, (uint64)&de, off, sizeof(de)) != sizeof(de))
-    80003c34:	4741                	li	a4,16
-    80003c36:	86a6                	mv	a3,s1
-    80003c38:	fc040613          	addi	a2,s0,-64
-    80003c3c:	4581                	li	a1,0
-    80003c3e:	854a                	mv	a0,s2
-    80003c40:	00000097          	auipc	ra,0x0
-    80003c44:	d70080e7          	jalr	-656(ra) # 800039b0 <readi>
-    80003c48:	47c1                	li	a5,16
-    80003c4a:	fcf518e3          	bne	a0,a5,80003c1a <dirlookup+0x3a>
+    80003ec6:	4741                	li	a4,16
+    80003ec8:	86a6                	mv	a3,s1
+    80003eca:	fc040613          	addi	a2,s0,-64
+    80003ece:	4581                	li	a1,0
+    80003ed0:	854a                	mv	a0,s2
+    80003ed2:	00000097          	auipc	ra,0x0
+    80003ed6:	d70080e7          	jalr	-656(ra) # 80003c42 <readi>
+    80003eda:	47c1                	li	a5,16
+    80003edc:	fcf518e3          	bne	a0,a5,80003eac <dirlookup+0x3a>
     if(de.inum == 0)
-    80003c4e:	fc045783          	lhu	a5,-64(s0)
-    80003c52:	dfe1                	beqz	a5,80003c2a <dirlookup+0x4a>
+    80003ee0:	fc045783          	lhu	a5,-64(s0)
+    80003ee4:	dfe1                	beqz	a5,80003ebc <dirlookup+0x4a>
     if(namecmp(name, de.name) == 0){
-    80003c54:	fc240593          	addi	a1,s0,-62
-    80003c58:	854e                	mv	a0,s3
-    80003c5a:	00000097          	auipc	ra,0x0
-    80003c5e:	f6c080e7          	jalr	-148(ra) # 80003bc6 <namecmp>
-    80003c62:	f561                	bnez	a0,80003c2a <dirlookup+0x4a>
+    80003ee6:	fc240593          	addi	a1,s0,-62
+    80003eea:	854e                	mv	a0,s3
+    80003eec:	00000097          	auipc	ra,0x0
+    80003ef0:	f6c080e7          	jalr	-148(ra) # 80003e58 <namecmp>
+    80003ef4:	f561                	bnez	a0,80003ebc <dirlookup+0x4a>
       if(poff)
-    80003c64:	000a0463          	beqz	s4,80003c6c <dirlookup+0x8c>
+    80003ef6:	000a0463          	beqz	s4,80003efe <dirlookup+0x8c>
         *poff = off;
-    80003c68:	009a2023          	sw	s1,0(s4)
+    80003efa:	009a2023          	sw	s1,0(s4)
       return iget(dp->dev, inum);
-    80003c6c:	fc045583          	lhu	a1,-64(s0)
-    80003c70:	00092503          	lw	a0,0(s2)
-    80003c74:	fffff097          	auipc	ra,0xfffff
-    80003c78:	752080e7          	jalr	1874(ra) # 800033c6 <iget>
-    80003c7c:	a011                	j	80003c80 <dirlookup+0xa0>
+    80003efe:	fc045583          	lhu	a1,-64(s0)
+    80003f02:	00092503          	lw	a0,0(s2)
+    80003f06:	fffff097          	auipc	ra,0xfffff
+    80003f0a:	752080e7          	jalr	1874(ra) # 80003658 <iget>
+    80003f0e:	a011                	j	80003f12 <dirlookup+0xa0>
   return 0;
-    80003c7e:	4501                	li	a0,0
+    80003f10:	4501                	li	a0,0
 }
-    80003c80:	70e2                	ld	ra,56(sp)
-    80003c82:	7442                	ld	s0,48(sp)
-    80003c84:	74a2                	ld	s1,40(sp)
-    80003c86:	7902                	ld	s2,32(sp)
-    80003c88:	69e2                	ld	s3,24(sp)
-    80003c8a:	6a42                	ld	s4,16(sp)
-    80003c8c:	6121                	addi	sp,sp,64
-    80003c8e:	8082                	ret
+    80003f12:	70e2                	ld	ra,56(sp)
+    80003f14:	7442                	ld	s0,48(sp)
+    80003f16:	74a2                	ld	s1,40(sp)
+    80003f18:	7902                	ld	s2,32(sp)
+    80003f1a:	69e2                	ld	s3,24(sp)
+    80003f1c:	6a42                	ld	s4,16(sp)
+    80003f1e:	6121                	addi	sp,sp,64
+    80003f20:	8082                	ret
 
-0000000080003c90 <namex>:
+0000000080003f22 <namex>:
 // If parent != 0, return the inode for the parent and copy the final
 // path element into name, which must have room for DIRSIZ bytes.
 // Must be called inside a transaction since it calls iput().
 static struct inode*
 namex(char *path, int nameiparent, char *name)
 {
-    80003c90:	711d                	addi	sp,sp,-96
-    80003c92:	ec86                	sd	ra,88(sp)
-    80003c94:	e8a2                	sd	s0,80(sp)
-    80003c96:	e4a6                	sd	s1,72(sp)
-    80003c98:	e0ca                	sd	s2,64(sp)
-    80003c9a:	fc4e                	sd	s3,56(sp)
-    80003c9c:	f852                	sd	s4,48(sp)
-    80003c9e:	f456                	sd	s5,40(sp)
-    80003ca0:	f05a                	sd	s6,32(sp)
-    80003ca2:	ec5e                	sd	s7,24(sp)
-    80003ca4:	e862                	sd	s8,16(sp)
-    80003ca6:	e466                	sd	s9,8(sp)
-    80003ca8:	e06a                	sd	s10,0(sp)
-    80003caa:	1080                	addi	s0,sp,96
-    80003cac:	84aa                	mv	s1,a0
-    80003cae:	8b2e                	mv	s6,a1
-    80003cb0:	8ab2                	mv	s5,a2
+    80003f22:	711d                	addi	sp,sp,-96
+    80003f24:	ec86                	sd	ra,88(sp)
+    80003f26:	e8a2                	sd	s0,80(sp)
+    80003f28:	e4a6                	sd	s1,72(sp)
+    80003f2a:	e0ca                	sd	s2,64(sp)
+    80003f2c:	fc4e                	sd	s3,56(sp)
+    80003f2e:	f852                	sd	s4,48(sp)
+    80003f30:	f456                	sd	s5,40(sp)
+    80003f32:	f05a                	sd	s6,32(sp)
+    80003f34:	ec5e                	sd	s7,24(sp)
+    80003f36:	e862                	sd	s8,16(sp)
+    80003f38:	e466                	sd	s9,8(sp)
+    80003f3a:	e06a                	sd	s10,0(sp)
+    80003f3c:	1080                	addi	s0,sp,96
+    80003f3e:	84aa                	mv	s1,a0
+    80003f40:	8b2e                	mv	s6,a1
+    80003f42:	8ab2                	mv	s5,a2
   struct inode *ip, *next;
 
   if(*path == '/')
-    80003cb2:	00054703          	lbu	a4,0(a0)
-    80003cb6:	02f00793          	li	a5,47
-    80003cba:	02f70363          	beq	a4,a5,80003ce0 <namex+0x50>
+    80003f44:	00054703          	lbu	a4,0(a0)
+    80003f48:	02f00793          	li	a5,47
+    80003f4c:	02f70363          	beq	a4,a5,80003f72 <namex+0x50>
     ip = iget(ROOTDEV, ROOTINO);
   else
     ip = idup(myproc()->cwd);
-    80003cbe:	ffffe097          	auipc	ra,0xffffe
-    80003cc2:	cd8080e7          	jalr	-808(ra) # 80001996 <myproc>
-    80003cc6:	15053503          	ld	a0,336(a0)
-    80003cca:	00000097          	auipc	ra,0x0
-    80003cce:	9f4080e7          	jalr	-1548(ra) # 800036be <idup>
-    80003cd2:	8a2a                	mv	s4,a0
+    80003f50:	ffffe097          	auipc	ra,0xffffe
+    80003f54:	af0080e7          	jalr	-1296(ra) # 80001a40 <myproc>
+    80003f58:	15053503          	ld	a0,336(a0)
+    80003f5c:	00000097          	auipc	ra,0x0
+    80003f60:	9f4080e7          	jalr	-1548(ra) # 80003950 <idup>
+    80003f64:	8a2a                	mv	s4,a0
   while(*path == '/')
-    80003cd4:	02f00913          	li	s2,47
+    80003f66:	02f00913          	li	s2,47
   if(len >= DIRSIZ)
-    80003cd8:	4cb5                	li	s9,13
+    80003f6a:	4cb5                	li	s9,13
   len = path - s;
-    80003cda:	4b81                	li	s7,0
+    80003f6c:	4b81                	li	s7,0
 
   while((path = skipelem(path, name)) != 0){
     ilock(ip);
     if(ip->type != T_DIR){
-    80003cdc:	4c05                	li	s8,1
-    80003cde:	a87d                	j	80003d9c <namex+0x10c>
+    80003f6e:	4c05                	li	s8,1
+    80003f70:	a87d                	j	8000402e <namex+0x10c>
     ip = iget(ROOTDEV, ROOTINO);
-    80003ce0:	4585                	li	a1,1
-    80003ce2:	4505                	li	a0,1
-    80003ce4:	fffff097          	auipc	ra,0xfffff
-    80003ce8:	6e2080e7          	jalr	1762(ra) # 800033c6 <iget>
-    80003cec:	8a2a                	mv	s4,a0
-    80003cee:	b7dd                	j	80003cd4 <namex+0x44>
+    80003f72:	4585                	li	a1,1
+    80003f74:	4505                	li	a0,1
+    80003f76:	fffff097          	auipc	ra,0xfffff
+    80003f7a:	6e2080e7          	jalr	1762(ra) # 80003658 <iget>
+    80003f7e:	8a2a                	mv	s4,a0
+    80003f80:	b7dd                	j	80003f66 <namex+0x44>
       iunlockput(ip);
-    80003cf0:	8552                	mv	a0,s4
-    80003cf2:	00000097          	auipc	ra,0x0
-    80003cf6:	c6c080e7          	jalr	-916(ra) # 8000395e <iunlockput>
+    80003f82:	8552                	mv	a0,s4
+    80003f84:	00000097          	auipc	ra,0x0
+    80003f88:	c6c080e7          	jalr	-916(ra) # 80003bf0 <iunlockput>
       return 0;
-    80003cfa:	4a01                	li	s4,0
+    80003f8c:	4a01                	li	s4,0
   if(nameiparent){
     iput(ip);
     return 0;
   }
   return ip;
 }
-    80003cfc:	8552                	mv	a0,s4
-    80003cfe:	60e6                	ld	ra,88(sp)
-    80003d00:	6446                	ld	s0,80(sp)
-    80003d02:	64a6                	ld	s1,72(sp)
-    80003d04:	6906                	ld	s2,64(sp)
-    80003d06:	79e2                	ld	s3,56(sp)
-    80003d08:	7a42                	ld	s4,48(sp)
-    80003d0a:	7aa2                	ld	s5,40(sp)
-    80003d0c:	7b02                	ld	s6,32(sp)
-    80003d0e:	6be2                	ld	s7,24(sp)
-    80003d10:	6c42                	ld	s8,16(sp)
-    80003d12:	6ca2                	ld	s9,8(sp)
-    80003d14:	6d02                	ld	s10,0(sp)
-    80003d16:	6125                	addi	sp,sp,96
-    80003d18:	8082                	ret
+    80003f8e:	8552                	mv	a0,s4
+    80003f90:	60e6                	ld	ra,88(sp)
+    80003f92:	6446                	ld	s0,80(sp)
+    80003f94:	64a6                	ld	s1,72(sp)
+    80003f96:	6906                	ld	s2,64(sp)
+    80003f98:	79e2                	ld	s3,56(sp)
+    80003f9a:	7a42                	ld	s4,48(sp)
+    80003f9c:	7aa2                	ld	s5,40(sp)
+    80003f9e:	7b02                	ld	s6,32(sp)
+    80003fa0:	6be2                	ld	s7,24(sp)
+    80003fa2:	6c42                	ld	s8,16(sp)
+    80003fa4:	6ca2                	ld	s9,8(sp)
+    80003fa6:	6d02                	ld	s10,0(sp)
+    80003fa8:	6125                	addi	sp,sp,96
+    80003faa:	8082                	ret
       iunlock(ip);
-    80003d1a:	8552                	mv	a0,s4
-    80003d1c:	00000097          	auipc	ra,0x0
-    80003d20:	aa2080e7          	jalr	-1374(ra) # 800037be <iunlock>
+    80003fac:	8552                	mv	a0,s4
+    80003fae:	00000097          	auipc	ra,0x0
+    80003fb2:	aa2080e7          	jalr	-1374(ra) # 80003a50 <iunlock>
       return ip;
-    80003d24:	bfe1                	j	80003cfc <namex+0x6c>
+    80003fb6:	bfe1                	j	80003f8e <namex+0x6c>
       iunlockput(ip);
-    80003d26:	8552                	mv	a0,s4
-    80003d28:	00000097          	auipc	ra,0x0
-    80003d2c:	c36080e7          	jalr	-970(ra) # 8000395e <iunlockput>
+    80003fb8:	8552                	mv	a0,s4
+    80003fba:	00000097          	auipc	ra,0x0
+    80003fbe:	c36080e7          	jalr	-970(ra) # 80003bf0 <iunlockput>
       return 0;
-    80003d30:	8a4e                	mv	s4,s3
-    80003d32:	b7e9                	j	80003cfc <namex+0x6c>
+    80003fc2:	8a4e                	mv	s4,s3
+    80003fc4:	b7e9                	j	80003f8e <namex+0x6c>
   len = path - s;
-    80003d34:	40998633          	sub	a2,s3,s1
-    80003d38:	00060d1b          	sext.w	s10,a2
+    80003fc6:	40998633          	sub	a2,s3,s1
+    80003fca:	00060d1b          	sext.w	s10,a2
   if(len >= DIRSIZ)
-    80003d3c:	09acd863          	bge	s9,s10,80003dcc <namex+0x13c>
+    80003fce:	09acd863          	bge	s9,s10,8000405e <namex+0x13c>
     memmove(name, s, DIRSIZ);
-    80003d40:	4639                	li	a2,14
-    80003d42:	85a6                	mv	a1,s1
-    80003d44:	8556                	mv	a0,s5
-    80003d46:	ffffd097          	auipc	ra,0xffffd
-    80003d4a:	fe2080e7          	jalr	-30(ra) # 80000d28 <memmove>
-    80003d4e:	84ce                	mv	s1,s3
+    80003fd2:	4639                	li	a2,14
+    80003fd4:	85a6                	mv	a1,s1
+    80003fd6:	8556                	mv	a0,s5
+    80003fd8:	ffffd097          	auipc	ra,0xffffd
+    80003fdc:	d50080e7          	jalr	-688(ra) # 80000d28 <memmove>
+    80003fe0:	84ce                	mv	s1,s3
   while(*path == '/')
-    80003d50:	0004c783          	lbu	a5,0(s1)
-    80003d54:	01279763          	bne	a5,s2,80003d62 <namex+0xd2>
+    80003fe2:	0004c783          	lbu	a5,0(s1)
+    80003fe6:	01279763          	bne	a5,s2,80003ff4 <namex+0xd2>
     path++;
-    80003d58:	0485                	addi	s1,s1,1
+    80003fea:	0485                	addi	s1,s1,1
   while(*path == '/')
-    80003d5a:	0004c783          	lbu	a5,0(s1)
-    80003d5e:	ff278de3          	beq	a5,s2,80003d58 <namex+0xc8>
+    80003fec:	0004c783          	lbu	a5,0(s1)
+    80003ff0:	ff278de3          	beq	a5,s2,80003fea <namex+0xc8>
     ilock(ip);
-    80003d62:	8552                	mv	a0,s4
-    80003d64:	00000097          	auipc	ra,0x0
-    80003d68:	998080e7          	jalr	-1640(ra) # 800036fc <ilock>
+    80003ff4:	8552                	mv	a0,s4
+    80003ff6:	00000097          	auipc	ra,0x0
+    80003ffa:	998080e7          	jalr	-1640(ra) # 8000398e <ilock>
     if(ip->type != T_DIR){
-    80003d6c:	044a1783          	lh	a5,68(s4)
-    80003d70:	f98790e3          	bne	a5,s8,80003cf0 <namex+0x60>
+    80003ffe:	044a1783          	lh	a5,68(s4)
+    80004002:	f98790e3          	bne	a5,s8,80003f82 <namex+0x60>
     if(nameiparent && *path == '\0'){
-    80003d74:	000b0563          	beqz	s6,80003d7e <namex+0xee>
-    80003d78:	0004c783          	lbu	a5,0(s1)
-    80003d7c:	dfd9                	beqz	a5,80003d1a <namex+0x8a>
+    80004006:	000b0563          	beqz	s6,80004010 <namex+0xee>
+    8000400a:	0004c783          	lbu	a5,0(s1)
+    8000400e:	dfd9                	beqz	a5,80003fac <namex+0x8a>
     if((next = dirlookup(ip, name, 0)) == 0){
-    80003d7e:	865e                	mv	a2,s7
-    80003d80:	85d6                	mv	a1,s5
-    80003d82:	8552                	mv	a0,s4
-    80003d84:	00000097          	auipc	ra,0x0
-    80003d88:	e5c080e7          	jalr	-420(ra) # 80003be0 <dirlookup>
-    80003d8c:	89aa                	mv	s3,a0
-    80003d8e:	dd41                	beqz	a0,80003d26 <namex+0x96>
+    80004010:	865e                	mv	a2,s7
+    80004012:	85d6                	mv	a1,s5
+    80004014:	8552                	mv	a0,s4
+    80004016:	00000097          	auipc	ra,0x0
+    8000401a:	e5c080e7          	jalr	-420(ra) # 80003e72 <dirlookup>
+    8000401e:	89aa                	mv	s3,a0
+    80004020:	dd41                	beqz	a0,80003fb8 <namex+0x96>
     iunlockput(ip);
-    80003d90:	8552                	mv	a0,s4
-    80003d92:	00000097          	auipc	ra,0x0
-    80003d96:	bcc080e7          	jalr	-1076(ra) # 8000395e <iunlockput>
+    80004022:	8552                	mv	a0,s4
+    80004024:	00000097          	auipc	ra,0x0
+    80004028:	bcc080e7          	jalr	-1076(ra) # 80003bf0 <iunlockput>
     ip = next;
-    80003d9a:	8a4e                	mv	s4,s3
+    8000402c:	8a4e                	mv	s4,s3
   while(*path == '/')
-    80003d9c:	0004c783          	lbu	a5,0(s1)
-    80003da0:	01279763          	bne	a5,s2,80003dae <namex+0x11e>
+    8000402e:	0004c783          	lbu	a5,0(s1)
+    80004032:	01279763          	bne	a5,s2,80004040 <namex+0x11e>
     path++;
-    80003da4:	0485                	addi	s1,s1,1
+    80004036:	0485                	addi	s1,s1,1
   while(*path == '/')
-    80003da6:	0004c783          	lbu	a5,0(s1)
-    80003daa:	ff278de3          	beq	a5,s2,80003da4 <namex+0x114>
+    80004038:	0004c783          	lbu	a5,0(s1)
+    8000403c:	ff278de3          	beq	a5,s2,80004036 <namex+0x114>
   if(*path == 0)
-    80003dae:	cb9d                	beqz	a5,80003de4 <namex+0x154>
+    80004040:	cb9d                	beqz	a5,80004076 <namex+0x154>
   while(*path != '/' && *path != 0)
-    80003db0:	0004c783          	lbu	a5,0(s1)
-    80003db4:	89a6                	mv	s3,s1
+    80004042:	0004c783          	lbu	a5,0(s1)
+    80004046:	89a6                	mv	s3,s1
   len = path - s;
-    80003db6:	8d5e                	mv	s10,s7
-    80003db8:	865e                	mv	a2,s7
+    80004048:	8d5e                	mv	s10,s7
+    8000404a:	865e                	mv	a2,s7
   while(*path != '/' && *path != 0)
-    80003dba:	01278963          	beq	a5,s2,80003dcc <namex+0x13c>
-    80003dbe:	dbbd                	beqz	a5,80003d34 <namex+0xa4>
+    8000404c:	01278963          	beq	a5,s2,8000405e <namex+0x13c>
+    80004050:	dbbd                	beqz	a5,80003fc6 <namex+0xa4>
     path++;
-    80003dc0:	0985                	addi	s3,s3,1
+    80004052:	0985                	addi	s3,s3,1
   while(*path != '/' && *path != 0)
-    80003dc2:	0009c783          	lbu	a5,0(s3)
-    80003dc6:	ff279ce3          	bne	a5,s2,80003dbe <namex+0x12e>
-    80003dca:	b7ad                	j	80003d34 <namex+0xa4>
+    80004054:	0009c783          	lbu	a5,0(s3)
+    80004058:	ff279ce3          	bne	a5,s2,80004050 <namex+0x12e>
+    8000405c:	b7ad                	j	80003fc6 <namex+0xa4>
     memmove(name, s, len);
-    80003dcc:	2601                	sext.w	a2,a2
-    80003dce:	85a6                	mv	a1,s1
-    80003dd0:	8556                	mv	a0,s5
-    80003dd2:	ffffd097          	auipc	ra,0xffffd
-    80003dd6:	f56080e7          	jalr	-170(ra) # 80000d28 <memmove>
+    8000405e:	2601                	sext.w	a2,a2
+    80004060:	85a6                	mv	a1,s1
+    80004062:	8556                	mv	a0,s5
+    80004064:	ffffd097          	auipc	ra,0xffffd
+    80004068:	cc4080e7          	jalr	-828(ra) # 80000d28 <memmove>
     name[len] = 0;
-    80003dda:	9d56                	add	s10,s10,s5
-    80003ddc:	000d0023          	sb	zero,0(s10)
-    80003de0:	84ce                	mv	s1,s3
-    80003de2:	b7bd                	j	80003d50 <namex+0xc0>
+    8000406c:	9d56                	add	s10,s10,s5
+    8000406e:	000d0023          	sb	zero,0(s10)
+    80004072:	84ce                	mv	s1,s3
+    80004074:	b7bd                	j	80003fe2 <namex+0xc0>
   if(nameiparent){
-    80003de4:	f00b0ce3          	beqz	s6,80003cfc <namex+0x6c>
+    80004076:	f00b0ce3          	beqz	s6,80003f8e <namex+0x6c>
     iput(ip);
-    80003de8:	8552                	mv	a0,s4
-    80003dea:	00000097          	auipc	ra,0x0
-    80003dee:	acc080e7          	jalr	-1332(ra) # 800038b6 <iput>
+    8000407a:	8552                	mv	a0,s4
+    8000407c:	00000097          	auipc	ra,0x0
+    80004080:	acc080e7          	jalr	-1332(ra) # 80003b48 <iput>
     return 0;
-    80003df2:	4a01                	li	s4,0
-    80003df4:	b721                	j	80003cfc <namex+0x6c>
+    80004084:	4a01                	li	s4,0
+    80004086:	b721                	j	80003f8e <namex+0x6c>
 
-0000000080003df6 <dirlink>:
+0000000080004088 <dirlink>:
 {
-    80003df6:	7139                	addi	sp,sp,-64
-    80003df8:	fc06                	sd	ra,56(sp)
-    80003dfa:	f822                	sd	s0,48(sp)
-    80003dfc:	f426                	sd	s1,40(sp)
-    80003dfe:	f04a                	sd	s2,32(sp)
-    80003e00:	ec4e                	sd	s3,24(sp)
-    80003e02:	e852                	sd	s4,16(sp)
-    80003e04:	0080                	addi	s0,sp,64
-    80003e06:	892a                	mv	s2,a0
-    80003e08:	8a2e                	mv	s4,a1
-    80003e0a:	89b2                	mv	s3,a2
+    80004088:	7139                	addi	sp,sp,-64
+    8000408a:	fc06                	sd	ra,56(sp)
+    8000408c:	f822                	sd	s0,48(sp)
+    8000408e:	f426                	sd	s1,40(sp)
+    80004090:	f04a                	sd	s2,32(sp)
+    80004092:	ec4e                	sd	s3,24(sp)
+    80004094:	e852                	sd	s4,16(sp)
+    80004096:	0080                	addi	s0,sp,64
+    80004098:	892a                	mv	s2,a0
+    8000409a:	8a2e                	mv	s4,a1
+    8000409c:	89b2                	mv	s3,a2
   if((ip = dirlookup(dp, name, 0)) != 0){
-    80003e0c:	4601                	li	a2,0
-    80003e0e:	00000097          	auipc	ra,0x0
-    80003e12:	dd2080e7          	jalr	-558(ra) # 80003be0 <dirlookup>
-    80003e16:	e93d                	bnez	a0,80003e8c <dirlink+0x96>
+    8000409e:	4601                	li	a2,0
+    800040a0:	00000097          	auipc	ra,0x0
+    800040a4:	dd2080e7          	jalr	-558(ra) # 80003e72 <dirlookup>
+    800040a8:	e93d                	bnez	a0,8000411e <dirlink+0x96>
   for(off = 0; off < dp->size; off += sizeof(de)){
-    80003e18:	04c92483          	lw	s1,76(s2)
-    80003e1c:	c49d                	beqz	s1,80003e4a <dirlink+0x54>
-    80003e1e:	4481                	li	s1,0
+    800040aa:	04c92483          	lw	s1,76(s2)
+    800040ae:	c49d                	beqz	s1,800040dc <dirlink+0x54>
+    800040b0:	4481                	li	s1,0
     if(readi(dp, 0, (uint64)&de, off, sizeof(de)) != sizeof(de))
-    80003e20:	4741                	li	a4,16
-    80003e22:	86a6                	mv	a3,s1
-    80003e24:	fc040613          	addi	a2,s0,-64
-    80003e28:	4581                	li	a1,0
-    80003e2a:	854a                	mv	a0,s2
-    80003e2c:	00000097          	auipc	ra,0x0
-    80003e30:	b84080e7          	jalr	-1148(ra) # 800039b0 <readi>
-    80003e34:	47c1                	li	a5,16
-    80003e36:	06f51163          	bne	a0,a5,80003e98 <dirlink+0xa2>
+    800040b2:	4741                	li	a4,16
+    800040b4:	86a6                	mv	a3,s1
+    800040b6:	fc040613          	addi	a2,s0,-64
+    800040ba:	4581                	li	a1,0
+    800040bc:	854a                	mv	a0,s2
+    800040be:	00000097          	auipc	ra,0x0
+    800040c2:	b84080e7          	jalr	-1148(ra) # 80003c42 <readi>
+    800040c6:	47c1                	li	a5,16
+    800040c8:	06f51163          	bne	a0,a5,8000412a <dirlink+0xa2>
     if(de.inum == 0)
-    80003e3a:	fc045783          	lhu	a5,-64(s0)
-    80003e3e:	c791                	beqz	a5,80003e4a <dirlink+0x54>
+    800040cc:	fc045783          	lhu	a5,-64(s0)
+    800040d0:	c791                	beqz	a5,800040dc <dirlink+0x54>
   for(off = 0; off < dp->size; off += sizeof(de)){
-    80003e40:	24c1                	addiw	s1,s1,16
-    80003e42:	04c92783          	lw	a5,76(s2)
-    80003e46:	fcf4ede3          	bltu	s1,a5,80003e20 <dirlink+0x2a>
+    800040d2:	24c1                	addiw	s1,s1,16
+    800040d4:	04c92783          	lw	a5,76(s2)
+    800040d8:	fcf4ede3          	bltu	s1,a5,800040b2 <dirlink+0x2a>
   strncpy(de.name, name, DIRSIZ);
-    80003e4a:	4639                	li	a2,14
-    80003e4c:	85d2                	mv	a1,s4
-    80003e4e:	fc240513          	addi	a0,s0,-62
-    80003e52:	ffffd097          	auipc	ra,0xffffd
-    80003e56:	f86080e7          	jalr	-122(ra) # 80000dd8 <strncpy>
+    800040dc:	4639                	li	a2,14
+    800040de:	85d2                	mv	a1,s4
+    800040e0:	fc240513          	addi	a0,s0,-62
+    800040e4:	ffffd097          	auipc	ra,0xffffd
+    800040e8:	cf4080e7          	jalr	-780(ra) # 80000dd8 <strncpy>
   de.inum = inum;
-    80003e5a:	fd341023          	sh	s3,-64(s0)
+    800040ec:	fd341023          	sh	s3,-64(s0)
   if(writei(dp, 0, (uint64)&de, off, sizeof(de)) != sizeof(de))
-    80003e5e:	4741                	li	a4,16
-    80003e60:	86a6                	mv	a3,s1
-    80003e62:	fc040613          	addi	a2,s0,-64
-    80003e66:	4581                	li	a1,0
-    80003e68:	854a                	mv	a0,s2
-    80003e6a:	00000097          	auipc	ra,0x0
-    80003e6e:	c3e080e7          	jalr	-962(ra) # 80003aa8 <writei>
-    80003e72:	872a                	mv	a4,a0
-    80003e74:	47c1                	li	a5,16
+    800040f0:	4741                	li	a4,16
+    800040f2:	86a6                	mv	a3,s1
+    800040f4:	fc040613          	addi	a2,s0,-64
+    800040f8:	4581                	li	a1,0
+    800040fa:	854a                	mv	a0,s2
+    800040fc:	00000097          	auipc	ra,0x0
+    80004100:	c3e080e7          	jalr	-962(ra) # 80003d3a <writei>
+    80004104:	872a                	mv	a4,a0
+    80004106:	47c1                	li	a5,16
   return 0;
-    80003e76:	4501                	li	a0,0
+    80004108:	4501                	li	a0,0
   if(writei(dp, 0, (uint64)&de, off, sizeof(de)) != sizeof(de))
-    80003e78:	02f71863          	bne	a4,a5,80003ea8 <dirlink+0xb2>
+    8000410a:	02f71863          	bne	a4,a5,8000413a <dirlink+0xb2>
 }
-    80003e7c:	70e2                	ld	ra,56(sp)
-    80003e7e:	7442                	ld	s0,48(sp)
-    80003e80:	74a2                	ld	s1,40(sp)
-    80003e82:	7902                	ld	s2,32(sp)
-    80003e84:	69e2                	ld	s3,24(sp)
-    80003e86:	6a42                	ld	s4,16(sp)
-    80003e88:	6121                	addi	sp,sp,64
-    80003e8a:	8082                	ret
+    8000410e:	70e2                	ld	ra,56(sp)
+    80004110:	7442                	ld	s0,48(sp)
+    80004112:	74a2                	ld	s1,40(sp)
+    80004114:	7902                	ld	s2,32(sp)
+    80004116:	69e2                	ld	s3,24(sp)
+    80004118:	6a42                	ld	s4,16(sp)
+    8000411a:	6121                	addi	sp,sp,64
+    8000411c:	8082                	ret
     iput(ip);
-    80003e8c:	00000097          	auipc	ra,0x0
-    80003e90:	a2a080e7          	jalr	-1494(ra) # 800038b6 <iput>
+    8000411e:	00000097          	auipc	ra,0x0
+    80004122:	a2a080e7          	jalr	-1494(ra) # 80003b48 <iput>
     return -1;
-    80003e94:	557d                	li	a0,-1
-    80003e96:	b7dd                	j	80003e7c <dirlink+0x86>
+    80004126:	557d                	li	a0,-1
+    80004128:	b7dd                	j	8000410e <dirlink+0x86>
       panic("dirlink read");
-    80003e98:	00005517          	auipc	a0,0x5
-    80003e9c:	80050513          	addi	a0,a0,-2048 # 80008698 <syscalls+0x1d8>
-    80003ea0:	ffffc097          	auipc	ra,0xffffc
-    80003ea4:	69a080e7          	jalr	1690(ra) # 8000053a <panic>
+    8000412a:	00004517          	auipc	a0,0x4
+    8000412e:	5e650513          	addi	a0,a0,1510 # 80008710 <syscalls+0x1e0>
+    80004132:	ffffc097          	auipc	ra,0xffffc
+    80004136:	408080e7          	jalr	1032(ra) # 8000053a <panic>
     panic("dirlink");
-    80003ea8:	00005517          	auipc	a0,0x5
-    80003eac:	90050513          	addi	a0,a0,-1792 # 800087a8 <syscalls+0x2e8>
-    80003eb0:	ffffc097          	auipc	ra,0xffffc
-    80003eb4:	68a080e7          	jalr	1674(ra) # 8000053a <panic>
+    8000413a:	00004517          	auipc	a0,0x4
+    8000413e:	6e650513          	addi	a0,a0,1766 # 80008820 <syscalls+0x2f0>
+    80004142:	ffffc097          	auipc	ra,0xffffc
+    80004146:	3f8080e7          	jalr	1016(ra) # 8000053a <panic>
 
-0000000080003eb8 <namei>:
+000000008000414a <namei>:
 
 struct inode*
 namei(char *path)
 {
-    80003eb8:	1101                	addi	sp,sp,-32
-    80003eba:	ec06                	sd	ra,24(sp)
-    80003ebc:	e822                	sd	s0,16(sp)
-    80003ebe:	1000                	addi	s0,sp,32
+    8000414a:	1101                	addi	sp,sp,-32
+    8000414c:	ec06                	sd	ra,24(sp)
+    8000414e:	e822                	sd	s0,16(sp)
+    80004150:	1000                	addi	s0,sp,32
   char name[DIRSIZ];
   return namex(path, 0, name);
-    80003ec0:	fe040613          	addi	a2,s0,-32
-    80003ec4:	4581                	li	a1,0
-    80003ec6:	00000097          	auipc	ra,0x0
-    80003eca:	dca080e7          	jalr	-566(ra) # 80003c90 <namex>
+    80004152:	fe040613          	addi	a2,s0,-32
+    80004156:	4581                	li	a1,0
+    80004158:	00000097          	auipc	ra,0x0
+    8000415c:	dca080e7          	jalr	-566(ra) # 80003f22 <namex>
 }
-    80003ece:	60e2                	ld	ra,24(sp)
-    80003ed0:	6442                	ld	s0,16(sp)
-    80003ed2:	6105                	addi	sp,sp,32
-    80003ed4:	8082                	ret
+    80004160:	60e2                	ld	ra,24(sp)
+    80004162:	6442                	ld	s0,16(sp)
+    80004164:	6105                	addi	sp,sp,32
+    80004166:	8082                	ret
 
-0000000080003ed6 <nameiparent>:
+0000000080004168 <nameiparent>:
 
 struct inode*
 nameiparent(char *path, char *name)
 {
-    80003ed6:	1141                	addi	sp,sp,-16
-    80003ed8:	e406                	sd	ra,8(sp)
-    80003eda:	e022                	sd	s0,0(sp)
-    80003edc:	0800                	addi	s0,sp,16
-    80003ede:	862e                	mv	a2,a1
+    80004168:	1141                	addi	sp,sp,-16
+    8000416a:	e406                	sd	ra,8(sp)
+    8000416c:	e022                	sd	s0,0(sp)
+    8000416e:	0800                	addi	s0,sp,16
+    80004170:	862e                	mv	a2,a1
   return namex(path, 1, name);
-    80003ee0:	4585                	li	a1,1
-    80003ee2:	00000097          	auipc	ra,0x0
-    80003ee6:	dae080e7          	jalr	-594(ra) # 80003c90 <namex>
+    80004172:	4585                	li	a1,1
+    80004174:	00000097          	auipc	ra,0x0
+    80004178:	dae080e7          	jalr	-594(ra) # 80003f22 <namex>
 }
-    80003eea:	60a2                	ld	ra,8(sp)
-    80003eec:	6402                	ld	s0,0(sp)
-    80003eee:	0141                	addi	sp,sp,16
-    80003ef0:	8082                	ret
+    8000417c:	60a2                	ld	ra,8(sp)
+    8000417e:	6402                	ld	s0,0(sp)
+    80004180:	0141                	addi	sp,sp,16
+    80004182:	8082                	ret
 
-0000000080003ef2 <write_head>:
+0000000080004184 <write_head>:
 // Write in-memory log header to disk.
 // This is the true point at which the
 // current transaction commits.
 static void
 write_head(void)
 {
-    80003ef2:	1101                	addi	sp,sp,-32
-    80003ef4:	ec06                	sd	ra,24(sp)
-    80003ef6:	e822                	sd	s0,16(sp)
-    80003ef8:	e426                	sd	s1,8(sp)
-    80003efa:	e04a                	sd	s2,0(sp)
-    80003efc:	1000                	addi	s0,sp,32
+    80004184:	1101                	addi	sp,sp,-32
+    80004186:	ec06                	sd	ra,24(sp)
+    80004188:	e822                	sd	s0,16(sp)
+    8000418a:	e426                	sd	s1,8(sp)
+    8000418c:	e04a                	sd	s2,0(sp)
+    8000418e:	1000                	addi	s0,sp,32
   struct buf *buf = bread(log.dev, log.start);
-    80003efe:	0001d917          	auipc	s2,0x1d
-    80003f02:	77290913          	addi	s2,s2,1906 # 80021670 <log>
-    80003f06:	01892583          	lw	a1,24(s2)
-    80003f0a:	02892503          	lw	a0,40(s2)
-    80003f0e:	fffff097          	auipc	ra,0xfffff
-    80003f12:	fec080e7          	jalr	-20(ra) # 80002efa <bread>
-    80003f16:	84aa                	mv	s1,a0
+    80004190:	0001d917          	auipc	s2,0x1d
+    80004194:	4e090913          	addi	s2,s2,1248 # 80021670 <log>
+    80004198:	01892583          	lw	a1,24(s2)
+    8000419c:	02892503          	lw	a0,40(s2)
+    800041a0:	fffff097          	auipc	ra,0xfffff
+    800041a4:	fec080e7          	jalr	-20(ra) # 8000318c <bread>
+    800041a8:	84aa                	mv	s1,a0
   struct logheader *hb = (struct logheader *) (buf->data);
   int i;
   hb->n = log.lh.n;
-    80003f18:	02c92683          	lw	a3,44(s2)
-    80003f1c:	cd34                	sw	a3,88(a0)
+    800041aa:	02c92683          	lw	a3,44(s2)
+    800041ae:	cd34                	sw	a3,88(a0)
   for (i = 0; i < log.lh.n; i++) {
-    80003f1e:	02d05863          	blez	a3,80003f4e <write_head+0x5c>
-    80003f22:	0001d797          	auipc	a5,0x1d
-    80003f26:	77e78793          	addi	a5,a5,1918 # 800216a0 <log+0x30>
-    80003f2a:	05c50713          	addi	a4,a0,92
-    80003f2e:	36fd                	addiw	a3,a3,-1
-    80003f30:	02069613          	slli	a2,a3,0x20
-    80003f34:	01e65693          	srli	a3,a2,0x1e
-    80003f38:	0001d617          	auipc	a2,0x1d
-    80003f3c:	76c60613          	addi	a2,a2,1900 # 800216a4 <log+0x34>
-    80003f40:	96b2                	add	a3,a3,a2
+    800041b0:	02d05863          	blez	a3,800041e0 <write_head+0x5c>
+    800041b4:	0001d797          	auipc	a5,0x1d
+    800041b8:	4ec78793          	addi	a5,a5,1260 # 800216a0 <log+0x30>
+    800041bc:	05c50713          	addi	a4,a0,92
+    800041c0:	36fd                	addiw	a3,a3,-1
+    800041c2:	02069613          	slli	a2,a3,0x20
+    800041c6:	01e65693          	srli	a3,a2,0x1e
+    800041ca:	0001d617          	auipc	a2,0x1d
+    800041ce:	4da60613          	addi	a2,a2,1242 # 800216a4 <log+0x34>
+    800041d2:	96b2                	add	a3,a3,a2
     hb->block[i] = log.lh.block[i];
-    80003f42:	4390                	lw	a2,0(a5)
-    80003f44:	c310                	sw	a2,0(a4)
+    800041d4:	4390                	lw	a2,0(a5)
+    800041d6:	c310                	sw	a2,0(a4)
   for (i = 0; i < log.lh.n; i++) {
-    80003f46:	0791                	addi	a5,a5,4
-    80003f48:	0711                	addi	a4,a4,4 # 43004 <_entry-0x7ffbcffc>
-    80003f4a:	fed79ce3          	bne	a5,a3,80003f42 <write_head+0x50>
+    800041d8:	0791                	addi	a5,a5,4
+    800041da:	0711                	addi	a4,a4,4 # 43004 <_entry-0x7ffbcffc>
+    800041dc:	fed79ce3          	bne	a5,a3,800041d4 <write_head+0x50>
   }
   bwrite(buf);
-    80003f4e:	8526                	mv	a0,s1
-    80003f50:	fffff097          	auipc	ra,0xfffff
-    80003f54:	09c080e7          	jalr	156(ra) # 80002fec <bwrite>
+    800041e0:	8526                	mv	a0,s1
+    800041e2:	fffff097          	auipc	ra,0xfffff
+    800041e6:	09c080e7          	jalr	156(ra) # 8000327e <bwrite>
   brelse(buf);
-    80003f58:	8526                	mv	a0,s1
-    80003f5a:	fffff097          	auipc	ra,0xfffff
-    80003f5e:	0d0080e7          	jalr	208(ra) # 8000302a <brelse>
+    800041ea:	8526                	mv	a0,s1
+    800041ec:	fffff097          	auipc	ra,0xfffff
+    800041f0:	0d0080e7          	jalr	208(ra) # 800032bc <brelse>
 }
-    80003f62:	60e2                	ld	ra,24(sp)
-    80003f64:	6442                	ld	s0,16(sp)
-    80003f66:	64a2                	ld	s1,8(sp)
-    80003f68:	6902                	ld	s2,0(sp)
-    80003f6a:	6105                	addi	sp,sp,32
-    80003f6c:	8082                	ret
+    800041f4:	60e2                	ld	ra,24(sp)
+    800041f6:	6442                	ld	s0,16(sp)
+    800041f8:	64a2                	ld	s1,8(sp)
+    800041fa:	6902                	ld	s2,0(sp)
+    800041fc:	6105                	addi	sp,sp,32
+    800041fe:	8082                	ret
 
-0000000080003f6e <install_trans>:
+0000000080004200 <install_trans>:
   for (tail = 0; tail < log.lh.n; tail++) {
-    80003f6e:	0001d797          	auipc	a5,0x1d
-    80003f72:	72e7a783          	lw	a5,1838(a5) # 8002169c <log+0x2c>
-    80003f76:	0af05d63          	blez	a5,80004030 <install_trans+0xc2>
+    80004200:	0001d797          	auipc	a5,0x1d
+    80004204:	49c7a783          	lw	a5,1180(a5) # 8002169c <log+0x2c>
+    80004208:	0af05d63          	blez	a5,800042c2 <install_trans+0xc2>
 {
-    80003f7a:	7139                	addi	sp,sp,-64
-    80003f7c:	fc06                	sd	ra,56(sp)
-    80003f7e:	f822                	sd	s0,48(sp)
-    80003f80:	f426                	sd	s1,40(sp)
-    80003f82:	f04a                	sd	s2,32(sp)
-    80003f84:	ec4e                	sd	s3,24(sp)
-    80003f86:	e852                	sd	s4,16(sp)
-    80003f88:	e456                	sd	s5,8(sp)
-    80003f8a:	e05a                	sd	s6,0(sp)
-    80003f8c:	0080                	addi	s0,sp,64
-    80003f8e:	8b2a                	mv	s6,a0
-    80003f90:	0001da97          	auipc	s5,0x1d
-    80003f94:	710a8a93          	addi	s5,s5,1808 # 800216a0 <log+0x30>
+    8000420c:	7139                	addi	sp,sp,-64
+    8000420e:	fc06                	sd	ra,56(sp)
+    80004210:	f822                	sd	s0,48(sp)
+    80004212:	f426                	sd	s1,40(sp)
+    80004214:	f04a                	sd	s2,32(sp)
+    80004216:	ec4e                	sd	s3,24(sp)
+    80004218:	e852                	sd	s4,16(sp)
+    8000421a:	e456                	sd	s5,8(sp)
+    8000421c:	e05a                	sd	s6,0(sp)
+    8000421e:	0080                	addi	s0,sp,64
+    80004220:	8b2a                	mv	s6,a0
+    80004222:	0001da97          	auipc	s5,0x1d
+    80004226:	47ea8a93          	addi	s5,s5,1150 # 800216a0 <log+0x30>
   for (tail = 0; tail < log.lh.n; tail++) {
-    80003f98:	4a01                	li	s4,0
+    8000422a:	4a01                	li	s4,0
     struct buf *lbuf = bread(log.dev, log.start+tail+1); // read log block
-    80003f9a:	0001d997          	auipc	s3,0x1d
-    80003f9e:	6d698993          	addi	s3,s3,1750 # 80021670 <log>
-    80003fa2:	a00d                	j	80003fc4 <install_trans+0x56>
+    8000422c:	0001d997          	auipc	s3,0x1d
+    80004230:	44498993          	addi	s3,s3,1092 # 80021670 <log>
+    80004234:	a00d                	j	80004256 <install_trans+0x56>
     brelse(lbuf);
-    80003fa4:	854a                	mv	a0,s2
-    80003fa6:	fffff097          	auipc	ra,0xfffff
-    80003faa:	084080e7          	jalr	132(ra) # 8000302a <brelse>
+    80004236:	854a                	mv	a0,s2
+    80004238:	fffff097          	auipc	ra,0xfffff
+    8000423c:	084080e7          	jalr	132(ra) # 800032bc <brelse>
     brelse(dbuf);
-    80003fae:	8526                	mv	a0,s1
-    80003fb0:	fffff097          	auipc	ra,0xfffff
-    80003fb4:	07a080e7          	jalr	122(ra) # 8000302a <brelse>
+    80004240:	8526                	mv	a0,s1
+    80004242:	fffff097          	auipc	ra,0xfffff
+    80004246:	07a080e7          	jalr	122(ra) # 800032bc <brelse>
   for (tail = 0; tail < log.lh.n; tail++) {
-    80003fb8:	2a05                	addiw	s4,s4,1
-    80003fba:	0a91                	addi	s5,s5,4
-    80003fbc:	02c9a783          	lw	a5,44(s3)
-    80003fc0:	04fa5e63          	bge	s4,a5,8000401c <install_trans+0xae>
+    8000424a:	2a05                	addiw	s4,s4,1
+    8000424c:	0a91                	addi	s5,s5,4
+    8000424e:	02c9a783          	lw	a5,44(s3)
+    80004252:	04fa5e63          	bge	s4,a5,800042ae <install_trans+0xae>
     struct buf *lbuf = bread(log.dev, log.start+tail+1); // read log block
-    80003fc4:	0189a583          	lw	a1,24(s3)
-    80003fc8:	014585bb          	addw	a1,a1,s4
-    80003fcc:	2585                	addiw	a1,a1,1
-    80003fce:	0289a503          	lw	a0,40(s3)
-    80003fd2:	fffff097          	auipc	ra,0xfffff
-    80003fd6:	f28080e7          	jalr	-216(ra) # 80002efa <bread>
-    80003fda:	892a                	mv	s2,a0
+    80004256:	0189a583          	lw	a1,24(s3)
+    8000425a:	014585bb          	addw	a1,a1,s4
+    8000425e:	2585                	addiw	a1,a1,1
+    80004260:	0289a503          	lw	a0,40(s3)
+    80004264:	fffff097          	auipc	ra,0xfffff
+    80004268:	f28080e7          	jalr	-216(ra) # 8000318c <bread>
+    8000426c:	892a                	mv	s2,a0
     struct buf *dbuf = bread(log.dev, log.lh.block[tail]); // read dst
-    80003fdc:	000aa583          	lw	a1,0(s5)
-    80003fe0:	0289a503          	lw	a0,40(s3)
-    80003fe4:	fffff097          	auipc	ra,0xfffff
-    80003fe8:	f16080e7          	jalr	-234(ra) # 80002efa <bread>
-    80003fec:	84aa                	mv	s1,a0
+    8000426e:	000aa583          	lw	a1,0(s5)
+    80004272:	0289a503          	lw	a0,40(s3)
+    80004276:	fffff097          	auipc	ra,0xfffff
+    8000427a:	f16080e7          	jalr	-234(ra) # 8000318c <bread>
+    8000427e:	84aa                	mv	s1,a0
     memmove(dbuf->data, lbuf->data, BSIZE);  // copy block to dst
-    80003fee:	40000613          	li	a2,1024
-    80003ff2:	05890593          	addi	a1,s2,88
-    80003ff6:	05850513          	addi	a0,a0,88
-    80003ffa:	ffffd097          	auipc	ra,0xffffd
-    80003ffe:	d2e080e7          	jalr	-722(ra) # 80000d28 <memmove>
+    80004280:	40000613          	li	a2,1024
+    80004284:	05890593          	addi	a1,s2,88
+    80004288:	05850513          	addi	a0,a0,88
+    8000428c:	ffffd097          	auipc	ra,0xffffd
+    80004290:	a9c080e7          	jalr	-1380(ra) # 80000d28 <memmove>
     bwrite(dbuf);  // write dst to disk
-    80004002:	8526                	mv	a0,s1
-    80004004:	fffff097          	auipc	ra,0xfffff
-    80004008:	fe8080e7          	jalr	-24(ra) # 80002fec <bwrite>
+    80004294:	8526                	mv	a0,s1
+    80004296:	fffff097          	auipc	ra,0xfffff
+    8000429a:	fe8080e7          	jalr	-24(ra) # 8000327e <bwrite>
     if(recovering == 0)
-    8000400c:	f80b1ce3          	bnez	s6,80003fa4 <install_trans+0x36>
+    8000429e:	f80b1ce3          	bnez	s6,80004236 <install_trans+0x36>
       bunpin(dbuf);
-    80004010:	8526                	mv	a0,s1
-    80004012:	fffff097          	auipc	ra,0xfffff
-    80004016:	0f2080e7          	jalr	242(ra) # 80003104 <bunpin>
-    8000401a:	b769                	j	80003fa4 <install_trans+0x36>
+    800042a2:	8526                	mv	a0,s1
+    800042a4:	fffff097          	auipc	ra,0xfffff
+    800042a8:	0f2080e7          	jalr	242(ra) # 80003396 <bunpin>
+    800042ac:	b769                	j	80004236 <install_trans+0x36>
 }
-    8000401c:	70e2                	ld	ra,56(sp)
-    8000401e:	7442                	ld	s0,48(sp)
-    80004020:	74a2                	ld	s1,40(sp)
-    80004022:	7902                	ld	s2,32(sp)
-    80004024:	69e2                	ld	s3,24(sp)
-    80004026:	6a42                	ld	s4,16(sp)
-    80004028:	6aa2                	ld	s5,8(sp)
-    8000402a:	6b02                	ld	s6,0(sp)
-    8000402c:	6121                	addi	sp,sp,64
-    8000402e:	8082                	ret
-    80004030:	8082                	ret
+    800042ae:	70e2                	ld	ra,56(sp)
+    800042b0:	7442                	ld	s0,48(sp)
+    800042b2:	74a2                	ld	s1,40(sp)
+    800042b4:	7902                	ld	s2,32(sp)
+    800042b6:	69e2                	ld	s3,24(sp)
+    800042b8:	6a42                	ld	s4,16(sp)
+    800042ba:	6aa2                	ld	s5,8(sp)
+    800042bc:	6b02                	ld	s6,0(sp)
+    800042be:	6121                	addi	sp,sp,64
+    800042c0:	8082                	ret
+    800042c2:	8082                	ret
 
-0000000080004032 <initlog>:
+00000000800042c4 <initlog>:
 {
-    80004032:	7179                	addi	sp,sp,-48
-    80004034:	f406                	sd	ra,40(sp)
-    80004036:	f022                	sd	s0,32(sp)
-    80004038:	ec26                	sd	s1,24(sp)
-    8000403a:	e84a                	sd	s2,16(sp)
-    8000403c:	e44e                	sd	s3,8(sp)
-    8000403e:	1800                	addi	s0,sp,48
-    80004040:	892a                	mv	s2,a0
-    80004042:	89ae                	mv	s3,a1
+    800042c4:	7179                	addi	sp,sp,-48
+    800042c6:	f406                	sd	ra,40(sp)
+    800042c8:	f022                	sd	s0,32(sp)
+    800042ca:	ec26                	sd	s1,24(sp)
+    800042cc:	e84a                	sd	s2,16(sp)
+    800042ce:	e44e                	sd	s3,8(sp)
+    800042d0:	1800                	addi	s0,sp,48
+    800042d2:	892a                	mv	s2,a0
+    800042d4:	89ae                	mv	s3,a1
   initlock(&log.lock, "log");
-    80004044:	0001d497          	auipc	s1,0x1d
-    80004048:	62c48493          	addi	s1,s1,1580 # 80021670 <log>
-    8000404c:	00004597          	auipc	a1,0x4
-    80004050:	65c58593          	addi	a1,a1,1628 # 800086a8 <syscalls+0x1e8>
-    80004054:	8526                	mv	a0,s1
-    80004056:	ffffd097          	auipc	ra,0xffffd
-    8000405a:	aea080e7          	jalr	-1302(ra) # 80000b40 <initlock>
+    800042d6:	0001d497          	auipc	s1,0x1d
+    800042da:	39a48493          	addi	s1,s1,922 # 80021670 <log>
+    800042de:	00004597          	auipc	a1,0x4
+    800042e2:	44258593          	addi	a1,a1,1090 # 80008720 <syscalls+0x1f0>
+    800042e6:	8526                	mv	a0,s1
+    800042e8:	ffffd097          	auipc	ra,0xffffd
+    800042ec:	858080e7          	jalr	-1960(ra) # 80000b40 <initlock>
   log.start = sb->logstart;
-    8000405e:	0149a583          	lw	a1,20(s3)
-    80004062:	cc8c                	sw	a1,24(s1)
+    800042f0:	0149a583          	lw	a1,20(s3)
+    800042f4:	cc8c                	sw	a1,24(s1)
   log.size = sb->nlog;
-    80004064:	0109a783          	lw	a5,16(s3)
-    80004068:	ccdc                	sw	a5,28(s1)
+    800042f6:	0109a783          	lw	a5,16(s3)
+    800042fa:	ccdc                	sw	a5,28(s1)
   log.dev = dev;
-    8000406a:	0324a423          	sw	s2,40(s1)
+    800042fc:	0324a423          	sw	s2,40(s1)
   struct buf *buf = bread(log.dev, log.start);
-    8000406e:	854a                	mv	a0,s2
-    80004070:	fffff097          	auipc	ra,0xfffff
-    80004074:	e8a080e7          	jalr	-374(ra) # 80002efa <bread>
+    80004300:	854a                	mv	a0,s2
+    80004302:	fffff097          	auipc	ra,0xfffff
+    80004306:	e8a080e7          	jalr	-374(ra) # 8000318c <bread>
   log.lh.n = lh->n;
-    80004078:	4d34                	lw	a3,88(a0)
-    8000407a:	d4d4                	sw	a3,44(s1)
+    8000430a:	4d34                	lw	a3,88(a0)
+    8000430c:	d4d4                	sw	a3,44(s1)
   for (i = 0; i < log.lh.n; i++) {
-    8000407c:	02d05663          	blez	a3,800040a8 <initlog+0x76>
-    80004080:	05c50793          	addi	a5,a0,92
-    80004084:	0001d717          	auipc	a4,0x1d
-    80004088:	61c70713          	addi	a4,a4,1564 # 800216a0 <log+0x30>
-    8000408c:	36fd                	addiw	a3,a3,-1
-    8000408e:	02069613          	slli	a2,a3,0x20
-    80004092:	01e65693          	srli	a3,a2,0x1e
-    80004096:	06050613          	addi	a2,a0,96
-    8000409a:	96b2                	add	a3,a3,a2
+    8000430e:	02d05663          	blez	a3,8000433a <initlog+0x76>
+    80004312:	05c50793          	addi	a5,a0,92
+    80004316:	0001d717          	auipc	a4,0x1d
+    8000431a:	38a70713          	addi	a4,a4,906 # 800216a0 <log+0x30>
+    8000431e:	36fd                	addiw	a3,a3,-1
+    80004320:	02069613          	slli	a2,a3,0x20
+    80004324:	01e65693          	srli	a3,a2,0x1e
+    80004328:	06050613          	addi	a2,a0,96
+    8000432c:	96b2                	add	a3,a3,a2
     log.lh.block[i] = lh->block[i];
-    8000409c:	4390                	lw	a2,0(a5)
-    8000409e:	c310                	sw	a2,0(a4)
+    8000432e:	4390                	lw	a2,0(a5)
+    80004330:	c310                	sw	a2,0(a4)
   for (i = 0; i < log.lh.n; i++) {
-    800040a0:	0791                	addi	a5,a5,4
-    800040a2:	0711                	addi	a4,a4,4
-    800040a4:	fed79ce3          	bne	a5,a3,8000409c <initlog+0x6a>
+    80004332:	0791                	addi	a5,a5,4
+    80004334:	0711                	addi	a4,a4,4
+    80004336:	fed79ce3          	bne	a5,a3,8000432e <initlog+0x6a>
   brelse(buf);
-    800040a8:	fffff097          	auipc	ra,0xfffff
-    800040ac:	f82080e7          	jalr	-126(ra) # 8000302a <brelse>
+    8000433a:	fffff097          	auipc	ra,0xfffff
+    8000433e:	f82080e7          	jalr	-126(ra) # 800032bc <brelse>
 
 static void
 recover_from_log(void)
 {
   read_head();
   install_trans(1); // if committed, copy from log to disk
-    800040b0:	4505                	li	a0,1
-    800040b2:	00000097          	auipc	ra,0x0
-    800040b6:	ebc080e7          	jalr	-324(ra) # 80003f6e <install_trans>
+    80004342:	4505                	li	a0,1
+    80004344:	00000097          	auipc	ra,0x0
+    80004348:	ebc080e7          	jalr	-324(ra) # 80004200 <install_trans>
   log.lh.n = 0;
-    800040ba:	0001d797          	auipc	a5,0x1d
-    800040be:	5e07a123          	sw	zero,1506(a5) # 8002169c <log+0x2c>
+    8000434c:	0001d797          	auipc	a5,0x1d
+    80004350:	3407a823          	sw	zero,848(a5) # 8002169c <log+0x2c>
   write_head(); // clear the log
-    800040c2:	00000097          	auipc	ra,0x0
-    800040c6:	e30080e7          	jalr	-464(ra) # 80003ef2 <write_head>
+    80004354:	00000097          	auipc	ra,0x0
+    80004358:	e30080e7          	jalr	-464(ra) # 80004184 <write_head>
 }
-    800040ca:	70a2                	ld	ra,40(sp)
-    800040cc:	7402                	ld	s0,32(sp)
-    800040ce:	64e2                	ld	s1,24(sp)
-    800040d0:	6942                	ld	s2,16(sp)
-    800040d2:	69a2                	ld	s3,8(sp)
-    800040d4:	6145                	addi	sp,sp,48
-    800040d6:	8082                	ret
+    8000435c:	70a2                	ld	ra,40(sp)
+    8000435e:	7402                	ld	s0,32(sp)
+    80004360:	64e2                	ld	s1,24(sp)
+    80004362:	6942                	ld	s2,16(sp)
+    80004364:	69a2                	ld	s3,8(sp)
+    80004366:	6145                	addi	sp,sp,48
+    80004368:	8082                	ret
 
-00000000800040d8 <begin_op>:
+000000008000436a <begin_op>:
 }
 
 // called at the start of each FS system call.
 void
 begin_op(void)
 {
-    800040d8:	1101                	addi	sp,sp,-32
-    800040da:	ec06                	sd	ra,24(sp)
-    800040dc:	e822                	sd	s0,16(sp)
-    800040de:	e426                	sd	s1,8(sp)
-    800040e0:	e04a                	sd	s2,0(sp)
-    800040e2:	1000                	addi	s0,sp,32
+    8000436a:	1101                	addi	sp,sp,-32
+    8000436c:	ec06                	sd	ra,24(sp)
+    8000436e:	e822                	sd	s0,16(sp)
+    80004370:	e426                	sd	s1,8(sp)
+    80004372:	e04a                	sd	s2,0(sp)
+    80004374:	1000                	addi	s0,sp,32
   acquire(&log.lock);
-    800040e4:	0001d517          	auipc	a0,0x1d
-    800040e8:	58c50513          	addi	a0,a0,1420 # 80021670 <log>
-    800040ec:	ffffd097          	auipc	ra,0xffffd
-    800040f0:	ae4080e7          	jalr	-1308(ra) # 80000bd0 <acquire>
+    80004376:	0001d517          	auipc	a0,0x1d
+    8000437a:	2fa50513          	addi	a0,a0,762 # 80021670 <log>
+    8000437e:	ffffd097          	auipc	ra,0xffffd
+    80004382:	852080e7          	jalr	-1966(ra) # 80000bd0 <acquire>
   while(1){
     if(log.committing){
-    800040f4:	0001d497          	auipc	s1,0x1d
-    800040f8:	57c48493          	addi	s1,s1,1404 # 80021670 <log>
+    80004386:	0001d497          	auipc	s1,0x1d
+    8000438a:	2ea48493          	addi	s1,s1,746 # 80021670 <log>
       sleep(&log, &log.lock);
     } else if(log.lh.n + (log.outstanding+1)*MAXOPBLOCKS > LOGSIZE){
-    800040fc:	4979                	li	s2,30
-    800040fe:	a039                	j	8000410c <begin_op+0x34>
+    8000438e:	4979                	li	s2,30
+    80004390:	a039                	j	8000439e <begin_op+0x34>
       sleep(&log, &log.lock);
-    80004100:	85a6                	mv	a1,s1
-    80004102:	8526                	mv	a0,s1
-    80004104:	ffffe097          	auipc	ra,0xffffe
-    80004108:	f62080e7          	jalr	-158(ra) # 80002066 <sleep>
+    80004392:	85a6                	mv	a1,s1
+    80004394:	8526                	mv	a0,s1
+    80004396:	ffffe097          	auipc	ra,0xffffe
+    8000439a:	e6a080e7          	jalr	-406(ra) # 80002200 <sleep>
     if(log.committing){
-    8000410c:	50dc                	lw	a5,36(s1)
-    8000410e:	fbed                	bnez	a5,80004100 <begin_op+0x28>
+    8000439e:	50dc                	lw	a5,36(s1)
+    800043a0:	fbed                	bnez	a5,80004392 <begin_op+0x28>
     } else if(log.lh.n + (log.outstanding+1)*MAXOPBLOCKS > LOGSIZE){
-    80004110:	5098                	lw	a4,32(s1)
-    80004112:	2705                	addiw	a4,a4,1
-    80004114:	0007069b          	sext.w	a3,a4
-    80004118:	0027179b          	slliw	a5,a4,0x2
-    8000411c:	9fb9                	addw	a5,a5,a4
-    8000411e:	0017979b          	slliw	a5,a5,0x1
-    80004122:	54d8                	lw	a4,44(s1)
-    80004124:	9fb9                	addw	a5,a5,a4
-    80004126:	00f95963          	bge	s2,a5,80004138 <begin_op+0x60>
+    800043a2:	5098                	lw	a4,32(s1)
+    800043a4:	2705                	addiw	a4,a4,1
+    800043a6:	0007069b          	sext.w	a3,a4
+    800043aa:	0027179b          	slliw	a5,a4,0x2
+    800043ae:	9fb9                	addw	a5,a5,a4
+    800043b0:	0017979b          	slliw	a5,a5,0x1
+    800043b4:	54d8                	lw	a4,44(s1)
+    800043b6:	9fb9                	addw	a5,a5,a4
+    800043b8:	00f95963          	bge	s2,a5,800043ca <begin_op+0x60>
       // this op might exhaust log space; wait for commit.
       sleep(&log, &log.lock);
-    8000412a:	85a6                	mv	a1,s1
-    8000412c:	8526                	mv	a0,s1
-    8000412e:	ffffe097          	auipc	ra,0xffffe
-    80004132:	f38080e7          	jalr	-200(ra) # 80002066 <sleep>
-    80004136:	bfd9                	j	8000410c <begin_op+0x34>
+    800043bc:	85a6                	mv	a1,s1
+    800043be:	8526                	mv	a0,s1
+    800043c0:	ffffe097          	auipc	ra,0xffffe
+    800043c4:	e40080e7          	jalr	-448(ra) # 80002200 <sleep>
+    800043c8:	bfd9                	j	8000439e <begin_op+0x34>
     } else {
       log.outstanding += 1;
-    80004138:	0001d517          	auipc	a0,0x1d
-    8000413c:	53850513          	addi	a0,a0,1336 # 80021670 <log>
-    80004140:	d114                	sw	a3,32(a0)
+    800043ca:	0001d517          	auipc	a0,0x1d
+    800043ce:	2a650513          	addi	a0,a0,678 # 80021670 <log>
+    800043d2:	d114                	sw	a3,32(a0)
       release(&log.lock);
-    80004142:	ffffd097          	auipc	ra,0xffffd
-    80004146:	b42080e7          	jalr	-1214(ra) # 80000c84 <release>
+    800043d4:	ffffd097          	auipc	ra,0xffffd
+    800043d8:	8b0080e7          	jalr	-1872(ra) # 80000c84 <release>
       break;
     }
   }
 }
-    8000414a:	60e2                	ld	ra,24(sp)
-    8000414c:	6442                	ld	s0,16(sp)
-    8000414e:	64a2                	ld	s1,8(sp)
-    80004150:	6902                	ld	s2,0(sp)
-    80004152:	6105                	addi	sp,sp,32
-    80004154:	8082                	ret
+    800043dc:	60e2                	ld	ra,24(sp)
+    800043de:	6442                	ld	s0,16(sp)
+    800043e0:	64a2                	ld	s1,8(sp)
+    800043e2:	6902                	ld	s2,0(sp)
+    800043e4:	6105                	addi	sp,sp,32
+    800043e6:	8082                	ret
 
-0000000080004156 <end_op>:
+00000000800043e8 <end_op>:
 
 // called at the end of each FS system call.
 // commits if this was the last outstanding operation.
 void
 end_op(void)
 {
-    80004156:	7139                	addi	sp,sp,-64
-    80004158:	fc06                	sd	ra,56(sp)
-    8000415a:	f822                	sd	s0,48(sp)
-    8000415c:	f426                	sd	s1,40(sp)
-    8000415e:	f04a                	sd	s2,32(sp)
-    80004160:	ec4e                	sd	s3,24(sp)
-    80004162:	e852                	sd	s4,16(sp)
-    80004164:	e456                	sd	s5,8(sp)
-    80004166:	0080                	addi	s0,sp,64
+    800043e8:	7139                	addi	sp,sp,-64
+    800043ea:	fc06                	sd	ra,56(sp)
+    800043ec:	f822                	sd	s0,48(sp)
+    800043ee:	f426                	sd	s1,40(sp)
+    800043f0:	f04a                	sd	s2,32(sp)
+    800043f2:	ec4e                	sd	s3,24(sp)
+    800043f4:	e852                	sd	s4,16(sp)
+    800043f6:	e456                	sd	s5,8(sp)
+    800043f8:	0080                	addi	s0,sp,64
   int do_commit = 0;
 
   acquire(&log.lock);
-    80004168:	0001d497          	auipc	s1,0x1d
-    8000416c:	50848493          	addi	s1,s1,1288 # 80021670 <log>
-    80004170:	8526                	mv	a0,s1
-    80004172:	ffffd097          	auipc	ra,0xffffd
-    80004176:	a5e080e7          	jalr	-1442(ra) # 80000bd0 <acquire>
+    800043fa:	0001d497          	auipc	s1,0x1d
+    800043fe:	27648493          	addi	s1,s1,630 # 80021670 <log>
+    80004402:	8526                	mv	a0,s1
+    80004404:	ffffc097          	auipc	ra,0xffffc
+    80004408:	7cc080e7          	jalr	1996(ra) # 80000bd0 <acquire>
   log.outstanding -= 1;
-    8000417a:	509c                	lw	a5,32(s1)
-    8000417c:	37fd                	addiw	a5,a5,-1
-    8000417e:	0007891b          	sext.w	s2,a5
-    80004182:	d09c                	sw	a5,32(s1)
+    8000440c:	509c                	lw	a5,32(s1)
+    8000440e:	37fd                	addiw	a5,a5,-1
+    80004410:	0007891b          	sext.w	s2,a5
+    80004414:	d09c                	sw	a5,32(s1)
   if(log.committing)
-    80004184:	50dc                	lw	a5,36(s1)
-    80004186:	e7b9                	bnez	a5,800041d4 <end_op+0x7e>
+    80004416:	50dc                	lw	a5,36(s1)
+    80004418:	e7b9                	bnez	a5,80004466 <end_op+0x7e>
     panic("log.committing");
   if(log.outstanding == 0){
-    80004188:	04091e63          	bnez	s2,800041e4 <end_op+0x8e>
+    8000441a:	04091e63          	bnez	s2,80004476 <end_op+0x8e>
     do_commit = 1;
     log.committing = 1;
-    8000418c:	0001d497          	auipc	s1,0x1d
-    80004190:	4e448493          	addi	s1,s1,1252 # 80021670 <log>
-    80004194:	4785                	li	a5,1
-    80004196:	d0dc                	sw	a5,36(s1)
+    8000441e:	0001d497          	auipc	s1,0x1d
+    80004422:	25248493          	addi	s1,s1,594 # 80021670 <log>
+    80004426:	4785                	li	a5,1
+    80004428:	d0dc                	sw	a5,36(s1)
     // begin_op() may be waiting for log space,
     // and decrementing log.outstanding has decreased
     // the amount of reserved space.
     wakeup(&log);
   }
   release(&log.lock);
-    80004198:	8526                	mv	a0,s1
-    8000419a:	ffffd097          	auipc	ra,0xffffd
-    8000419e:	aea080e7          	jalr	-1302(ra) # 80000c84 <release>
+    8000442a:	8526                	mv	a0,s1
+    8000442c:	ffffd097          	auipc	ra,0xffffd
+    80004430:	858080e7          	jalr	-1960(ra) # 80000c84 <release>
 }
 
 static void
 commit()
 {
   if (log.lh.n > 0) {
-    800041a2:	54dc                	lw	a5,44(s1)
-    800041a4:	06f04763          	bgtz	a5,80004212 <end_op+0xbc>
+    80004434:	54dc                	lw	a5,44(s1)
+    80004436:	06f04763          	bgtz	a5,800044a4 <end_op+0xbc>
     acquire(&log.lock);
-    800041a8:	0001d497          	auipc	s1,0x1d
-    800041ac:	4c848493          	addi	s1,s1,1224 # 80021670 <log>
-    800041b0:	8526                	mv	a0,s1
-    800041b2:	ffffd097          	auipc	ra,0xffffd
-    800041b6:	a1e080e7          	jalr	-1506(ra) # 80000bd0 <acquire>
+    8000443a:	0001d497          	auipc	s1,0x1d
+    8000443e:	23648493          	addi	s1,s1,566 # 80021670 <log>
+    80004442:	8526                	mv	a0,s1
+    80004444:	ffffc097          	auipc	ra,0xffffc
+    80004448:	78c080e7          	jalr	1932(ra) # 80000bd0 <acquire>
     log.committing = 0;
-    800041ba:	0204a223          	sw	zero,36(s1)
+    8000444c:	0204a223          	sw	zero,36(s1)
     wakeup(&log);
-    800041be:	8526                	mv	a0,s1
-    800041c0:	ffffe097          	auipc	ra,0xffffe
-    800041c4:	032080e7          	jalr	50(ra) # 800021f2 <wakeup>
+    80004450:	8526                	mv	a0,s1
+    80004452:	ffffe097          	auipc	ra,0xffffe
+    80004456:	f3a080e7          	jalr	-198(ra) # 8000238c <wakeup>
     release(&log.lock);
-    800041c8:	8526                	mv	a0,s1
-    800041ca:	ffffd097          	auipc	ra,0xffffd
-    800041ce:	aba080e7          	jalr	-1350(ra) # 80000c84 <release>
+    8000445a:	8526                	mv	a0,s1
+    8000445c:	ffffd097          	auipc	ra,0xffffd
+    80004460:	828080e7          	jalr	-2008(ra) # 80000c84 <release>
 }
-    800041d2:	a03d                	j	80004200 <end_op+0xaa>
+    80004464:	a03d                	j	80004492 <end_op+0xaa>
     panic("log.committing");
-    800041d4:	00004517          	auipc	a0,0x4
-    800041d8:	4dc50513          	addi	a0,a0,1244 # 800086b0 <syscalls+0x1f0>
-    800041dc:	ffffc097          	auipc	ra,0xffffc
-    800041e0:	35e080e7          	jalr	862(ra) # 8000053a <panic>
+    80004466:	00004517          	auipc	a0,0x4
+    8000446a:	2c250513          	addi	a0,a0,706 # 80008728 <syscalls+0x1f8>
+    8000446e:	ffffc097          	auipc	ra,0xffffc
+    80004472:	0cc080e7          	jalr	204(ra) # 8000053a <panic>
     wakeup(&log);
-    800041e4:	0001d497          	auipc	s1,0x1d
-    800041e8:	48c48493          	addi	s1,s1,1164 # 80021670 <log>
-    800041ec:	8526                	mv	a0,s1
-    800041ee:	ffffe097          	auipc	ra,0xffffe
-    800041f2:	004080e7          	jalr	4(ra) # 800021f2 <wakeup>
+    80004476:	0001d497          	auipc	s1,0x1d
+    8000447a:	1fa48493          	addi	s1,s1,506 # 80021670 <log>
+    8000447e:	8526                	mv	a0,s1
+    80004480:	ffffe097          	auipc	ra,0xffffe
+    80004484:	f0c080e7          	jalr	-244(ra) # 8000238c <wakeup>
   release(&log.lock);
-    800041f6:	8526                	mv	a0,s1
-    800041f8:	ffffd097          	auipc	ra,0xffffd
-    800041fc:	a8c080e7          	jalr	-1396(ra) # 80000c84 <release>
+    80004488:	8526                	mv	a0,s1
+    8000448a:	ffffc097          	auipc	ra,0xffffc
+    8000448e:	7fa080e7          	jalr	2042(ra) # 80000c84 <release>
 }
-    80004200:	70e2                	ld	ra,56(sp)
-    80004202:	7442                	ld	s0,48(sp)
-    80004204:	74a2                	ld	s1,40(sp)
-    80004206:	7902                	ld	s2,32(sp)
-    80004208:	69e2                	ld	s3,24(sp)
-    8000420a:	6a42                	ld	s4,16(sp)
-    8000420c:	6aa2                	ld	s5,8(sp)
-    8000420e:	6121                	addi	sp,sp,64
-    80004210:	8082                	ret
+    80004492:	70e2                	ld	ra,56(sp)
+    80004494:	7442                	ld	s0,48(sp)
+    80004496:	74a2                	ld	s1,40(sp)
+    80004498:	7902                	ld	s2,32(sp)
+    8000449a:	69e2                	ld	s3,24(sp)
+    8000449c:	6a42                	ld	s4,16(sp)
+    8000449e:	6aa2                	ld	s5,8(sp)
+    800044a0:	6121                	addi	sp,sp,64
+    800044a2:	8082                	ret
   for (tail = 0; tail < log.lh.n; tail++) {
-    80004212:	0001da97          	auipc	s5,0x1d
-    80004216:	48ea8a93          	addi	s5,s5,1166 # 800216a0 <log+0x30>
+    800044a4:	0001da97          	auipc	s5,0x1d
+    800044a8:	1fca8a93          	addi	s5,s5,508 # 800216a0 <log+0x30>
     struct buf *to = bread(log.dev, log.start+tail+1); // log block
-    8000421a:	0001da17          	auipc	s4,0x1d
-    8000421e:	456a0a13          	addi	s4,s4,1110 # 80021670 <log>
-    80004222:	018a2583          	lw	a1,24(s4)
-    80004226:	012585bb          	addw	a1,a1,s2
-    8000422a:	2585                	addiw	a1,a1,1
-    8000422c:	028a2503          	lw	a0,40(s4)
-    80004230:	fffff097          	auipc	ra,0xfffff
-    80004234:	cca080e7          	jalr	-822(ra) # 80002efa <bread>
-    80004238:	84aa                	mv	s1,a0
+    800044ac:	0001da17          	auipc	s4,0x1d
+    800044b0:	1c4a0a13          	addi	s4,s4,452 # 80021670 <log>
+    800044b4:	018a2583          	lw	a1,24(s4)
+    800044b8:	012585bb          	addw	a1,a1,s2
+    800044bc:	2585                	addiw	a1,a1,1
+    800044be:	028a2503          	lw	a0,40(s4)
+    800044c2:	fffff097          	auipc	ra,0xfffff
+    800044c6:	cca080e7          	jalr	-822(ra) # 8000318c <bread>
+    800044ca:	84aa                	mv	s1,a0
     struct buf *from = bread(log.dev, log.lh.block[tail]); // cache block
-    8000423a:	000aa583          	lw	a1,0(s5)
-    8000423e:	028a2503          	lw	a0,40(s4)
-    80004242:	fffff097          	auipc	ra,0xfffff
-    80004246:	cb8080e7          	jalr	-840(ra) # 80002efa <bread>
-    8000424a:	89aa                	mv	s3,a0
+    800044cc:	000aa583          	lw	a1,0(s5)
+    800044d0:	028a2503          	lw	a0,40(s4)
+    800044d4:	fffff097          	auipc	ra,0xfffff
+    800044d8:	cb8080e7          	jalr	-840(ra) # 8000318c <bread>
+    800044dc:	89aa                	mv	s3,a0
     memmove(to->data, from->data, BSIZE);
-    8000424c:	40000613          	li	a2,1024
-    80004250:	05850593          	addi	a1,a0,88
-    80004254:	05848513          	addi	a0,s1,88
-    80004258:	ffffd097          	auipc	ra,0xffffd
-    8000425c:	ad0080e7          	jalr	-1328(ra) # 80000d28 <memmove>
+    800044de:	40000613          	li	a2,1024
+    800044e2:	05850593          	addi	a1,a0,88
+    800044e6:	05848513          	addi	a0,s1,88
+    800044ea:	ffffd097          	auipc	ra,0xffffd
+    800044ee:	83e080e7          	jalr	-1986(ra) # 80000d28 <memmove>
     bwrite(to);  // write the log
-    80004260:	8526                	mv	a0,s1
-    80004262:	fffff097          	auipc	ra,0xfffff
-    80004266:	d8a080e7          	jalr	-630(ra) # 80002fec <bwrite>
+    800044f2:	8526                	mv	a0,s1
+    800044f4:	fffff097          	auipc	ra,0xfffff
+    800044f8:	d8a080e7          	jalr	-630(ra) # 8000327e <bwrite>
     brelse(from);
-    8000426a:	854e                	mv	a0,s3
-    8000426c:	fffff097          	auipc	ra,0xfffff
-    80004270:	dbe080e7          	jalr	-578(ra) # 8000302a <brelse>
+    800044fc:	854e                	mv	a0,s3
+    800044fe:	fffff097          	auipc	ra,0xfffff
+    80004502:	dbe080e7          	jalr	-578(ra) # 800032bc <brelse>
     brelse(to);
-    80004274:	8526                	mv	a0,s1
-    80004276:	fffff097          	auipc	ra,0xfffff
-    8000427a:	db4080e7          	jalr	-588(ra) # 8000302a <brelse>
+    80004506:	8526                	mv	a0,s1
+    80004508:	fffff097          	auipc	ra,0xfffff
+    8000450c:	db4080e7          	jalr	-588(ra) # 800032bc <brelse>
   for (tail = 0; tail < log.lh.n; tail++) {
-    8000427e:	2905                	addiw	s2,s2,1
-    80004280:	0a91                	addi	s5,s5,4
-    80004282:	02ca2783          	lw	a5,44(s4)
-    80004286:	f8f94ee3          	blt	s2,a5,80004222 <end_op+0xcc>
+    80004510:	2905                	addiw	s2,s2,1
+    80004512:	0a91                	addi	s5,s5,4
+    80004514:	02ca2783          	lw	a5,44(s4)
+    80004518:	f8f94ee3          	blt	s2,a5,800044b4 <end_op+0xcc>
     write_log();     // Write modified blocks from cache to log
     write_head();    // Write header to disk -- the real commit
-    8000428a:	00000097          	auipc	ra,0x0
-    8000428e:	c68080e7          	jalr	-920(ra) # 80003ef2 <write_head>
+    8000451c:	00000097          	auipc	ra,0x0
+    80004520:	c68080e7          	jalr	-920(ra) # 80004184 <write_head>
     install_trans(0); // Now install writes to home locations
-    80004292:	4501                	li	a0,0
-    80004294:	00000097          	auipc	ra,0x0
-    80004298:	cda080e7          	jalr	-806(ra) # 80003f6e <install_trans>
+    80004524:	4501                	li	a0,0
+    80004526:	00000097          	auipc	ra,0x0
+    8000452a:	cda080e7          	jalr	-806(ra) # 80004200 <install_trans>
     log.lh.n = 0;
-    8000429c:	0001d797          	auipc	a5,0x1d
-    800042a0:	4007a023          	sw	zero,1024(a5) # 8002169c <log+0x2c>
+    8000452e:	0001d797          	auipc	a5,0x1d
+    80004532:	1607a723          	sw	zero,366(a5) # 8002169c <log+0x2c>
     write_head();    // Erase the transaction from the log
-    800042a4:	00000097          	auipc	ra,0x0
-    800042a8:	c4e080e7          	jalr	-946(ra) # 80003ef2 <write_head>
-    800042ac:	bdf5                	j	800041a8 <end_op+0x52>
+    80004536:	00000097          	auipc	ra,0x0
+    8000453a:	c4e080e7          	jalr	-946(ra) # 80004184 <write_head>
+    8000453e:	bdf5                	j	8000443a <end_op+0x52>
 
-00000000800042ae <log_write>:
+0000000080004540 <log_write>:
 //   modify bp->data[]
 //   log_write(bp)
 //   brelse(bp)
 void
 log_write(struct buf *b)
 {
-    800042ae:	1101                	addi	sp,sp,-32
-    800042b0:	ec06                	sd	ra,24(sp)
-    800042b2:	e822                	sd	s0,16(sp)
-    800042b4:	e426                	sd	s1,8(sp)
-    800042b6:	e04a                	sd	s2,0(sp)
-    800042b8:	1000                	addi	s0,sp,32
-    800042ba:	84aa                	mv	s1,a0
+    80004540:	1101                	addi	sp,sp,-32
+    80004542:	ec06                	sd	ra,24(sp)
+    80004544:	e822                	sd	s0,16(sp)
+    80004546:	e426                	sd	s1,8(sp)
+    80004548:	e04a                	sd	s2,0(sp)
+    8000454a:	1000                	addi	s0,sp,32
+    8000454c:	84aa                	mv	s1,a0
   int i;
 
   acquire(&log.lock);
-    800042bc:	0001d917          	auipc	s2,0x1d
-    800042c0:	3b490913          	addi	s2,s2,948 # 80021670 <log>
-    800042c4:	854a                	mv	a0,s2
-    800042c6:	ffffd097          	auipc	ra,0xffffd
-    800042ca:	90a080e7          	jalr	-1782(ra) # 80000bd0 <acquire>
+    8000454e:	0001d917          	auipc	s2,0x1d
+    80004552:	12290913          	addi	s2,s2,290 # 80021670 <log>
+    80004556:	854a                	mv	a0,s2
+    80004558:	ffffc097          	auipc	ra,0xffffc
+    8000455c:	678080e7          	jalr	1656(ra) # 80000bd0 <acquire>
   if (log.lh.n >= LOGSIZE || log.lh.n >= log.size - 1)
-    800042ce:	02c92603          	lw	a2,44(s2)
-    800042d2:	47f5                	li	a5,29
-    800042d4:	06c7c563          	blt	a5,a2,8000433e <log_write+0x90>
-    800042d8:	0001d797          	auipc	a5,0x1d
-    800042dc:	3b47a783          	lw	a5,948(a5) # 8002168c <log+0x1c>
-    800042e0:	37fd                	addiw	a5,a5,-1
-    800042e2:	04f65e63          	bge	a2,a5,8000433e <log_write+0x90>
+    80004560:	02c92603          	lw	a2,44(s2)
+    80004564:	47f5                	li	a5,29
+    80004566:	06c7c563          	blt	a5,a2,800045d0 <log_write+0x90>
+    8000456a:	0001d797          	auipc	a5,0x1d
+    8000456e:	1227a783          	lw	a5,290(a5) # 8002168c <log+0x1c>
+    80004572:	37fd                	addiw	a5,a5,-1
+    80004574:	04f65e63          	bge	a2,a5,800045d0 <log_write+0x90>
     panic("too big a transaction");
   if (log.outstanding < 1)
-    800042e6:	0001d797          	auipc	a5,0x1d
-    800042ea:	3aa7a783          	lw	a5,938(a5) # 80021690 <log+0x20>
-    800042ee:	06f05063          	blez	a5,8000434e <log_write+0xa0>
+    80004578:	0001d797          	auipc	a5,0x1d
+    8000457c:	1187a783          	lw	a5,280(a5) # 80021690 <log+0x20>
+    80004580:	06f05063          	blez	a5,800045e0 <log_write+0xa0>
     panic("log_write outside of trans");
 
   for (i = 0; i < log.lh.n; i++) {
-    800042f2:	4781                	li	a5,0
-    800042f4:	06c05563          	blez	a2,8000435e <log_write+0xb0>
+    80004584:	4781                	li	a5,0
+    80004586:	06c05563          	blez	a2,800045f0 <log_write+0xb0>
     if (log.lh.block[i] == b->blockno)   // log absorption
-    800042f8:	44cc                	lw	a1,12(s1)
-    800042fa:	0001d717          	auipc	a4,0x1d
-    800042fe:	3a670713          	addi	a4,a4,934 # 800216a0 <log+0x30>
+    8000458a:	44cc                	lw	a1,12(s1)
+    8000458c:	0001d717          	auipc	a4,0x1d
+    80004590:	11470713          	addi	a4,a4,276 # 800216a0 <log+0x30>
   for (i = 0; i < log.lh.n; i++) {
-    80004302:	4781                	li	a5,0
+    80004594:	4781                	li	a5,0
     if (log.lh.block[i] == b->blockno)   // log absorption
-    80004304:	4314                	lw	a3,0(a4)
-    80004306:	04b68c63          	beq	a3,a1,8000435e <log_write+0xb0>
+    80004596:	4314                	lw	a3,0(a4)
+    80004598:	04b68c63          	beq	a3,a1,800045f0 <log_write+0xb0>
   for (i = 0; i < log.lh.n; i++) {
-    8000430a:	2785                	addiw	a5,a5,1
-    8000430c:	0711                	addi	a4,a4,4
-    8000430e:	fef61be3          	bne	a2,a5,80004304 <log_write+0x56>
+    8000459c:	2785                	addiw	a5,a5,1
+    8000459e:	0711                	addi	a4,a4,4
+    800045a0:	fef61be3          	bne	a2,a5,80004596 <log_write+0x56>
       break;
   }
   log.lh.block[i] = b->blockno;
-    80004312:	0621                	addi	a2,a2,8
-    80004314:	060a                	slli	a2,a2,0x2
-    80004316:	0001d797          	auipc	a5,0x1d
-    8000431a:	35a78793          	addi	a5,a5,858 # 80021670 <log>
-    8000431e:	97b2                	add	a5,a5,a2
-    80004320:	44d8                	lw	a4,12(s1)
-    80004322:	cb98                	sw	a4,16(a5)
+    800045a4:	0621                	addi	a2,a2,8
+    800045a6:	060a                	slli	a2,a2,0x2
+    800045a8:	0001d797          	auipc	a5,0x1d
+    800045ac:	0c878793          	addi	a5,a5,200 # 80021670 <log>
+    800045b0:	97b2                	add	a5,a5,a2
+    800045b2:	44d8                	lw	a4,12(s1)
+    800045b4:	cb98                	sw	a4,16(a5)
   if (i == log.lh.n) {  // Add new block to log?
     bpin(b);
-    80004324:	8526                	mv	a0,s1
-    80004326:	fffff097          	auipc	ra,0xfffff
-    8000432a:	da2080e7          	jalr	-606(ra) # 800030c8 <bpin>
+    800045b6:	8526                	mv	a0,s1
+    800045b8:	fffff097          	auipc	ra,0xfffff
+    800045bc:	da2080e7          	jalr	-606(ra) # 8000335a <bpin>
     log.lh.n++;
-    8000432e:	0001d717          	auipc	a4,0x1d
-    80004332:	34270713          	addi	a4,a4,834 # 80021670 <log>
-    80004336:	575c                	lw	a5,44(a4)
-    80004338:	2785                	addiw	a5,a5,1
-    8000433a:	d75c                	sw	a5,44(a4)
-    8000433c:	a82d                	j	80004376 <log_write+0xc8>
+    800045c0:	0001d717          	auipc	a4,0x1d
+    800045c4:	0b070713          	addi	a4,a4,176 # 80021670 <log>
+    800045c8:	575c                	lw	a5,44(a4)
+    800045ca:	2785                	addiw	a5,a5,1
+    800045cc:	d75c                	sw	a5,44(a4)
+    800045ce:	a82d                	j	80004608 <log_write+0xc8>
     panic("too big a transaction");
-    8000433e:	00004517          	auipc	a0,0x4
-    80004342:	38250513          	addi	a0,a0,898 # 800086c0 <syscalls+0x200>
-    80004346:	ffffc097          	auipc	ra,0xffffc
-    8000434a:	1f4080e7          	jalr	500(ra) # 8000053a <panic>
+    800045d0:	00004517          	auipc	a0,0x4
+    800045d4:	16850513          	addi	a0,a0,360 # 80008738 <syscalls+0x208>
+    800045d8:	ffffc097          	auipc	ra,0xffffc
+    800045dc:	f62080e7          	jalr	-158(ra) # 8000053a <panic>
     panic("log_write outside of trans");
-    8000434e:	00004517          	auipc	a0,0x4
-    80004352:	38a50513          	addi	a0,a0,906 # 800086d8 <syscalls+0x218>
-    80004356:	ffffc097          	auipc	ra,0xffffc
-    8000435a:	1e4080e7          	jalr	484(ra) # 8000053a <panic>
+    800045e0:	00004517          	auipc	a0,0x4
+    800045e4:	17050513          	addi	a0,a0,368 # 80008750 <syscalls+0x220>
+    800045e8:	ffffc097          	auipc	ra,0xffffc
+    800045ec:	f52080e7          	jalr	-174(ra) # 8000053a <panic>
   log.lh.block[i] = b->blockno;
-    8000435e:	00878693          	addi	a3,a5,8
-    80004362:	068a                	slli	a3,a3,0x2
-    80004364:	0001d717          	auipc	a4,0x1d
-    80004368:	30c70713          	addi	a4,a4,780 # 80021670 <log>
-    8000436c:	9736                	add	a4,a4,a3
-    8000436e:	44d4                	lw	a3,12(s1)
-    80004370:	cb14                	sw	a3,16(a4)
+    800045f0:	00878693          	addi	a3,a5,8
+    800045f4:	068a                	slli	a3,a3,0x2
+    800045f6:	0001d717          	auipc	a4,0x1d
+    800045fa:	07a70713          	addi	a4,a4,122 # 80021670 <log>
+    800045fe:	9736                	add	a4,a4,a3
+    80004600:	44d4                	lw	a3,12(s1)
+    80004602:	cb14                	sw	a3,16(a4)
   if (i == log.lh.n) {  // Add new block to log?
-    80004372:	faf609e3          	beq	a2,a5,80004324 <log_write+0x76>
+    80004604:	faf609e3          	beq	a2,a5,800045b6 <log_write+0x76>
   }
   release(&log.lock);
-    80004376:	0001d517          	auipc	a0,0x1d
-    8000437a:	2fa50513          	addi	a0,a0,762 # 80021670 <log>
-    8000437e:	ffffd097          	auipc	ra,0xffffd
-    80004382:	906080e7          	jalr	-1786(ra) # 80000c84 <release>
+    80004608:	0001d517          	auipc	a0,0x1d
+    8000460c:	06850513          	addi	a0,a0,104 # 80021670 <log>
+    80004610:	ffffc097          	auipc	ra,0xffffc
+    80004614:	674080e7          	jalr	1652(ra) # 80000c84 <release>
 }
-    80004386:	60e2                	ld	ra,24(sp)
-    80004388:	6442                	ld	s0,16(sp)
-    8000438a:	64a2                	ld	s1,8(sp)
-    8000438c:	6902                	ld	s2,0(sp)
-    8000438e:	6105                	addi	sp,sp,32
-    80004390:	8082                	ret
+    80004618:	60e2                	ld	ra,24(sp)
+    8000461a:	6442                	ld	s0,16(sp)
+    8000461c:	64a2                	ld	s1,8(sp)
+    8000461e:	6902                	ld	s2,0(sp)
+    80004620:	6105                	addi	sp,sp,32
+    80004622:	8082                	ret
 
-0000000080004392 <initsleeplock>:
+0000000080004624 <initsleeplock>:
 #include "proc.h"
 #include "sleeplock.h"
 
 void
 initsleeplock(struct sleeplock *lk, char *name)
 {
-    80004392:	1101                	addi	sp,sp,-32
-    80004394:	ec06                	sd	ra,24(sp)
-    80004396:	e822                	sd	s0,16(sp)
-    80004398:	e426                	sd	s1,8(sp)
-    8000439a:	e04a                	sd	s2,0(sp)
-    8000439c:	1000                	addi	s0,sp,32
-    8000439e:	84aa                	mv	s1,a0
-    800043a0:	892e                	mv	s2,a1
+    80004624:	1101                	addi	sp,sp,-32
+    80004626:	ec06                	sd	ra,24(sp)
+    80004628:	e822                	sd	s0,16(sp)
+    8000462a:	e426                	sd	s1,8(sp)
+    8000462c:	e04a                	sd	s2,0(sp)
+    8000462e:	1000                	addi	s0,sp,32
+    80004630:	84aa                	mv	s1,a0
+    80004632:	892e                	mv	s2,a1
   initlock(&lk->lk, "sleep lock");
-    800043a2:	00004597          	auipc	a1,0x4
-    800043a6:	35658593          	addi	a1,a1,854 # 800086f8 <syscalls+0x238>
-    800043aa:	0521                	addi	a0,a0,8
-    800043ac:	ffffc097          	auipc	ra,0xffffc
-    800043b0:	794080e7          	jalr	1940(ra) # 80000b40 <initlock>
+    80004634:	00004597          	auipc	a1,0x4
+    80004638:	13c58593          	addi	a1,a1,316 # 80008770 <syscalls+0x240>
+    8000463c:	0521                	addi	a0,a0,8
+    8000463e:	ffffc097          	auipc	ra,0xffffc
+    80004642:	502080e7          	jalr	1282(ra) # 80000b40 <initlock>
   lk->name = name;
-    800043b4:	0324b023          	sd	s2,32(s1)
+    80004646:	0324b023          	sd	s2,32(s1)
   lk->locked = 0;
-    800043b8:	0004a023          	sw	zero,0(s1)
+    8000464a:	0004a023          	sw	zero,0(s1)
   lk->pid = 0;
-    800043bc:	0204a423          	sw	zero,40(s1)
+    8000464e:	0204a423          	sw	zero,40(s1)
 }
-    800043c0:	60e2                	ld	ra,24(sp)
-    800043c2:	6442                	ld	s0,16(sp)
-    800043c4:	64a2                	ld	s1,8(sp)
-    800043c6:	6902                	ld	s2,0(sp)
-    800043c8:	6105                	addi	sp,sp,32
-    800043ca:	8082                	ret
+    80004652:	60e2                	ld	ra,24(sp)
+    80004654:	6442                	ld	s0,16(sp)
+    80004656:	64a2                	ld	s1,8(sp)
+    80004658:	6902                	ld	s2,0(sp)
+    8000465a:	6105                	addi	sp,sp,32
+    8000465c:	8082                	ret
 
-00000000800043cc <acquiresleep>:
+000000008000465e <acquiresleep>:
 
 void
 acquiresleep(struct sleeplock *lk)
 {
-    800043cc:	1101                	addi	sp,sp,-32
-    800043ce:	ec06                	sd	ra,24(sp)
-    800043d0:	e822                	sd	s0,16(sp)
-    800043d2:	e426                	sd	s1,8(sp)
-    800043d4:	e04a                	sd	s2,0(sp)
-    800043d6:	1000                	addi	s0,sp,32
-    800043d8:	84aa                	mv	s1,a0
+    8000465e:	1101                	addi	sp,sp,-32
+    80004660:	ec06                	sd	ra,24(sp)
+    80004662:	e822                	sd	s0,16(sp)
+    80004664:	e426                	sd	s1,8(sp)
+    80004666:	e04a                	sd	s2,0(sp)
+    80004668:	1000                	addi	s0,sp,32
+    8000466a:	84aa                	mv	s1,a0
   acquire(&lk->lk);
-    800043da:	00850913          	addi	s2,a0,8
-    800043de:	854a                	mv	a0,s2
-    800043e0:	ffffc097          	auipc	ra,0xffffc
-    800043e4:	7f0080e7          	jalr	2032(ra) # 80000bd0 <acquire>
+    8000466c:	00850913          	addi	s2,a0,8
+    80004670:	854a                	mv	a0,s2
+    80004672:	ffffc097          	auipc	ra,0xffffc
+    80004676:	55e080e7          	jalr	1374(ra) # 80000bd0 <acquire>
   while (lk->locked) {
-    800043e8:	409c                	lw	a5,0(s1)
-    800043ea:	cb89                	beqz	a5,800043fc <acquiresleep+0x30>
+    8000467a:	409c                	lw	a5,0(s1)
+    8000467c:	cb89                	beqz	a5,8000468e <acquiresleep+0x30>
     sleep(lk, &lk->lk);
-    800043ec:	85ca                	mv	a1,s2
-    800043ee:	8526                	mv	a0,s1
-    800043f0:	ffffe097          	auipc	ra,0xffffe
-    800043f4:	c76080e7          	jalr	-906(ra) # 80002066 <sleep>
+    8000467e:	85ca                	mv	a1,s2
+    80004680:	8526                	mv	a0,s1
+    80004682:	ffffe097          	auipc	ra,0xffffe
+    80004686:	b7e080e7          	jalr	-1154(ra) # 80002200 <sleep>
   while (lk->locked) {
-    800043f8:	409c                	lw	a5,0(s1)
-    800043fa:	fbed                	bnez	a5,800043ec <acquiresleep+0x20>
+    8000468a:	409c                	lw	a5,0(s1)
+    8000468c:	fbed                	bnez	a5,8000467e <acquiresleep+0x20>
   }
   lk->locked = 1;
-    800043fc:	4785                	li	a5,1
-    800043fe:	c09c                	sw	a5,0(s1)
+    8000468e:	4785                	li	a5,1
+    80004690:	c09c                	sw	a5,0(s1)
   lk->pid = myproc()->pid;
-    80004400:	ffffd097          	auipc	ra,0xffffd
-    80004404:	596080e7          	jalr	1430(ra) # 80001996 <myproc>
-    80004408:	591c                	lw	a5,48(a0)
-    8000440a:	d49c                	sw	a5,40(s1)
+    80004692:	ffffd097          	auipc	ra,0xffffd
+    80004696:	3ae080e7          	jalr	942(ra) # 80001a40 <myproc>
+    8000469a:	591c                	lw	a5,48(a0)
+    8000469c:	d49c                	sw	a5,40(s1)
   release(&lk->lk);
-    8000440c:	854a                	mv	a0,s2
-    8000440e:	ffffd097          	auipc	ra,0xffffd
-    80004412:	876080e7          	jalr	-1930(ra) # 80000c84 <release>
+    8000469e:	854a                	mv	a0,s2
+    800046a0:	ffffc097          	auipc	ra,0xffffc
+    800046a4:	5e4080e7          	jalr	1508(ra) # 80000c84 <release>
 }
-    80004416:	60e2                	ld	ra,24(sp)
-    80004418:	6442                	ld	s0,16(sp)
-    8000441a:	64a2                	ld	s1,8(sp)
-    8000441c:	6902                	ld	s2,0(sp)
-    8000441e:	6105                	addi	sp,sp,32
-    80004420:	8082                	ret
+    800046a8:	60e2                	ld	ra,24(sp)
+    800046aa:	6442                	ld	s0,16(sp)
+    800046ac:	64a2                	ld	s1,8(sp)
+    800046ae:	6902                	ld	s2,0(sp)
+    800046b0:	6105                	addi	sp,sp,32
+    800046b2:	8082                	ret
 
-0000000080004422 <releasesleep>:
+00000000800046b4 <releasesleep>:
 
 void
 releasesleep(struct sleeplock *lk)
 {
-    80004422:	1101                	addi	sp,sp,-32
-    80004424:	ec06                	sd	ra,24(sp)
-    80004426:	e822                	sd	s0,16(sp)
-    80004428:	e426                	sd	s1,8(sp)
-    8000442a:	e04a                	sd	s2,0(sp)
-    8000442c:	1000                	addi	s0,sp,32
-    8000442e:	84aa                	mv	s1,a0
+    800046b4:	1101                	addi	sp,sp,-32
+    800046b6:	ec06                	sd	ra,24(sp)
+    800046b8:	e822                	sd	s0,16(sp)
+    800046ba:	e426                	sd	s1,8(sp)
+    800046bc:	e04a                	sd	s2,0(sp)
+    800046be:	1000                	addi	s0,sp,32
+    800046c0:	84aa                	mv	s1,a0
   acquire(&lk->lk);
-    80004430:	00850913          	addi	s2,a0,8
-    80004434:	854a                	mv	a0,s2
-    80004436:	ffffc097          	auipc	ra,0xffffc
-    8000443a:	79a080e7          	jalr	1946(ra) # 80000bd0 <acquire>
+    800046c2:	00850913          	addi	s2,a0,8
+    800046c6:	854a                	mv	a0,s2
+    800046c8:	ffffc097          	auipc	ra,0xffffc
+    800046cc:	508080e7          	jalr	1288(ra) # 80000bd0 <acquire>
   lk->locked = 0;
-    8000443e:	0004a023          	sw	zero,0(s1)
+    800046d0:	0004a023          	sw	zero,0(s1)
   lk->pid = 0;
-    80004442:	0204a423          	sw	zero,40(s1)
+    800046d4:	0204a423          	sw	zero,40(s1)
   wakeup(lk);
-    80004446:	8526                	mv	a0,s1
-    80004448:	ffffe097          	auipc	ra,0xffffe
-    8000444c:	daa080e7          	jalr	-598(ra) # 800021f2 <wakeup>
+    800046d8:	8526                	mv	a0,s1
+    800046da:	ffffe097          	auipc	ra,0xffffe
+    800046de:	cb2080e7          	jalr	-846(ra) # 8000238c <wakeup>
   release(&lk->lk);
-    80004450:	854a                	mv	a0,s2
-    80004452:	ffffd097          	auipc	ra,0xffffd
-    80004456:	832080e7          	jalr	-1998(ra) # 80000c84 <release>
+    800046e2:	854a                	mv	a0,s2
+    800046e4:	ffffc097          	auipc	ra,0xffffc
+    800046e8:	5a0080e7          	jalr	1440(ra) # 80000c84 <release>
 }
-    8000445a:	60e2                	ld	ra,24(sp)
-    8000445c:	6442                	ld	s0,16(sp)
-    8000445e:	64a2                	ld	s1,8(sp)
-    80004460:	6902                	ld	s2,0(sp)
-    80004462:	6105                	addi	sp,sp,32
-    80004464:	8082                	ret
+    800046ec:	60e2                	ld	ra,24(sp)
+    800046ee:	6442                	ld	s0,16(sp)
+    800046f0:	64a2                	ld	s1,8(sp)
+    800046f2:	6902                	ld	s2,0(sp)
+    800046f4:	6105                	addi	sp,sp,32
+    800046f6:	8082                	ret
 
-0000000080004466 <holdingsleep>:
+00000000800046f8 <holdingsleep>:
 
 int
 holdingsleep(struct sleeplock *lk)
 {
-    80004466:	7179                	addi	sp,sp,-48
-    80004468:	f406                	sd	ra,40(sp)
-    8000446a:	f022                	sd	s0,32(sp)
-    8000446c:	ec26                	sd	s1,24(sp)
-    8000446e:	e84a                	sd	s2,16(sp)
-    80004470:	e44e                	sd	s3,8(sp)
-    80004472:	1800                	addi	s0,sp,48
-    80004474:	84aa                	mv	s1,a0
+    800046f8:	7179                	addi	sp,sp,-48
+    800046fa:	f406                	sd	ra,40(sp)
+    800046fc:	f022                	sd	s0,32(sp)
+    800046fe:	ec26                	sd	s1,24(sp)
+    80004700:	e84a                	sd	s2,16(sp)
+    80004702:	e44e                	sd	s3,8(sp)
+    80004704:	1800                	addi	s0,sp,48
+    80004706:	84aa                	mv	s1,a0
   int r;
   
   acquire(&lk->lk);
-    80004476:	00850913          	addi	s2,a0,8
-    8000447a:	854a                	mv	a0,s2
-    8000447c:	ffffc097          	auipc	ra,0xffffc
-    80004480:	754080e7          	jalr	1876(ra) # 80000bd0 <acquire>
+    80004708:	00850913          	addi	s2,a0,8
+    8000470c:	854a                	mv	a0,s2
+    8000470e:	ffffc097          	auipc	ra,0xffffc
+    80004712:	4c2080e7          	jalr	1218(ra) # 80000bd0 <acquire>
   r = lk->locked && (lk->pid == myproc()->pid);
-    80004484:	409c                	lw	a5,0(s1)
-    80004486:	ef99                	bnez	a5,800044a4 <holdingsleep+0x3e>
-    80004488:	4481                	li	s1,0
+    80004716:	409c                	lw	a5,0(s1)
+    80004718:	ef99                	bnez	a5,80004736 <holdingsleep+0x3e>
+    8000471a:	4481                	li	s1,0
   release(&lk->lk);
-    8000448a:	854a                	mv	a0,s2
-    8000448c:	ffffc097          	auipc	ra,0xffffc
-    80004490:	7f8080e7          	jalr	2040(ra) # 80000c84 <release>
+    8000471c:	854a                	mv	a0,s2
+    8000471e:	ffffc097          	auipc	ra,0xffffc
+    80004722:	566080e7          	jalr	1382(ra) # 80000c84 <release>
   return r;
 }
-    80004494:	8526                	mv	a0,s1
-    80004496:	70a2                	ld	ra,40(sp)
-    80004498:	7402                	ld	s0,32(sp)
-    8000449a:	64e2                	ld	s1,24(sp)
-    8000449c:	6942                	ld	s2,16(sp)
-    8000449e:	69a2                	ld	s3,8(sp)
-    800044a0:	6145                	addi	sp,sp,48
-    800044a2:	8082                	ret
+    80004726:	8526                	mv	a0,s1
+    80004728:	70a2                	ld	ra,40(sp)
+    8000472a:	7402                	ld	s0,32(sp)
+    8000472c:	64e2                	ld	s1,24(sp)
+    8000472e:	6942                	ld	s2,16(sp)
+    80004730:	69a2                	ld	s3,8(sp)
+    80004732:	6145                	addi	sp,sp,48
+    80004734:	8082                	ret
   r = lk->locked && (lk->pid == myproc()->pid);
-    800044a4:	0284a983          	lw	s3,40(s1)
-    800044a8:	ffffd097          	auipc	ra,0xffffd
-    800044ac:	4ee080e7          	jalr	1262(ra) # 80001996 <myproc>
-    800044b0:	5904                	lw	s1,48(a0)
-    800044b2:	413484b3          	sub	s1,s1,s3
-    800044b6:	0014b493          	seqz	s1,s1
-    800044ba:	bfc1                	j	8000448a <holdingsleep+0x24>
+    80004736:	0284a983          	lw	s3,40(s1)
+    8000473a:	ffffd097          	auipc	ra,0xffffd
+    8000473e:	306080e7          	jalr	774(ra) # 80001a40 <myproc>
+    80004742:	5904                	lw	s1,48(a0)
+    80004744:	413484b3          	sub	s1,s1,s3
+    80004748:	0014b493          	seqz	s1,s1
+    8000474c:	bfc1                	j	8000471c <holdingsleep+0x24>
 
-00000000800044bc <fileinit>:
+000000008000474e <fileinit>:
   struct file file[NFILE];
 } ftable;
 
 void
 fileinit(void)
 {
-    800044bc:	1141                	addi	sp,sp,-16
-    800044be:	e406                	sd	ra,8(sp)
-    800044c0:	e022                	sd	s0,0(sp)
-    800044c2:	0800                	addi	s0,sp,16
+    8000474e:	1141                	addi	sp,sp,-16
+    80004750:	e406                	sd	ra,8(sp)
+    80004752:	e022                	sd	s0,0(sp)
+    80004754:	0800                	addi	s0,sp,16
   initlock(&ftable.lock, "ftable");
-    800044c4:	00004597          	auipc	a1,0x4
-    800044c8:	24458593          	addi	a1,a1,580 # 80008708 <syscalls+0x248>
-    800044cc:	0001d517          	auipc	a0,0x1d
-    800044d0:	2ec50513          	addi	a0,a0,748 # 800217b8 <ftable>
-    800044d4:	ffffc097          	auipc	ra,0xffffc
-    800044d8:	66c080e7          	jalr	1644(ra) # 80000b40 <initlock>
+    80004756:	00004597          	auipc	a1,0x4
+    8000475a:	02a58593          	addi	a1,a1,42 # 80008780 <syscalls+0x250>
+    8000475e:	0001d517          	auipc	a0,0x1d
+    80004762:	05a50513          	addi	a0,a0,90 # 800217b8 <ftable>
+    80004766:	ffffc097          	auipc	ra,0xffffc
+    8000476a:	3da080e7          	jalr	986(ra) # 80000b40 <initlock>
 }
-    800044dc:	60a2                	ld	ra,8(sp)
-    800044de:	6402                	ld	s0,0(sp)
-    800044e0:	0141                	addi	sp,sp,16
-    800044e2:	8082                	ret
+    8000476e:	60a2                	ld	ra,8(sp)
+    80004770:	6402                	ld	s0,0(sp)
+    80004772:	0141                	addi	sp,sp,16
+    80004774:	8082                	ret
 
-00000000800044e4 <filealloc>:
+0000000080004776 <filealloc>:
 
 // Allocate a file structure.
 struct file*
 filealloc(void)
 {
-    800044e4:	1101                	addi	sp,sp,-32
-    800044e6:	ec06                	sd	ra,24(sp)
-    800044e8:	e822                	sd	s0,16(sp)
-    800044ea:	e426                	sd	s1,8(sp)
-    800044ec:	1000                	addi	s0,sp,32
+    80004776:	1101                	addi	sp,sp,-32
+    80004778:	ec06                	sd	ra,24(sp)
+    8000477a:	e822                	sd	s0,16(sp)
+    8000477c:	e426                	sd	s1,8(sp)
+    8000477e:	1000                	addi	s0,sp,32
   struct file *f;
 
   acquire(&ftable.lock);
-    800044ee:	0001d517          	auipc	a0,0x1d
-    800044f2:	2ca50513          	addi	a0,a0,714 # 800217b8 <ftable>
-    800044f6:	ffffc097          	auipc	ra,0xffffc
-    800044fa:	6da080e7          	jalr	1754(ra) # 80000bd0 <acquire>
+    80004780:	0001d517          	auipc	a0,0x1d
+    80004784:	03850513          	addi	a0,a0,56 # 800217b8 <ftable>
+    80004788:	ffffc097          	auipc	ra,0xffffc
+    8000478c:	448080e7          	jalr	1096(ra) # 80000bd0 <acquire>
   for(f = ftable.file; f < ftable.file + NFILE; f++){
-    800044fe:	0001d497          	auipc	s1,0x1d
-    80004502:	2d248493          	addi	s1,s1,722 # 800217d0 <ftable+0x18>
-    80004506:	0001e717          	auipc	a4,0x1e
-    8000450a:	26a70713          	addi	a4,a4,618 # 80022770 <ftable+0xfb8>
+    80004790:	0001d497          	auipc	s1,0x1d
+    80004794:	04048493          	addi	s1,s1,64 # 800217d0 <ftable+0x18>
+    80004798:	0001e717          	auipc	a4,0x1e
+    8000479c:	fd870713          	addi	a4,a4,-40 # 80022770 <ftable+0xfb8>
     if(f->ref == 0){
-    8000450e:	40dc                	lw	a5,4(s1)
-    80004510:	cf99                	beqz	a5,8000452e <filealloc+0x4a>
+    800047a0:	40dc                	lw	a5,4(s1)
+    800047a2:	cf99                	beqz	a5,800047c0 <filealloc+0x4a>
   for(f = ftable.file; f < ftable.file + NFILE; f++){
-    80004512:	02848493          	addi	s1,s1,40
-    80004516:	fee49ce3          	bne	s1,a4,8000450e <filealloc+0x2a>
+    800047a4:	02848493          	addi	s1,s1,40
+    800047a8:	fee49ce3          	bne	s1,a4,800047a0 <filealloc+0x2a>
       f->ref = 1;
       release(&ftable.lock);
       return f;
     }
   }
   release(&ftable.lock);
-    8000451a:	0001d517          	auipc	a0,0x1d
-    8000451e:	29e50513          	addi	a0,a0,670 # 800217b8 <ftable>
-    80004522:	ffffc097          	auipc	ra,0xffffc
-    80004526:	762080e7          	jalr	1890(ra) # 80000c84 <release>
+    800047ac:	0001d517          	auipc	a0,0x1d
+    800047b0:	00c50513          	addi	a0,a0,12 # 800217b8 <ftable>
+    800047b4:	ffffc097          	auipc	ra,0xffffc
+    800047b8:	4d0080e7          	jalr	1232(ra) # 80000c84 <release>
   return 0;
-    8000452a:	4481                	li	s1,0
-    8000452c:	a819                	j	80004542 <filealloc+0x5e>
+    800047bc:	4481                	li	s1,0
+    800047be:	a819                	j	800047d4 <filealloc+0x5e>
       f->ref = 1;
-    8000452e:	4785                	li	a5,1
-    80004530:	c0dc                	sw	a5,4(s1)
+    800047c0:	4785                	li	a5,1
+    800047c2:	c0dc                	sw	a5,4(s1)
       release(&ftable.lock);
-    80004532:	0001d517          	auipc	a0,0x1d
-    80004536:	28650513          	addi	a0,a0,646 # 800217b8 <ftable>
-    8000453a:	ffffc097          	auipc	ra,0xffffc
-    8000453e:	74a080e7          	jalr	1866(ra) # 80000c84 <release>
+    800047c4:	0001d517          	auipc	a0,0x1d
+    800047c8:	ff450513          	addi	a0,a0,-12 # 800217b8 <ftable>
+    800047cc:	ffffc097          	auipc	ra,0xffffc
+    800047d0:	4b8080e7          	jalr	1208(ra) # 80000c84 <release>
 }
-    80004542:	8526                	mv	a0,s1
-    80004544:	60e2                	ld	ra,24(sp)
-    80004546:	6442                	ld	s0,16(sp)
-    80004548:	64a2                	ld	s1,8(sp)
-    8000454a:	6105                	addi	sp,sp,32
-    8000454c:	8082                	ret
+    800047d4:	8526                	mv	a0,s1
+    800047d6:	60e2                	ld	ra,24(sp)
+    800047d8:	6442                	ld	s0,16(sp)
+    800047da:	64a2                	ld	s1,8(sp)
+    800047dc:	6105                	addi	sp,sp,32
+    800047de:	8082                	ret
 
-000000008000454e <filedup>:
+00000000800047e0 <filedup>:
 
 // Increment ref count for file f.
 struct file*
 filedup(struct file *f)
 {
-    8000454e:	1101                	addi	sp,sp,-32
-    80004550:	ec06                	sd	ra,24(sp)
-    80004552:	e822                	sd	s0,16(sp)
-    80004554:	e426                	sd	s1,8(sp)
-    80004556:	1000                	addi	s0,sp,32
-    80004558:	84aa                	mv	s1,a0
+    800047e0:	1101                	addi	sp,sp,-32
+    800047e2:	ec06                	sd	ra,24(sp)
+    800047e4:	e822                	sd	s0,16(sp)
+    800047e6:	e426                	sd	s1,8(sp)
+    800047e8:	1000                	addi	s0,sp,32
+    800047ea:	84aa                	mv	s1,a0
   acquire(&ftable.lock);
-    8000455a:	0001d517          	auipc	a0,0x1d
-    8000455e:	25e50513          	addi	a0,a0,606 # 800217b8 <ftable>
-    80004562:	ffffc097          	auipc	ra,0xffffc
-    80004566:	66e080e7          	jalr	1646(ra) # 80000bd0 <acquire>
+    800047ec:	0001d517          	auipc	a0,0x1d
+    800047f0:	fcc50513          	addi	a0,a0,-52 # 800217b8 <ftable>
+    800047f4:	ffffc097          	auipc	ra,0xffffc
+    800047f8:	3dc080e7          	jalr	988(ra) # 80000bd0 <acquire>
   if(f->ref < 1)
-    8000456a:	40dc                	lw	a5,4(s1)
-    8000456c:	02f05263          	blez	a5,80004590 <filedup+0x42>
+    800047fc:	40dc                	lw	a5,4(s1)
+    800047fe:	02f05263          	blez	a5,80004822 <filedup+0x42>
     panic("filedup");
   f->ref++;
-    80004570:	2785                	addiw	a5,a5,1
-    80004572:	c0dc                	sw	a5,4(s1)
+    80004802:	2785                	addiw	a5,a5,1
+    80004804:	c0dc                	sw	a5,4(s1)
   release(&ftable.lock);
-    80004574:	0001d517          	auipc	a0,0x1d
-    80004578:	24450513          	addi	a0,a0,580 # 800217b8 <ftable>
-    8000457c:	ffffc097          	auipc	ra,0xffffc
-    80004580:	708080e7          	jalr	1800(ra) # 80000c84 <release>
+    80004806:	0001d517          	auipc	a0,0x1d
+    8000480a:	fb250513          	addi	a0,a0,-78 # 800217b8 <ftable>
+    8000480e:	ffffc097          	auipc	ra,0xffffc
+    80004812:	476080e7          	jalr	1142(ra) # 80000c84 <release>
   return f;
 }
-    80004584:	8526                	mv	a0,s1
-    80004586:	60e2                	ld	ra,24(sp)
-    80004588:	6442                	ld	s0,16(sp)
-    8000458a:	64a2                	ld	s1,8(sp)
-    8000458c:	6105                	addi	sp,sp,32
-    8000458e:	8082                	ret
+    80004816:	8526                	mv	a0,s1
+    80004818:	60e2                	ld	ra,24(sp)
+    8000481a:	6442                	ld	s0,16(sp)
+    8000481c:	64a2                	ld	s1,8(sp)
+    8000481e:	6105                	addi	sp,sp,32
+    80004820:	8082                	ret
     panic("filedup");
-    80004590:	00004517          	auipc	a0,0x4
-    80004594:	18050513          	addi	a0,a0,384 # 80008710 <syscalls+0x250>
-    80004598:	ffffc097          	auipc	ra,0xffffc
-    8000459c:	fa2080e7          	jalr	-94(ra) # 8000053a <panic>
+    80004822:	00004517          	auipc	a0,0x4
+    80004826:	f6650513          	addi	a0,a0,-154 # 80008788 <syscalls+0x258>
+    8000482a:	ffffc097          	auipc	ra,0xffffc
+    8000482e:	d10080e7          	jalr	-752(ra) # 8000053a <panic>
 
-00000000800045a0 <fileclose>:
+0000000080004832 <fileclose>:
 
 // Close file f.  (Decrement ref count, close when reaches 0.)
 void
 fileclose(struct file *f)
 {
-    800045a0:	7139                	addi	sp,sp,-64
-    800045a2:	fc06                	sd	ra,56(sp)
-    800045a4:	f822                	sd	s0,48(sp)
-    800045a6:	f426                	sd	s1,40(sp)
-    800045a8:	f04a                	sd	s2,32(sp)
-    800045aa:	ec4e                	sd	s3,24(sp)
-    800045ac:	e852                	sd	s4,16(sp)
-    800045ae:	e456                	sd	s5,8(sp)
-    800045b0:	0080                	addi	s0,sp,64
-    800045b2:	84aa                	mv	s1,a0
+    80004832:	7139                	addi	sp,sp,-64
+    80004834:	fc06                	sd	ra,56(sp)
+    80004836:	f822                	sd	s0,48(sp)
+    80004838:	f426                	sd	s1,40(sp)
+    8000483a:	f04a                	sd	s2,32(sp)
+    8000483c:	ec4e                	sd	s3,24(sp)
+    8000483e:	e852                	sd	s4,16(sp)
+    80004840:	e456                	sd	s5,8(sp)
+    80004842:	0080                	addi	s0,sp,64
+    80004844:	84aa                	mv	s1,a0
   struct file ff;
 
   acquire(&ftable.lock);
-    800045b4:	0001d517          	auipc	a0,0x1d
-    800045b8:	20450513          	addi	a0,a0,516 # 800217b8 <ftable>
-    800045bc:	ffffc097          	auipc	ra,0xffffc
-    800045c0:	614080e7          	jalr	1556(ra) # 80000bd0 <acquire>
+    80004846:	0001d517          	auipc	a0,0x1d
+    8000484a:	f7250513          	addi	a0,a0,-142 # 800217b8 <ftable>
+    8000484e:	ffffc097          	auipc	ra,0xffffc
+    80004852:	382080e7          	jalr	898(ra) # 80000bd0 <acquire>
   if(f->ref < 1)
-    800045c4:	40dc                	lw	a5,4(s1)
-    800045c6:	06f05163          	blez	a5,80004628 <fileclose+0x88>
+    80004856:	40dc                	lw	a5,4(s1)
+    80004858:	06f05163          	blez	a5,800048ba <fileclose+0x88>
     panic("fileclose");
   if(--f->ref > 0){
-    800045ca:	37fd                	addiw	a5,a5,-1
-    800045cc:	0007871b          	sext.w	a4,a5
-    800045d0:	c0dc                	sw	a5,4(s1)
-    800045d2:	06e04363          	bgtz	a4,80004638 <fileclose+0x98>
+    8000485c:	37fd                	addiw	a5,a5,-1
+    8000485e:	0007871b          	sext.w	a4,a5
+    80004862:	c0dc                	sw	a5,4(s1)
+    80004864:	06e04363          	bgtz	a4,800048ca <fileclose+0x98>
     release(&ftable.lock);
     return;
   }
   ff = *f;
-    800045d6:	0004a903          	lw	s2,0(s1)
-    800045da:	0094ca83          	lbu	s5,9(s1)
-    800045de:	0104ba03          	ld	s4,16(s1)
-    800045e2:	0184b983          	ld	s3,24(s1)
+    80004868:	0004a903          	lw	s2,0(s1)
+    8000486c:	0094ca83          	lbu	s5,9(s1)
+    80004870:	0104ba03          	ld	s4,16(s1)
+    80004874:	0184b983          	ld	s3,24(s1)
   f->ref = 0;
-    800045e6:	0004a223          	sw	zero,4(s1)
+    80004878:	0004a223          	sw	zero,4(s1)
   f->type = FD_NONE;
-    800045ea:	0004a023          	sw	zero,0(s1)
+    8000487c:	0004a023          	sw	zero,0(s1)
   release(&ftable.lock);
-    800045ee:	0001d517          	auipc	a0,0x1d
-    800045f2:	1ca50513          	addi	a0,a0,458 # 800217b8 <ftable>
-    800045f6:	ffffc097          	auipc	ra,0xffffc
-    800045fa:	68e080e7          	jalr	1678(ra) # 80000c84 <release>
+    80004880:	0001d517          	auipc	a0,0x1d
+    80004884:	f3850513          	addi	a0,a0,-200 # 800217b8 <ftable>
+    80004888:	ffffc097          	auipc	ra,0xffffc
+    8000488c:	3fc080e7          	jalr	1020(ra) # 80000c84 <release>
 
   if(ff.type == FD_PIPE){
-    800045fe:	4785                	li	a5,1
-    80004600:	04f90d63          	beq	s2,a5,8000465a <fileclose+0xba>
+    80004890:	4785                	li	a5,1
+    80004892:	04f90d63          	beq	s2,a5,800048ec <fileclose+0xba>
     pipeclose(ff.pipe, ff.writable);
   } else if(ff.type == FD_INODE || ff.type == FD_DEVICE){
-    80004604:	3979                	addiw	s2,s2,-2
-    80004606:	4785                	li	a5,1
-    80004608:	0527e063          	bltu	a5,s2,80004648 <fileclose+0xa8>
+    80004896:	3979                	addiw	s2,s2,-2
+    80004898:	4785                	li	a5,1
+    8000489a:	0527e063          	bltu	a5,s2,800048da <fileclose+0xa8>
     begin_op();
-    8000460c:	00000097          	auipc	ra,0x0
-    80004610:	acc080e7          	jalr	-1332(ra) # 800040d8 <begin_op>
+    8000489e:	00000097          	auipc	ra,0x0
+    800048a2:	acc080e7          	jalr	-1332(ra) # 8000436a <begin_op>
     iput(ff.ip);
-    80004614:	854e                	mv	a0,s3
-    80004616:	fffff097          	auipc	ra,0xfffff
-    8000461a:	2a0080e7          	jalr	672(ra) # 800038b6 <iput>
+    800048a6:	854e                	mv	a0,s3
+    800048a8:	fffff097          	auipc	ra,0xfffff
+    800048ac:	2a0080e7          	jalr	672(ra) # 80003b48 <iput>
     end_op();
-    8000461e:	00000097          	auipc	ra,0x0
-    80004622:	b38080e7          	jalr	-1224(ra) # 80004156 <end_op>
-    80004626:	a00d                	j	80004648 <fileclose+0xa8>
+    800048b0:	00000097          	auipc	ra,0x0
+    800048b4:	b38080e7          	jalr	-1224(ra) # 800043e8 <end_op>
+    800048b8:	a00d                	j	800048da <fileclose+0xa8>
     panic("fileclose");
-    80004628:	00004517          	auipc	a0,0x4
-    8000462c:	0f050513          	addi	a0,a0,240 # 80008718 <syscalls+0x258>
-    80004630:	ffffc097          	auipc	ra,0xffffc
-    80004634:	f0a080e7          	jalr	-246(ra) # 8000053a <panic>
+    800048ba:	00004517          	auipc	a0,0x4
+    800048be:	ed650513          	addi	a0,a0,-298 # 80008790 <syscalls+0x260>
+    800048c2:	ffffc097          	auipc	ra,0xffffc
+    800048c6:	c78080e7          	jalr	-904(ra) # 8000053a <panic>
     release(&ftable.lock);
-    80004638:	0001d517          	auipc	a0,0x1d
-    8000463c:	18050513          	addi	a0,a0,384 # 800217b8 <ftable>
-    80004640:	ffffc097          	auipc	ra,0xffffc
-    80004644:	644080e7          	jalr	1604(ra) # 80000c84 <release>
+    800048ca:	0001d517          	auipc	a0,0x1d
+    800048ce:	eee50513          	addi	a0,a0,-274 # 800217b8 <ftable>
+    800048d2:	ffffc097          	auipc	ra,0xffffc
+    800048d6:	3b2080e7          	jalr	946(ra) # 80000c84 <release>
   }
 }
-    80004648:	70e2                	ld	ra,56(sp)
-    8000464a:	7442                	ld	s0,48(sp)
-    8000464c:	74a2                	ld	s1,40(sp)
-    8000464e:	7902                	ld	s2,32(sp)
-    80004650:	69e2                	ld	s3,24(sp)
-    80004652:	6a42                	ld	s4,16(sp)
-    80004654:	6aa2                	ld	s5,8(sp)
-    80004656:	6121                	addi	sp,sp,64
-    80004658:	8082                	ret
+    800048da:	70e2                	ld	ra,56(sp)
+    800048dc:	7442                	ld	s0,48(sp)
+    800048de:	74a2                	ld	s1,40(sp)
+    800048e0:	7902                	ld	s2,32(sp)
+    800048e2:	69e2                	ld	s3,24(sp)
+    800048e4:	6a42                	ld	s4,16(sp)
+    800048e6:	6aa2                	ld	s5,8(sp)
+    800048e8:	6121                	addi	sp,sp,64
+    800048ea:	8082                	ret
     pipeclose(ff.pipe, ff.writable);
-    8000465a:	85d6                	mv	a1,s5
-    8000465c:	8552                	mv	a0,s4
-    8000465e:	00000097          	auipc	ra,0x0
-    80004662:	34c080e7          	jalr	844(ra) # 800049aa <pipeclose>
-    80004666:	b7cd                	j	80004648 <fileclose+0xa8>
+    800048ec:	85d6                	mv	a1,s5
+    800048ee:	8552                	mv	a0,s4
+    800048f0:	00000097          	auipc	ra,0x0
+    800048f4:	34c080e7          	jalr	844(ra) # 80004c3c <pipeclose>
+    800048f8:	b7cd                	j	800048da <fileclose+0xa8>
 
-0000000080004668 <filestat>:
+00000000800048fa <filestat>:
 
 // Get metadata about file f.
 // addr is a user virtual address, pointing to a struct stat.
 int
 filestat(struct file *f, uint64 addr)
 {
-    80004668:	715d                	addi	sp,sp,-80
-    8000466a:	e486                	sd	ra,72(sp)
-    8000466c:	e0a2                	sd	s0,64(sp)
-    8000466e:	fc26                	sd	s1,56(sp)
-    80004670:	f84a                	sd	s2,48(sp)
-    80004672:	f44e                	sd	s3,40(sp)
-    80004674:	0880                	addi	s0,sp,80
-    80004676:	84aa                	mv	s1,a0
-    80004678:	89ae                	mv	s3,a1
+    800048fa:	715d                	addi	sp,sp,-80
+    800048fc:	e486                	sd	ra,72(sp)
+    800048fe:	e0a2                	sd	s0,64(sp)
+    80004900:	fc26                	sd	s1,56(sp)
+    80004902:	f84a                	sd	s2,48(sp)
+    80004904:	f44e                	sd	s3,40(sp)
+    80004906:	0880                	addi	s0,sp,80
+    80004908:	84aa                	mv	s1,a0
+    8000490a:	89ae                	mv	s3,a1
   struct proc *p = myproc();
-    8000467a:	ffffd097          	auipc	ra,0xffffd
-    8000467e:	31c080e7          	jalr	796(ra) # 80001996 <myproc>
+    8000490c:	ffffd097          	auipc	ra,0xffffd
+    80004910:	134080e7          	jalr	308(ra) # 80001a40 <myproc>
   struct stat st;
   
   if(f->type == FD_INODE || f->type == FD_DEVICE){
-    80004682:	409c                	lw	a5,0(s1)
-    80004684:	37f9                	addiw	a5,a5,-2
-    80004686:	4705                	li	a4,1
-    80004688:	04f76763          	bltu	a4,a5,800046d6 <filestat+0x6e>
-    8000468c:	892a                	mv	s2,a0
+    80004914:	409c                	lw	a5,0(s1)
+    80004916:	37f9                	addiw	a5,a5,-2
+    80004918:	4705                	li	a4,1
+    8000491a:	04f76763          	bltu	a4,a5,80004968 <filestat+0x6e>
+    8000491e:	892a                	mv	s2,a0
     ilock(f->ip);
-    8000468e:	6c88                	ld	a0,24(s1)
-    80004690:	fffff097          	auipc	ra,0xfffff
-    80004694:	06c080e7          	jalr	108(ra) # 800036fc <ilock>
+    80004920:	6c88                	ld	a0,24(s1)
+    80004922:	fffff097          	auipc	ra,0xfffff
+    80004926:	06c080e7          	jalr	108(ra) # 8000398e <ilock>
     stati(f->ip, &st);
-    80004698:	fb840593          	addi	a1,s0,-72
-    8000469c:	6c88                	ld	a0,24(s1)
-    8000469e:	fffff097          	auipc	ra,0xfffff
-    800046a2:	2e8080e7          	jalr	744(ra) # 80003986 <stati>
+    8000492a:	fb840593          	addi	a1,s0,-72
+    8000492e:	6c88                	ld	a0,24(s1)
+    80004930:	fffff097          	auipc	ra,0xfffff
+    80004934:	2e8080e7          	jalr	744(ra) # 80003c18 <stati>
     iunlock(f->ip);
-    800046a6:	6c88                	ld	a0,24(s1)
-    800046a8:	fffff097          	auipc	ra,0xfffff
-    800046ac:	116080e7          	jalr	278(ra) # 800037be <iunlock>
+    80004938:	6c88                	ld	a0,24(s1)
+    8000493a:	fffff097          	auipc	ra,0xfffff
+    8000493e:	116080e7          	jalr	278(ra) # 80003a50 <iunlock>
     if(copyout(p->pagetable, addr, (char *)&st, sizeof(st)) < 0)
-    800046b0:	46e1                	li	a3,24
-    800046b2:	fb840613          	addi	a2,s0,-72
-    800046b6:	85ce                	mv	a1,s3
-    800046b8:	05093503          	ld	a0,80(s2)
-    800046bc:	ffffd097          	auipc	ra,0xffffd
-    800046c0:	f9e080e7          	jalr	-98(ra) # 8000165a <copyout>
-    800046c4:	41f5551b          	sraiw	a0,a0,0x1f
+    80004942:	46e1                	li	a3,24
+    80004944:	fb840613          	addi	a2,s0,-72
+    80004948:	85ce                	mv	a1,s3
+    8000494a:	05093503          	ld	a0,80(s2)
+    8000494e:	ffffd097          	auipc	ra,0xffffd
+    80004952:	d0c080e7          	jalr	-756(ra) # 8000165a <copyout>
+    80004956:	41f5551b          	sraiw	a0,a0,0x1f
       return -1;
     return 0;
   }
   return -1;
 }
-    800046c8:	60a6                	ld	ra,72(sp)
-    800046ca:	6406                	ld	s0,64(sp)
-    800046cc:	74e2                	ld	s1,56(sp)
-    800046ce:	7942                	ld	s2,48(sp)
-    800046d0:	79a2                	ld	s3,40(sp)
-    800046d2:	6161                	addi	sp,sp,80
-    800046d4:	8082                	ret
+    8000495a:	60a6                	ld	ra,72(sp)
+    8000495c:	6406                	ld	s0,64(sp)
+    8000495e:	74e2                	ld	s1,56(sp)
+    80004960:	7942                	ld	s2,48(sp)
+    80004962:	79a2                	ld	s3,40(sp)
+    80004964:	6161                	addi	sp,sp,80
+    80004966:	8082                	ret
   return -1;
-    800046d6:	557d                	li	a0,-1
-    800046d8:	bfc5                	j	800046c8 <filestat+0x60>
+    80004968:	557d                	li	a0,-1
+    8000496a:	bfc5                	j	8000495a <filestat+0x60>
 
-00000000800046da <fileread>:
+000000008000496c <fileread>:
 
 // Read from file f.
 // addr is a user virtual address.
 int
 fileread(struct file *f, uint64 addr, int n)
 {
-    800046da:	7179                	addi	sp,sp,-48
-    800046dc:	f406                	sd	ra,40(sp)
-    800046de:	f022                	sd	s0,32(sp)
-    800046e0:	ec26                	sd	s1,24(sp)
-    800046e2:	e84a                	sd	s2,16(sp)
-    800046e4:	e44e                	sd	s3,8(sp)
-    800046e6:	1800                	addi	s0,sp,48
+    8000496c:	7179                	addi	sp,sp,-48
+    8000496e:	f406                	sd	ra,40(sp)
+    80004970:	f022                	sd	s0,32(sp)
+    80004972:	ec26                	sd	s1,24(sp)
+    80004974:	e84a                	sd	s2,16(sp)
+    80004976:	e44e                	sd	s3,8(sp)
+    80004978:	1800                	addi	s0,sp,48
   int r = 0;
 
   if(f->readable == 0)
-    800046e8:	00854783          	lbu	a5,8(a0)
-    800046ec:	c3d5                	beqz	a5,80004790 <fileread+0xb6>
-    800046ee:	84aa                	mv	s1,a0
-    800046f0:	89ae                	mv	s3,a1
-    800046f2:	8932                	mv	s2,a2
+    8000497a:	00854783          	lbu	a5,8(a0)
+    8000497e:	c3d5                	beqz	a5,80004a22 <fileread+0xb6>
+    80004980:	84aa                	mv	s1,a0
+    80004982:	89ae                	mv	s3,a1
+    80004984:	8932                	mv	s2,a2
     return -1;
 
   if(f->type == FD_PIPE){
-    800046f4:	411c                	lw	a5,0(a0)
-    800046f6:	4705                	li	a4,1
-    800046f8:	04e78963          	beq	a5,a4,8000474a <fileread+0x70>
+    80004986:	411c                	lw	a5,0(a0)
+    80004988:	4705                	li	a4,1
+    8000498a:	04e78963          	beq	a5,a4,800049dc <fileread+0x70>
     r = piperead(f->pipe, addr, n);
   } else if(f->type == FD_DEVICE){
-    800046fc:	470d                	li	a4,3
-    800046fe:	04e78d63          	beq	a5,a4,80004758 <fileread+0x7e>
+    8000498e:	470d                	li	a4,3
+    80004990:	04e78d63          	beq	a5,a4,800049ea <fileread+0x7e>
     if(f->major < 0 || f->major >= NDEV || !devsw[f->major].read)
       return -1;
     r = devsw[f->major].read(1, addr, n);
   } else if(f->type == FD_INODE){
-    80004702:	4709                	li	a4,2
-    80004704:	06e79e63          	bne	a5,a4,80004780 <fileread+0xa6>
+    80004994:	4709                	li	a4,2
+    80004996:	06e79e63          	bne	a5,a4,80004a12 <fileread+0xa6>
     ilock(f->ip);
-    80004708:	6d08                	ld	a0,24(a0)
-    8000470a:	fffff097          	auipc	ra,0xfffff
-    8000470e:	ff2080e7          	jalr	-14(ra) # 800036fc <ilock>
+    8000499a:	6d08                	ld	a0,24(a0)
+    8000499c:	fffff097          	auipc	ra,0xfffff
+    800049a0:	ff2080e7          	jalr	-14(ra) # 8000398e <ilock>
     if((r = readi(f->ip, 1, addr, f->off, n)) > 0)
-    80004712:	874a                	mv	a4,s2
-    80004714:	5094                	lw	a3,32(s1)
-    80004716:	864e                	mv	a2,s3
-    80004718:	4585                	li	a1,1
-    8000471a:	6c88                	ld	a0,24(s1)
-    8000471c:	fffff097          	auipc	ra,0xfffff
-    80004720:	294080e7          	jalr	660(ra) # 800039b0 <readi>
-    80004724:	892a                	mv	s2,a0
-    80004726:	00a05563          	blez	a0,80004730 <fileread+0x56>
+    800049a4:	874a                	mv	a4,s2
+    800049a6:	5094                	lw	a3,32(s1)
+    800049a8:	864e                	mv	a2,s3
+    800049aa:	4585                	li	a1,1
+    800049ac:	6c88                	ld	a0,24(s1)
+    800049ae:	fffff097          	auipc	ra,0xfffff
+    800049b2:	294080e7          	jalr	660(ra) # 80003c42 <readi>
+    800049b6:	892a                	mv	s2,a0
+    800049b8:	00a05563          	blez	a0,800049c2 <fileread+0x56>
       f->off += r;
-    8000472a:	509c                	lw	a5,32(s1)
-    8000472c:	9fa9                	addw	a5,a5,a0
-    8000472e:	d09c                	sw	a5,32(s1)
+    800049bc:	509c                	lw	a5,32(s1)
+    800049be:	9fa9                	addw	a5,a5,a0
+    800049c0:	d09c                	sw	a5,32(s1)
     iunlock(f->ip);
-    80004730:	6c88                	ld	a0,24(s1)
-    80004732:	fffff097          	auipc	ra,0xfffff
-    80004736:	08c080e7          	jalr	140(ra) # 800037be <iunlock>
+    800049c2:	6c88                	ld	a0,24(s1)
+    800049c4:	fffff097          	auipc	ra,0xfffff
+    800049c8:	08c080e7          	jalr	140(ra) # 80003a50 <iunlock>
   } else {
     panic("fileread");
   }
 
   return r;
 }
-    8000473a:	854a                	mv	a0,s2
-    8000473c:	70a2                	ld	ra,40(sp)
-    8000473e:	7402                	ld	s0,32(sp)
-    80004740:	64e2                	ld	s1,24(sp)
-    80004742:	6942                	ld	s2,16(sp)
-    80004744:	69a2                	ld	s3,8(sp)
-    80004746:	6145                	addi	sp,sp,48
-    80004748:	8082                	ret
+    800049cc:	854a                	mv	a0,s2
+    800049ce:	70a2                	ld	ra,40(sp)
+    800049d0:	7402                	ld	s0,32(sp)
+    800049d2:	64e2                	ld	s1,24(sp)
+    800049d4:	6942                	ld	s2,16(sp)
+    800049d6:	69a2                	ld	s3,8(sp)
+    800049d8:	6145                	addi	sp,sp,48
+    800049da:	8082                	ret
     r = piperead(f->pipe, addr, n);
-    8000474a:	6908                	ld	a0,16(a0)
-    8000474c:	00000097          	auipc	ra,0x0
-    80004750:	3c0080e7          	jalr	960(ra) # 80004b0c <piperead>
-    80004754:	892a                	mv	s2,a0
-    80004756:	b7d5                	j	8000473a <fileread+0x60>
+    800049dc:	6908                	ld	a0,16(a0)
+    800049de:	00000097          	auipc	ra,0x0
+    800049e2:	3c0080e7          	jalr	960(ra) # 80004d9e <piperead>
+    800049e6:	892a                	mv	s2,a0
+    800049e8:	b7d5                	j	800049cc <fileread+0x60>
     if(f->major < 0 || f->major >= NDEV || !devsw[f->major].read)
-    80004758:	02451783          	lh	a5,36(a0)
-    8000475c:	03079693          	slli	a3,a5,0x30
-    80004760:	92c1                	srli	a3,a3,0x30
-    80004762:	4725                	li	a4,9
-    80004764:	02d76863          	bltu	a4,a3,80004794 <fileread+0xba>
-    80004768:	0792                	slli	a5,a5,0x4
-    8000476a:	0001d717          	auipc	a4,0x1d
-    8000476e:	fae70713          	addi	a4,a4,-82 # 80021718 <devsw>
-    80004772:	97ba                	add	a5,a5,a4
-    80004774:	639c                	ld	a5,0(a5)
-    80004776:	c38d                	beqz	a5,80004798 <fileread+0xbe>
+    800049ea:	02451783          	lh	a5,36(a0)
+    800049ee:	03079693          	slli	a3,a5,0x30
+    800049f2:	92c1                	srli	a3,a3,0x30
+    800049f4:	4725                	li	a4,9
+    800049f6:	02d76863          	bltu	a4,a3,80004a26 <fileread+0xba>
+    800049fa:	0792                	slli	a5,a5,0x4
+    800049fc:	0001d717          	auipc	a4,0x1d
+    80004a00:	d1c70713          	addi	a4,a4,-740 # 80021718 <devsw>
+    80004a04:	97ba                	add	a5,a5,a4
+    80004a06:	639c                	ld	a5,0(a5)
+    80004a08:	c38d                	beqz	a5,80004a2a <fileread+0xbe>
     r = devsw[f->major].read(1, addr, n);
-    80004778:	4505                	li	a0,1
-    8000477a:	9782                	jalr	a5
-    8000477c:	892a                	mv	s2,a0
-    8000477e:	bf75                	j	8000473a <fileread+0x60>
+    80004a0a:	4505                	li	a0,1
+    80004a0c:	9782                	jalr	a5
+    80004a0e:	892a                	mv	s2,a0
+    80004a10:	bf75                	j	800049cc <fileread+0x60>
     panic("fileread");
-    80004780:	00004517          	auipc	a0,0x4
-    80004784:	fa850513          	addi	a0,a0,-88 # 80008728 <syscalls+0x268>
-    80004788:	ffffc097          	auipc	ra,0xffffc
-    8000478c:	db2080e7          	jalr	-590(ra) # 8000053a <panic>
+    80004a12:	00004517          	auipc	a0,0x4
+    80004a16:	d8e50513          	addi	a0,a0,-626 # 800087a0 <syscalls+0x270>
+    80004a1a:	ffffc097          	auipc	ra,0xffffc
+    80004a1e:	b20080e7          	jalr	-1248(ra) # 8000053a <panic>
     return -1;
-    80004790:	597d                	li	s2,-1
-    80004792:	b765                	j	8000473a <fileread+0x60>
+    80004a22:	597d                	li	s2,-1
+    80004a24:	b765                	j	800049cc <fileread+0x60>
       return -1;
-    80004794:	597d                	li	s2,-1
-    80004796:	b755                	j	8000473a <fileread+0x60>
-    80004798:	597d                	li	s2,-1
-    8000479a:	b745                	j	8000473a <fileread+0x60>
+    80004a26:	597d                	li	s2,-1
+    80004a28:	b755                	j	800049cc <fileread+0x60>
+    80004a2a:	597d                	li	s2,-1
+    80004a2c:	b745                	j	800049cc <fileread+0x60>
 
-000000008000479c <filewrite>:
+0000000080004a2e <filewrite>:
 
 // Write to file f.
 // addr is a user virtual address.
 int
 filewrite(struct file *f, uint64 addr, int n)
 {
-    8000479c:	715d                	addi	sp,sp,-80
-    8000479e:	e486                	sd	ra,72(sp)
-    800047a0:	e0a2                	sd	s0,64(sp)
-    800047a2:	fc26                	sd	s1,56(sp)
-    800047a4:	f84a                	sd	s2,48(sp)
-    800047a6:	f44e                	sd	s3,40(sp)
-    800047a8:	f052                	sd	s4,32(sp)
-    800047aa:	ec56                	sd	s5,24(sp)
-    800047ac:	e85a                	sd	s6,16(sp)
-    800047ae:	e45e                	sd	s7,8(sp)
-    800047b0:	e062                	sd	s8,0(sp)
-    800047b2:	0880                	addi	s0,sp,80
+    80004a2e:	715d                	addi	sp,sp,-80
+    80004a30:	e486                	sd	ra,72(sp)
+    80004a32:	e0a2                	sd	s0,64(sp)
+    80004a34:	fc26                	sd	s1,56(sp)
+    80004a36:	f84a                	sd	s2,48(sp)
+    80004a38:	f44e                	sd	s3,40(sp)
+    80004a3a:	f052                	sd	s4,32(sp)
+    80004a3c:	ec56                	sd	s5,24(sp)
+    80004a3e:	e85a                	sd	s6,16(sp)
+    80004a40:	e45e                	sd	s7,8(sp)
+    80004a42:	e062                	sd	s8,0(sp)
+    80004a44:	0880                	addi	s0,sp,80
   int r, ret = 0;
 
   if(f->writable == 0)
-    800047b4:	00954783          	lbu	a5,9(a0)
-    800047b8:	10078663          	beqz	a5,800048c4 <filewrite+0x128>
-    800047bc:	892a                	mv	s2,a0
-    800047be:	8b2e                	mv	s6,a1
-    800047c0:	8a32                	mv	s4,a2
+    80004a46:	00954783          	lbu	a5,9(a0)
+    80004a4a:	10078663          	beqz	a5,80004b56 <filewrite+0x128>
+    80004a4e:	892a                	mv	s2,a0
+    80004a50:	8b2e                	mv	s6,a1
+    80004a52:	8a32                	mv	s4,a2
     return -1;
 
   if(f->type == FD_PIPE){
-    800047c2:	411c                	lw	a5,0(a0)
-    800047c4:	4705                	li	a4,1
-    800047c6:	02e78263          	beq	a5,a4,800047ea <filewrite+0x4e>
+    80004a54:	411c                	lw	a5,0(a0)
+    80004a56:	4705                	li	a4,1
+    80004a58:	02e78263          	beq	a5,a4,80004a7c <filewrite+0x4e>
     ret = pipewrite(f->pipe, addr, n);
   } else if(f->type == FD_DEVICE){
-    800047ca:	470d                	li	a4,3
-    800047cc:	02e78663          	beq	a5,a4,800047f8 <filewrite+0x5c>
+    80004a5c:	470d                	li	a4,3
+    80004a5e:	02e78663          	beq	a5,a4,80004a8a <filewrite+0x5c>
     if(f->major < 0 || f->major >= NDEV || !devsw[f->major].write)
       return -1;
     ret = devsw[f->major].write(1, addr, n);
   } else if(f->type == FD_INODE){
-    800047d0:	4709                	li	a4,2
-    800047d2:	0ee79163          	bne	a5,a4,800048b4 <filewrite+0x118>
+    80004a62:	4709                	li	a4,2
+    80004a64:	0ee79163          	bne	a5,a4,80004b46 <filewrite+0x118>
     // and 2 blocks of slop for non-aligned writes.
     // this really belongs lower down, since writei()
     // might be writing a device like the console.
     int max = ((MAXOPBLOCKS-1-1-2) / 2) * BSIZE;
     int i = 0;
     while(i < n){
-    800047d6:	0ac05d63          	blez	a2,80004890 <filewrite+0xf4>
+    80004a68:	0ac05d63          	blez	a2,80004b22 <filewrite+0xf4>
     int i = 0;
-    800047da:	4981                	li	s3,0
-    800047dc:	6b85                	lui	s7,0x1
-    800047de:	c00b8b93          	addi	s7,s7,-1024 # c00 <_entry-0x7ffff400>
-    800047e2:	6c05                	lui	s8,0x1
-    800047e4:	c00c0c1b          	addiw	s8,s8,-1024 # c00 <_entry-0x7ffff400>
-    800047e8:	a861                	j	80004880 <filewrite+0xe4>
+    80004a6c:	4981                	li	s3,0
+    80004a6e:	6b85                	lui	s7,0x1
+    80004a70:	c00b8b93          	addi	s7,s7,-1024 # c00 <_entry-0x7ffff400>
+    80004a74:	6c05                	lui	s8,0x1
+    80004a76:	c00c0c1b          	addiw	s8,s8,-1024 # c00 <_entry-0x7ffff400>
+    80004a7a:	a861                	j	80004b12 <filewrite+0xe4>
     ret = pipewrite(f->pipe, addr, n);
-    800047ea:	6908                	ld	a0,16(a0)
-    800047ec:	00000097          	auipc	ra,0x0
-    800047f0:	22e080e7          	jalr	558(ra) # 80004a1a <pipewrite>
-    800047f4:	8a2a                	mv	s4,a0
-    800047f6:	a045                	j	80004896 <filewrite+0xfa>
+    80004a7c:	6908                	ld	a0,16(a0)
+    80004a7e:	00000097          	auipc	ra,0x0
+    80004a82:	22e080e7          	jalr	558(ra) # 80004cac <pipewrite>
+    80004a86:	8a2a                	mv	s4,a0
+    80004a88:	a045                	j	80004b28 <filewrite+0xfa>
     if(f->major < 0 || f->major >= NDEV || !devsw[f->major].write)
-    800047f8:	02451783          	lh	a5,36(a0)
-    800047fc:	03079693          	slli	a3,a5,0x30
-    80004800:	92c1                	srli	a3,a3,0x30
-    80004802:	4725                	li	a4,9
-    80004804:	0cd76263          	bltu	a4,a3,800048c8 <filewrite+0x12c>
-    80004808:	0792                	slli	a5,a5,0x4
-    8000480a:	0001d717          	auipc	a4,0x1d
-    8000480e:	f0e70713          	addi	a4,a4,-242 # 80021718 <devsw>
-    80004812:	97ba                	add	a5,a5,a4
-    80004814:	679c                	ld	a5,8(a5)
-    80004816:	cbdd                	beqz	a5,800048cc <filewrite+0x130>
+    80004a8a:	02451783          	lh	a5,36(a0)
+    80004a8e:	03079693          	slli	a3,a5,0x30
+    80004a92:	92c1                	srli	a3,a3,0x30
+    80004a94:	4725                	li	a4,9
+    80004a96:	0cd76263          	bltu	a4,a3,80004b5a <filewrite+0x12c>
+    80004a9a:	0792                	slli	a5,a5,0x4
+    80004a9c:	0001d717          	auipc	a4,0x1d
+    80004aa0:	c7c70713          	addi	a4,a4,-900 # 80021718 <devsw>
+    80004aa4:	97ba                	add	a5,a5,a4
+    80004aa6:	679c                	ld	a5,8(a5)
+    80004aa8:	cbdd                	beqz	a5,80004b5e <filewrite+0x130>
     ret = devsw[f->major].write(1, addr, n);
-    80004818:	4505                	li	a0,1
-    8000481a:	9782                	jalr	a5
-    8000481c:	8a2a                	mv	s4,a0
-    8000481e:	a8a5                	j	80004896 <filewrite+0xfa>
-    80004820:	00048a9b          	sext.w	s5,s1
+    80004aaa:	4505                	li	a0,1
+    80004aac:	9782                	jalr	a5
+    80004aae:	8a2a                	mv	s4,a0
+    80004ab0:	a8a5                	j	80004b28 <filewrite+0xfa>
+    80004ab2:	00048a9b          	sext.w	s5,s1
       int n1 = n - i;
       if(n1 > max)
         n1 = max;
 
       begin_op();
-    80004824:	00000097          	auipc	ra,0x0
-    80004828:	8b4080e7          	jalr	-1868(ra) # 800040d8 <begin_op>
+    80004ab6:	00000097          	auipc	ra,0x0
+    80004aba:	8b4080e7          	jalr	-1868(ra) # 8000436a <begin_op>
       ilock(f->ip);
-    8000482c:	01893503          	ld	a0,24(s2)
-    80004830:	fffff097          	auipc	ra,0xfffff
-    80004834:	ecc080e7          	jalr	-308(ra) # 800036fc <ilock>
+    80004abe:	01893503          	ld	a0,24(s2)
+    80004ac2:	fffff097          	auipc	ra,0xfffff
+    80004ac6:	ecc080e7          	jalr	-308(ra) # 8000398e <ilock>
       if ((r = writei(f->ip, 1, addr + i, f->off, n1)) > 0)
-    80004838:	8756                	mv	a4,s5
-    8000483a:	02092683          	lw	a3,32(s2)
-    8000483e:	01698633          	add	a2,s3,s6
-    80004842:	4585                	li	a1,1
-    80004844:	01893503          	ld	a0,24(s2)
-    80004848:	fffff097          	auipc	ra,0xfffff
-    8000484c:	260080e7          	jalr	608(ra) # 80003aa8 <writei>
-    80004850:	84aa                	mv	s1,a0
-    80004852:	00a05763          	blez	a0,80004860 <filewrite+0xc4>
+    80004aca:	8756                	mv	a4,s5
+    80004acc:	02092683          	lw	a3,32(s2)
+    80004ad0:	01698633          	add	a2,s3,s6
+    80004ad4:	4585                	li	a1,1
+    80004ad6:	01893503          	ld	a0,24(s2)
+    80004ada:	fffff097          	auipc	ra,0xfffff
+    80004ade:	260080e7          	jalr	608(ra) # 80003d3a <writei>
+    80004ae2:	84aa                	mv	s1,a0
+    80004ae4:	00a05763          	blez	a0,80004af2 <filewrite+0xc4>
         f->off += r;
-    80004856:	02092783          	lw	a5,32(s2)
-    8000485a:	9fa9                	addw	a5,a5,a0
-    8000485c:	02f92023          	sw	a5,32(s2)
+    80004ae8:	02092783          	lw	a5,32(s2)
+    80004aec:	9fa9                	addw	a5,a5,a0
+    80004aee:	02f92023          	sw	a5,32(s2)
       iunlock(f->ip);
-    80004860:	01893503          	ld	a0,24(s2)
-    80004864:	fffff097          	auipc	ra,0xfffff
-    80004868:	f5a080e7          	jalr	-166(ra) # 800037be <iunlock>
+    80004af2:	01893503          	ld	a0,24(s2)
+    80004af6:	fffff097          	auipc	ra,0xfffff
+    80004afa:	f5a080e7          	jalr	-166(ra) # 80003a50 <iunlock>
       end_op();
-    8000486c:	00000097          	auipc	ra,0x0
-    80004870:	8ea080e7          	jalr	-1814(ra) # 80004156 <end_op>
+    80004afe:	00000097          	auipc	ra,0x0
+    80004b02:	8ea080e7          	jalr	-1814(ra) # 800043e8 <end_op>
 
       if(r != n1){
-    80004874:	009a9f63          	bne	s5,s1,80004892 <filewrite+0xf6>
+    80004b06:	009a9f63          	bne	s5,s1,80004b24 <filewrite+0xf6>
         // error from writei
         break;
       }
       i += r;
-    80004878:	013489bb          	addw	s3,s1,s3
+    80004b0a:	013489bb          	addw	s3,s1,s3
     while(i < n){
-    8000487c:	0149db63          	bge	s3,s4,80004892 <filewrite+0xf6>
+    80004b0e:	0149db63          	bge	s3,s4,80004b24 <filewrite+0xf6>
       int n1 = n - i;
-    80004880:	413a04bb          	subw	s1,s4,s3
-    80004884:	0004879b          	sext.w	a5,s1
-    80004888:	f8fbdce3          	bge	s7,a5,80004820 <filewrite+0x84>
-    8000488c:	84e2                	mv	s1,s8
-    8000488e:	bf49                	j	80004820 <filewrite+0x84>
+    80004b12:	413a04bb          	subw	s1,s4,s3
+    80004b16:	0004879b          	sext.w	a5,s1
+    80004b1a:	f8fbdce3          	bge	s7,a5,80004ab2 <filewrite+0x84>
+    80004b1e:	84e2                	mv	s1,s8
+    80004b20:	bf49                	j	80004ab2 <filewrite+0x84>
     int i = 0;
-    80004890:	4981                	li	s3,0
+    80004b22:	4981                	li	s3,0
     }
     ret = (i == n ? n : -1);
-    80004892:	013a1f63          	bne	s4,s3,800048b0 <filewrite+0x114>
+    80004b24:	013a1f63          	bne	s4,s3,80004b42 <filewrite+0x114>
   } else {
     panic("filewrite");
   }
 
   return ret;
 }
-    80004896:	8552                	mv	a0,s4
-    80004898:	60a6                	ld	ra,72(sp)
-    8000489a:	6406                	ld	s0,64(sp)
-    8000489c:	74e2                	ld	s1,56(sp)
-    8000489e:	7942                	ld	s2,48(sp)
-    800048a0:	79a2                	ld	s3,40(sp)
-    800048a2:	7a02                	ld	s4,32(sp)
-    800048a4:	6ae2                	ld	s5,24(sp)
-    800048a6:	6b42                	ld	s6,16(sp)
-    800048a8:	6ba2                	ld	s7,8(sp)
-    800048aa:	6c02                	ld	s8,0(sp)
-    800048ac:	6161                	addi	sp,sp,80
-    800048ae:	8082                	ret
+    80004b28:	8552                	mv	a0,s4
+    80004b2a:	60a6                	ld	ra,72(sp)
+    80004b2c:	6406                	ld	s0,64(sp)
+    80004b2e:	74e2                	ld	s1,56(sp)
+    80004b30:	7942                	ld	s2,48(sp)
+    80004b32:	79a2                	ld	s3,40(sp)
+    80004b34:	7a02                	ld	s4,32(sp)
+    80004b36:	6ae2                	ld	s5,24(sp)
+    80004b38:	6b42                	ld	s6,16(sp)
+    80004b3a:	6ba2                	ld	s7,8(sp)
+    80004b3c:	6c02                	ld	s8,0(sp)
+    80004b3e:	6161                	addi	sp,sp,80
+    80004b40:	8082                	ret
     ret = (i == n ? n : -1);
-    800048b0:	5a7d                	li	s4,-1
-    800048b2:	b7d5                	j	80004896 <filewrite+0xfa>
+    80004b42:	5a7d                	li	s4,-1
+    80004b44:	b7d5                	j	80004b28 <filewrite+0xfa>
     panic("filewrite");
-    800048b4:	00004517          	auipc	a0,0x4
-    800048b8:	e8450513          	addi	a0,a0,-380 # 80008738 <syscalls+0x278>
-    800048bc:	ffffc097          	auipc	ra,0xffffc
-    800048c0:	c7e080e7          	jalr	-898(ra) # 8000053a <panic>
+    80004b46:	00004517          	auipc	a0,0x4
+    80004b4a:	c6a50513          	addi	a0,a0,-918 # 800087b0 <syscalls+0x280>
+    80004b4e:	ffffc097          	auipc	ra,0xffffc
+    80004b52:	9ec080e7          	jalr	-1556(ra) # 8000053a <panic>
     return -1;
-    800048c4:	5a7d                	li	s4,-1
-    800048c6:	bfc1                	j	80004896 <filewrite+0xfa>
+    80004b56:	5a7d                	li	s4,-1
+    80004b58:	bfc1                	j	80004b28 <filewrite+0xfa>
       return -1;
-    800048c8:	5a7d                	li	s4,-1
-    800048ca:	b7f1                	j	80004896 <filewrite+0xfa>
-    800048cc:	5a7d                	li	s4,-1
-    800048ce:	b7e1                	j	80004896 <filewrite+0xfa>
+    80004b5a:	5a7d                	li	s4,-1
+    80004b5c:	b7f1                	j	80004b28 <filewrite+0xfa>
+    80004b5e:	5a7d                	li	s4,-1
+    80004b60:	b7e1                	j	80004b28 <filewrite+0xfa>
 
-00000000800048d0 <pipealloc>:
+0000000080004b62 <pipealloc>:
   int writeopen;  // write fd is still open
 };
 
 int
 pipealloc(struct file **f0, struct file **f1)
 {
-    800048d0:	7179                	addi	sp,sp,-48
-    800048d2:	f406                	sd	ra,40(sp)
-    800048d4:	f022                	sd	s0,32(sp)
-    800048d6:	ec26                	sd	s1,24(sp)
-    800048d8:	e84a                	sd	s2,16(sp)
-    800048da:	e44e                	sd	s3,8(sp)
-    800048dc:	e052                	sd	s4,0(sp)
-    800048de:	1800                	addi	s0,sp,48
-    800048e0:	84aa                	mv	s1,a0
-    800048e2:	8a2e                	mv	s4,a1
+    80004b62:	7179                	addi	sp,sp,-48
+    80004b64:	f406                	sd	ra,40(sp)
+    80004b66:	f022                	sd	s0,32(sp)
+    80004b68:	ec26                	sd	s1,24(sp)
+    80004b6a:	e84a                	sd	s2,16(sp)
+    80004b6c:	e44e                	sd	s3,8(sp)
+    80004b6e:	e052                	sd	s4,0(sp)
+    80004b70:	1800                	addi	s0,sp,48
+    80004b72:	84aa                	mv	s1,a0
+    80004b74:	8a2e                	mv	s4,a1
   struct pipe *pi;
 
   pi = 0;
   *f0 = *f1 = 0;
-    800048e4:	0005b023          	sd	zero,0(a1)
-    800048e8:	00053023          	sd	zero,0(a0)
+    80004b76:	0005b023          	sd	zero,0(a1)
+    80004b7a:	00053023          	sd	zero,0(a0)
   if((*f0 = filealloc()) == 0 || (*f1 = filealloc()) == 0)
-    800048ec:	00000097          	auipc	ra,0x0
-    800048f0:	bf8080e7          	jalr	-1032(ra) # 800044e4 <filealloc>
-    800048f4:	e088                	sd	a0,0(s1)
-    800048f6:	c551                	beqz	a0,80004982 <pipealloc+0xb2>
-    800048f8:	00000097          	auipc	ra,0x0
-    800048fc:	bec080e7          	jalr	-1044(ra) # 800044e4 <filealloc>
-    80004900:	00aa3023          	sd	a0,0(s4)
-    80004904:	c92d                	beqz	a0,80004976 <pipealloc+0xa6>
+    80004b7e:	00000097          	auipc	ra,0x0
+    80004b82:	bf8080e7          	jalr	-1032(ra) # 80004776 <filealloc>
+    80004b86:	e088                	sd	a0,0(s1)
+    80004b88:	c551                	beqz	a0,80004c14 <pipealloc+0xb2>
+    80004b8a:	00000097          	auipc	ra,0x0
+    80004b8e:	bec080e7          	jalr	-1044(ra) # 80004776 <filealloc>
+    80004b92:	00aa3023          	sd	a0,0(s4)
+    80004b96:	c92d                	beqz	a0,80004c08 <pipealloc+0xa6>
     goto bad;
   if((pi = (struct pipe*)kalloc()) == 0)
-    80004906:	ffffc097          	auipc	ra,0xffffc
-    8000490a:	1da080e7          	jalr	474(ra) # 80000ae0 <kalloc>
-    8000490e:	892a                	mv	s2,a0
-    80004910:	c125                	beqz	a0,80004970 <pipealloc+0xa0>
+    80004b98:	ffffc097          	auipc	ra,0xffffc
+    80004b9c:	f48080e7          	jalr	-184(ra) # 80000ae0 <kalloc>
+    80004ba0:	892a                	mv	s2,a0
+    80004ba2:	c125                	beqz	a0,80004c02 <pipealloc+0xa0>
     goto bad;
   pi->readopen = 1;
-    80004912:	4985                	li	s3,1
-    80004914:	23352023          	sw	s3,544(a0)
+    80004ba4:	4985                	li	s3,1
+    80004ba6:	23352023          	sw	s3,544(a0)
   pi->writeopen = 1;
-    80004918:	23352223          	sw	s3,548(a0)
+    80004baa:	23352223          	sw	s3,548(a0)
   pi->nwrite = 0;
-    8000491c:	20052e23          	sw	zero,540(a0)
+    80004bae:	20052e23          	sw	zero,540(a0)
   pi->nread = 0;
-    80004920:	20052c23          	sw	zero,536(a0)
+    80004bb2:	20052c23          	sw	zero,536(a0)
   initlock(&pi->lock, "pipe");
-    80004924:	00004597          	auipc	a1,0x4
-    80004928:	e2458593          	addi	a1,a1,-476 # 80008748 <syscalls+0x288>
-    8000492c:	ffffc097          	auipc	ra,0xffffc
-    80004930:	214080e7          	jalr	532(ra) # 80000b40 <initlock>
+    80004bb6:	00004597          	auipc	a1,0x4
+    80004bba:	c0a58593          	addi	a1,a1,-1014 # 800087c0 <syscalls+0x290>
+    80004bbe:	ffffc097          	auipc	ra,0xffffc
+    80004bc2:	f82080e7          	jalr	-126(ra) # 80000b40 <initlock>
   (*f0)->type = FD_PIPE;
-    80004934:	609c                	ld	a5,0(s1)
-    80004936:	0137a023          	sw	s3,0(a5)
+    80004bc6:	609c                	ld	a5,0(s1)
+    80004bc8:	0137a023          	sw	s3,0(a5)
   (*f0)->readable = 1;
-    8000493a:	609c                	ld	a5,0(s1)
-    8000493c:	01378423          	sb	s3,8(a5)
+    80004bcc:	609c                	ld	a5,0(s1)
+    80004bce:	01378423          	sb	s3,8(a5)
   (*f0)->writable = 0;
-    80004940:	609c                	ld	a5,0(s1)
-    80004942:	000784a3          	sb	zero,9(a5)
+    80004bd2:	609c                	ld	a5,0(s1)
+    80004bd4:	000784a3          	sb	zero,9(a5)
   (*f0)->pipe = pi;
-    80004946:	609c                	ld	a5,0(s1)
-    80004948:	0127b823          	sd	s2,16(a5)
+    80004bd8:	609c                	ld	a5,0(s1)
+    80004bda:	0127b823          	sd	s2,16(a5)
   (*f1)->type = FD_PIPE;
-    8000494c:	000a3783          	ld	a5,0(s4)
-    80004950:	0137a023          	sw	s3,0(a5)
+    80004bde:	000a3783          	ld	a5,0(s4)
+    80004be2:	0137a023          	sw	s3,0(a5)
   (*f1)->readable = 0;
-    80004954:	000a3783          	ld	a5,0(s4)
-    80004958:	00078423          	sb	zero,8(a5)
+    80004be6:	000a3783          	ld	a5,0(s4)
+    80004bea:	00078423          	sb	zero,8(a5)
   (*f1)->writable = 1;
-    8000495c:	000a3783          	ld	a5,0(s4)
-    80004960:	013784a3          	sb	s3,9(a5)
+    80004bee:	000a3783          	ld	a5,0(s4)
+    80004bf2:	013784a3          	sb	s3,9(a5)
   (*f1)->pipe = pi;
-    80004964:	000a3783          	ld	a5,0(s4)
-    80004968:	0127b823          	sd	s2,16(a5)
+    80004bf6:	000a3783          	ld	a5,0(s4)
+    80004bfa:	0127b823          	sd	s2,16(a5)
   return 0;
-    8000496c:	4501                	li	a0,0
-    8000496e:	a025                	j	80004996 <pipealloc+0xc6>
+    80004bfe:	4501                	li	a0,0
+    80004c00:	a025                	j	80004c28 <pipealloc+0xc6>
 
  bad:
   if(pi)
     kfree((char*)pi);
   if(*f0)
-    80004970:	6088                	ld	a0,0(s1)
-    80004972:	e501                	bnez	a0,8000497a <pipealloc+0xaa>
-    80004974:	a039                	j	80004982 <pipealloc+0xb2>
-    80004976:	6088                	ld	a0,0(s1)
-    80004978:	c51d                	beqz	a0,800049a6 <pipealloc+0xd6>
+    80004c02:	6088                	ld	a0,0(s1)
+    80004c04:	e501                	bnez	a0,80004c0c <pipealloc+0xaa>
+    80004c06:	a039                	j	80004c14 <pipealloc+0xb2>
+    80004c08:	6088                	ld	a0,0(s1)
+    80004c0a:	c51d                	beqz	a0,80004c38 <pipealloc+0xd6>
     fileclose(*f0);
-    8000497a:	00000097          	auipc	ra,0x0
-    8000497e:	c26080e7          	jalr	-986(ra) # 800045a0 <fileclose>
+    80004c0c:	00000097          	auipc	ra,0x0
+    80004c10:	c26080e7          	jalr	-986(ra) # 80004832 <fileclose>
   if(*f1)
-    80004982:	000a3783          	ld	a5,0(s4)
+    80004c14:	000a3783          	ld	a5,0(s4)
     fileclose(*f1);
   return -1;
-    80004986:	557d                	li	a0,-1
+    80004c18:	557d                	li	a0,-1
   if(*f1)
-    80004988:	c799                	beqz	a5,80004996 <pipealloc+0xc6>
+    80004c1a:	c799                	beqz	a5,80004c28 <pipealloc+0xc6>
     fileclose(*f1);
-    8000498a:	853e                	mv	a0,a5
-    8000498c:	00000097          	auipc	ra,0x0
-    80004990:	c14080e7          	jalr	-1004(ra) # 800045a0 <fileclose>
+    80004c1c:	853e                	mv	a0,a5
+    80004c1e:	00000097          	auipc	ra,0x0
+    80004c22:	c14080e7          	jalr	-1004(ra) # 80004832 <fileclose>
   return -1;
-    80004994:	557d                	li	a0,-1
+    80004c26:	557d                	li	a0,-1
 }
-    80004996:	70a2                	ld	ra,40(sp)
-    80004998:	7402                	ld	s0,32(sp)
-    8000499a:	64e2                	ld	s1,24(sp)
-    8000499c:	6942                	ld	s2,16(sp)
-    8000499e:	69a2                	ld	s3,8(sp)
-    800049a0:	6a02                	ld	s4,0(sp)
-    800049a2:	6145                	addi	sp,sp,48
-    800049a4:	8082                	ret
+    80004c28:	70a2                	ld	ra,40(sp)
+    80004c2a:	7402                	ld	s0,32(sp)
+    80004c2c:	64e2                	ld	s1,24(sp)
+    80004c2e:	6942                	ld	s2,16(sp)
+    80004c30:	69a2                	ld	s3,8(sp)
+    80004c32:	6a02                	ld	s4,0(sp)
+    80004c34:	6145                	addi	sp,sp,48
+    80004c36:	8082                	ret
   return -1;
-    800049a6:	557d                	li	a0,-1
-    800049a8:	b7fd                	j	80004996 <pipealloc+0xc6>
+    80004c38:	557d                	li	a0,-1
+    80004c3a:	b7fd                	j	80004c28 <pipealloc+0xc6>
 
-00000000800049aa <pipeclose>:
+0000000080004c3c <pipeclose>:
 
 void
 pipeclose(struct pipe *pi, int writable)
 {
-    800049aa:	1101                	addi	sp,sp,-32
-    800049ac:	ec06                	sd	ra,24(sp)
-    800049ae:	e822                	sd	s0,16(sp)
-    800049b0:	e426                	sd	s1,8(sp)
-    800049b2:	e04a                	sd	s2,0(sp)
-    800049b4:	1000                	addi	s0,sp,32
-    800049b6:	84aa                	mv	s1,a0
-    800049b8:	892e                	mv	s2,a1
+    80004c3c:	1101                	addi	sp,sp,-32
+    80004c3e:	ec06                	sd	ra,24(sp)
+    80004c40:	e822                	sd	s0,16(sp)
+    80004c42:	e426                	sd	s1,8(sp)
+    80004c44:	e04a                	sd	s2,0(sp)
+    80004c46:	1000                	addi	s0,sp,32
+    80004c48:	84aa                	mv	s1,a0
+    80004c4a:	892e                	mv	s2,a1
   acquire(&pi->lock);
-    800049ba:	ffffc097          	auipc	ra,0xffffc
-    800049be:	216080e7          	jalr	534(ra) # 80000bd0 <acquire>
+    80004c4c:	ffffc097          	auipc	ra,0xffffc
+    80004c50:	f84080e7          	jalr	-124(ra) # 80000bd0 <acquire>
   if(writable){
-    800049c2:	02090d63          	beqz	s2,800049fc <pipeclose+0x52>
+    80004c54:	02090d63          	beqz	s2,80004c8e <pipeclose+0x52>
     pi->writeopen = 0;
-    800049c6:	2204a223          	sw	zero,548(s1)
+    80004c58:	2204a223          	sw	zero,548(s1)
     wakeup(&pi->nread);
-    800049ca:	21848513          	addi	a0,s1,536
-    800049ce:	ffffe097          	auipc	ra,0xffffe
-    800049d2:	824080e7          	jalr	-2012(ra) # 800021f2 <wakeup>
+    80004c5c:	21848513          	addi	a0,s1,536
+    80004c60:	ffffd097          	auipc	ra,0xffffd
+    80004c64:	72c080e7          	jalr	1836(ra) # 8000238c <wakeup>
   } else {
     pi->readopen = 0;
     wakeup(&pi->nwrite);
   }
   if(pi->readopen == 0 && pi->writeopen == 0){
-    800049d6:	2204b783          	ld	a5,544(s1)
-    800049da:	eb95                	bnez	a5,80004a0e <pipeclose+0x64>
+    80004c68:	2204b783          	ld	a5,544(s1)
+    80004c6c:	eb95                	bnez	a5,80004ca0 <pipeclose+0x64>
     release(&pi->lock);
-    800049dc:	8526                	mv	a0,s1
-    800049de:	ffffc097          	auipc	ra,0xffffc
-    800049e2:	2a6080e7          	jalr	678(ra) # 80000c84 <release>
+    80004c6e:	8526                	mv	a0,s1
+    80004c70:	ffffc097          	auipc	ra,0xffffc
+    80004c74:	014080e7          	jalr	20(ra) # 80000c84 <release>
     kfree((char*)pi);
-    800049e6:	8526                	mv	a0,s1
-    800049e8:	ffffc097          	auipc	ra,0xffffc
-    800049ec:	ffa080e7          	jalr	-6(ra) # 800009e2 <kfree>
+    80004c78:	8526                	mv	a0,s1
+    80004c7a:	ffffc097          	auipc	ra,0xffffc
+    80004c7e:	d68080e7          	jalr	-664(ra) # 800009e2 <kfree>
   } else
     release(&pi->lock);
 }
-    800049f0:	60e2                	ld	ra,24(sp)
-    800049f2:	6442                	ld	s0,16(sp)
-    800049f4:	64a2                	ld	s1,8(sp)
-    800049f6:	6902                	ld	s2,0(sp)
-    800049f8:	6105                	addi	sp,sp,32
-    800049fa:	8082                	ret
+    80004c82:	60e2                	ld	ra,24(sp)
+    80004c84:	6442                	ld	s0,16(sp)
+    80004c86:	64a2                	ld	s1,8(sp)
+    80004c88:	6902                	ld	s2,0(sp)
+    80004c8a:	6105                	addi	sp,sp,32
+    80004c8c:	8082                	ret
     pi->readopen = 0;
-    800049fc:	2204a023          	sw	zero,544(s1)
+    80004c8e:	2204a023          	sw	zero,544(s1)
     wakeup(&pi->nwrite);
-    80004a00:	21c48513          	addi	a0,s1,540
-    80004a04:	ffffd097          	auipc	ra,0xffffd
-    80004a08:	7ee080e7          	jalr	2030(ra) # 800021f2 <wakeup>
-    80004a0c:	b7e9                	j	800049d6 <pipeclose+0x2c>
+    80004c92:	21c48513          	addi	a0,s1,540
+    80004c96:	ffffd097          	auipc	ra,0xffffd
+    80004c9a:	6f6080e7          	jalr	1782(ra) # 8000238c <wakeup>
+    80004c9e:	b7e9                	j	80004c68 <pipeclose+0x2c>
     release(&pi->lock);
-    80004a0e:	8526                	mv	a0,s1
-    80004a10:	ffffc097          	auipc	ra,0xffffc
-    80004a14:	274080e7          	jalr	628(ra) # 80000c84 <release>
+    80004ca0:	8526                	mv	a0,s1
+    80004ca2:	ffffc097          	auipc	ra,0xffffc
+    80004ca6:	fe2080e7          	jalr	-30(ra) # 80000c84 <release>
 }
-    80004a18:	bfe1                	j	800049f0 <pipeclose+0x46>
+    80004caa:	bfe1                	j	80004c82 <pipeclose+0x46>
 
-0000000080004a1a <pipewrite>:
+0000000080004cac <pipewrite>:
 
 int
 pipewrite(struct pipe *pi, uint64 addr, int n)
 {
-    80004a1a:	711d                	addi	sp,sp,-96
-    80004a1c:	ec86                	sd	ra,88(sp)
-    80004a1e:	e8a2                	sd	s0,80(sp)
-    80004a20:	e4a6                	sd	s1,72(sp)
-    80004a22:	e0ca                	sd	s2,64(sp)
-    80004a24:	fc4e                	sd	s3,56(sp)
-    80004a26:	f852                	sd	s4,48(sp)
-    80004a28:	f456                	sd	s5,40(sp)
-    80004a2a:	f05a                	sd	s6,32(sp)
-    80004a2c:	ec5e                	sd	s7,24(sp)
-    80004a2e:	e862                	sd	s8,16(sp)
-    80004a30:	1080                	addi	s0,sp,96
-    80004a32:	84aa                	mv	s1,a0
-    80004a34:	8aae                	mv	s5,a1
-    80004a36:	8a32                	mv	s4,a2
+    80004cac:	711d                	addi	sp,sp,-96
+    80004cae:	ec86                	sd	ra,88(sp)
+    80004cb0:	e8a2                	sd	s0,80(sp)
+    80004cb2:	e4a6                	sd	s1,72(sp)
+    80004cb4:	e0ca                	sd	s2,64(sp)
+    80004cb6:	fc4e                	sd	s3,56(sp)
+    80004cb8:	f852                	sd	s4,48(sp)
+    80004cba:	f456                	sd	s5,40(sp)
+    80004cbc:	f05a                	sd	s6,32(sp)
+    80004cbe:	ec5e                	sd	s7,24(sp)
+    80004cc0:	e862                	sd	s8,16(sp)
+    80004cc2:	1080                	addi	s0,sp,96
+    80004cc4:	84aa                	mv	s1,a0
+    80004cc6:	8aae                	mv	s5,a1
+    80004cc8:	8a32                	mv	s4,a2
   int i = 0;
   struct proc *pr = myproc();
-    80004a38:	ffffd097          	auipc	ra,0xffffd
-    80004a3c:	f5e080e7          	jalr	-162(ra) # 80001996 <myproc>
-    80004a40:	89aa                	mv	s3,a0
+    80004cca:	ffffd097          	auipc	ra,0xffffd
+    80004cce:	d76080e7          	jalr	-650(ra) # 80001a40 <myproc>
+    80004cd2:	89aa                	mv	s3,a0
 
   acquire(&pi->lock);
-    80004a42:	8526                	mv	a0,s1
-    80004a44:	ffffc097          	auipc	ra,0xffffc
-    80004a48:	18c080e7          	jalr	396(ra) # 80000bd0 <acquire>
+    80004cd4:	8526                	mv	a0,s1
+    80004cd6:	ffffc097          	auipc	ra,0xffffc
+    80004cda:	efa080e7          	jalr	-262(ra) # 80000bd0 <acquire>
   while(i < n){
-    80004a4c:	0b405363          	blez	s4,80004af2 <pipewrite+0xd8>
+    80004cde:	0b405363          	blez	s4,80004d84 <pipewrite+0xd8>
   int i = 0;
-    80004a50:	4901                	li	s2,0
+    80004ce2:	4901                	li	s2,0
     if(pi->nwrite == pi->nread + PIPESIZE){ //DOC: pipewrite-full
       wakeup(&pi->nread);
       sleep(&pi->nwrite, &pi->lock);
     } else {
       char ch;
       if(copyin(pr->pagetable, &ch, addr + i, 1) == -1)
-    80004a52:	5b7d                	li	s6,-1
+    80004ce4:	5b7d                	li	s6,-1
       wakeup(&pi->nread);
-    80004a54:	21848c13          	addi	s8,s1,536
+    80004ce6:	21848c13          	addi	s8,s1,536
       sleep(&pi->nwrite, &pi->lock);
-    80004a58:	21c48b93          	addi	s7,s1,540
-    80004a5c:	a089                	j	80004a9e <pipewrite+0x84>
+    80004cea:	21c48b93          	addi	s7,s1,540
+    80004cee:	a089                	j	80004d30 <pipewrite+0x84>
       release(&pi->lock);
-    80004a5e:	8526                	mv	a0,s1
-    80004a60:	ffffc097          	auipc	ra,0xffffc
-    80004a64:	224080e7          	jalr	548(ra) # 80000c84 <release>
+    80004cf0:	8526                	mv	a0,s1
+    80004cf2:	ffffc097          	auipc	ra,0xffffc
+    80004cf6:	f92080e7          	jalr	-110(ra) # 80000c84 <release>
       return -1;
-    80004a68:	597d                	li	s2,-1
+    80004cfa:	597d                	li	s2,-1
   }
   wakeup(&pi->nread);
   release(&pi->lock);
 
   return i;
 }
-    80004a6a:	854a                	mv	a0,s2
-    80004a6c:	60e6                	ld	ra,88(sp)
-    80004a6e:	6446                	ld	s0,80(sp)
-    80004a70:	64a6                	ld	s1,72(sp)
-    80004a72:	6906                	ld	s2,64(sp)
-    80004a74:	79e2                	ld	s3,56(sp)
-    80004a76:	7a42                	ld	s4,48(sp)
-    80004a78:	7aa2                	ld	s5,40(sp)
-    80004a7a:	7b02                	ld	s6,32(sp)
-    80004a7c:	6be2                	ld	s7,24(sp)
-    80004a7e:	6c42                	ld	s8,16(sp)
-    80004a80:	6125                	addi	sp,sp,96
-    80004a82:	8082                	ret
+    80004cfc:	854a                	mv	a0,s2
+    80004cfe:	60e6                	ld	ra,88(sp)
+    80004d00:	6446                	ld	s0,80(sp)
+    80004d02:	64a6                	ld	s1,72(sp)
+    80004d04:	6906                	ld	s2,64(sp)
+    80004d06:	79e2                	ld	s3,56(sp)
+    80004d08:	7a42                	ld	s4,48(sp)
+    80004d0a:	7aa2                	ld	s5,40(sp)
+    80004d0c:	7b02                	ld	s6,32(sp)
+    80004d0e:	6be2                	ld	s7,24(sp)
+    80004d10:	6c42                	ld	s8,16(sp)
+    80004d12:	6125                	addi	sp,sp,96
+    80004d14:	8082                	ret
       wakeup(&pi->nread);
-    80004a84:	8562                	mv	a0,s8
-    80004a86:	ffffd097          	auipc	ra,0xffffd
-    80004a8a:	76c080e7          	jalr	1900(ra) # 800021f2 <wakeup>
+    80004d16:	8562                	mv	a0,s8
+    80004d18:	ffffd097          	auipc	ra,0xffffd
+    80004d1c:	674080e7          	jalr	1652(ra) # 8000238c <wakeup>
       sleep(&pi->nwrite, &pi->lock);
-    80004a8e:	85a6                	mv	a1,s1
-    80004a90:	855e                	mv	a0,s7
-    80004a92:	ffffd097          	auipc	ra,0xffffd
-    80004a96:	5d4080e7          	jalr	1492(ra) # 80002066 <sleep>
+    80004d20:	85a6                	mv	a1,s1
+    80004d22:	855e                	mv	a0,s7
+    80004d24:	ffffd097          	auipc	ra,0xffffd
+    80004d28:	4dc080e7          	jalr	1244(ra) # 80002200 <sleep>
   while(i < n){
-    80004a9a:	05495d63          	bge	s2,s4,80004af4 <pipewrite+0xda>
+    80004d2c:	05495d63          	bge	s2,s4,80004d86 <pipewrite+0xda>
     if(pi->readopen == 0 || pr->killed){
-    80004a9e:	2204a783          	lw	a5,544(s1)
-    80004aa2:	dfd5                	beqz	a5,80004a5e <pipewrite+0x44>
-    80004aa4:	0289a783          	lw	a5,40(s3)
-    80004aa8:	fbdd                	bnez	a5,80004a5e <pipewrite+0x44>
+    80004d30:	2204a783          	lw	a5,544(s1)
+    80004d34:	dfd5                	beqz	a5,80004cf0 <pipewrite+0x44>
+    80004d36:	0289a783          	lw	a5,40(s3)
+    80004d3a:	fbdd                	bnez	a5,80004cf0 <pipewrite+0x44>
     if(pi->nwrite == pi->nread + PIPESIZE){ //DOC: pipewrite-full
-    80004aaa:	2184a783          	lw	a5,536(s1)
-    80004aae:	21c4a703          	lw	a4,540(s1)
-    80004ab2:	2007879b          	addiw	a5,a5,512
-    80004ab6:	fcf707e3          	beq	a4,a5,80004a84 <pipewrite+0x6a>
+    80004d3c:	2184a783          	lw	a5,536(s1)
+    80004d40:	21c4a703          	lw	a4,540(s1)
+    80004d44:	2007879b          	addiw	a5,a5,512
+    80004d48:	fcf707e3          	beq	a4,a5,80004d16 <pipewrite+0x6a>
       if(copyin(pr->pagetable, &ch, addr + i, 1) == -1)
-    80004aba:	4685                	li	a3,1
-    80004abc:	01590633          	add	a2,s2,s5
-    80004ac0:	faf40593          	addi	a1,s0,-81
-    80004ac4:	0509b503          	ld	a0,80(s3)
-    80004ac8:	ffffd097          	auipc	ra,0xffffd
-    80004acc:	c1e080e7          	jalr	-994(ra) # 800016e6 <copyin>
-    80004ad0:	03650263          	beq	a0,s6,80004af4 <pipewrite+0xda>
+    80004d4c:	4685                	li	a3,1
+    80004d4e:	01590633          	add	a2,s2,s5
+    80004d52:	faf40593          	addi	a1,s0,-81
+    80004d56:	0509b503          	ld	a0,80(s3)
+    80004d5a:	ffffd097          	auipc	ra,0xffffd
+    80004d5e:	98c080e7          	jalr	-1652(ra) # 800016e6 <copyin>
+    80004d62:	03650263          	beq	a0,s6,80004d86 <pipewrite+0xda>
       pi->data[pi->nwrite++ % PIPESIZE] = ch;
-    80004ad4:	21c4a783          	lw	a5,540(s1)
-    80004ad8:	0017871b          	addiw	a4,a5,1
-    80004adc:	20e4ae23          	sw	a4,540(s1)
-    80004ae0:	1ff7f793          	andi	a5,a5,511
-    80004ae4:	97a6                	add	a5,a5,s1
-    80004ae6:	faf44703          	lbu	a4,-81(s0)
-    80004aea:	00e78c23          	sb	a4,24(a5)
+    80004d66:	21c4a783          	lw	a5,540(s1)
+    80004d6a:	0017871b          	addiw	a4,a5,1
+    80004d6e:	20e4ae23          	sw	a4,540(s1)
+    80004d72:	1ff7f793          	andi	a5,a5,511
+    80004d76:	97a6                	add	a5,a5,s1
+    80004d78:	faf44703          	lbu	a4,-81(s0)
+    80004d7c:	00e78c23          	sb	a4,24(a5)
       i++;
-    80004aee:	2905                	addiw	s2,s2,1
-    80004af0:	b76d                	j	80004a9a <pipewrite+0x80>
+    80004d80:	2905                	addiw	s2,s2,1
+    80004d82:	b76d                	j	80004d2c <pipewrite+0x80>
   int i = 0;
-    80004af2:	4901                	li	s2,0
+    80004d84:	4901                	li	s2,0
   wakeup(&pi->nread);
-    80004af4:	21848513          	addi	a0,s1,536
-    80004af8:	ffffd097          	auipc	ra,0xffffd
-    80004afc:	6fa080e7          	jalr	1786(ra) # 800021f2 <wakeup>
+    80004d86:	21848513          	addi	a0,s1,536
+    80004d8a:	ffffd097          	auipc	ra,0xffffd
+    80004d8e:	602080e7          	jalr	1538(ra) # 8000238c <wakeup>
   release(&pi->lock);
-    80004b00:	8526                	mv	a0,s1
-    80004b02:	ffffc097          	auipc	ra,0xffffc
-    80004b06:	182080e7          	jalr	386(ra) # 80000c84 <release>
+    80004d92:	8526                	mv	a0,s1
+    80004d94:	ffffc097          	auipc	ra,0xffffc
+    80004d98:	ef0080e7          	jalr	-272(ra) # 80000c84 <release>
   return i;
-    80004b0a:	b785                	j	80004a6a <pipewrite+0x50>
+    80004d9c:	b785                	j	80004cfc <pipewrite+0x50>
 
-0000000080004b0c <piperead>:
+0000000080004d9e <piperead>:
 
 int
 piperead(struct pipe *pi, uint64 addr, int n)
 {
-    80004b0c:	715d                	addi	sp,sp,-80
-    80004b0e:	e486                	sd	ra,72(sp)
-    80004b10:	e0a2                	sd	s0,64(sp)
-    80004b12:	fc26                	sd	s1,56(sp)
-    80004b14:	f84a                	sd	s2,48(sp)
-    80004b16:	f44e                	sd	s3,40(sp)
-    80004b18:	f052                	sd	s4,32(sp)
-    80004b1a:	ec56                	sd	s5,24(sp)
-    80004b1c:	e85a                	sd	s6,16(sp)
-    80004b1e:	0880                	addi	s0,sp,80
-    80004b20:	84aa                	mv	s1,a0
-    80004b22:	892e                	mv	s2,a1
-    80004b24:	8ab2                	mv	s5,a2
+    80004d9e:	715d                	addi	sp,sp,-80
+    80004da0:	e486                	sd	ra,72(sp)
+    80004da2:	e0a2                	sd	s0,64(sp)
+    80004da4:	fc26                	sd	s1,56(sp)
+    80004da6:	f84a                	sd	s2,48(sp)
+    80004da8:	f44e                	sd	s3,40(sp)
+    80004daa:	f052                	sd	s4,32(sp)
+    80004dac:	ec56                	sd	s5,24(sp)
+    80004dae:	e85a                	sd	s6,16(sp)
+    80004db0:	0880                	addi	s0,sp,80
+    80004db2:	84aa                	mv	s1,a0
+    80004db4:	892e                	mv	s2,a1
+    80004db6:	8ab2                	mv	s5,a2
   int i;
   struct proc *pr = myproc();
-    80004b26:	ffffd097          	auipc	ra,0xffffd
-    80004b2a:	e70080e7          	jalr	-400(ra) # 80001996 <myproc>
-    80004b2e:	8a2a                	mv	s4,a0
+    80004db8:	ffffd097          	auipc	ra,0xffffd
+    80004dbc:	c88080e7          	jalr	-888(ra) # 80001a40 <myproc>
+    80004dc0:	8a2a                	mv	s4,a0
   char ch;
 
   acquire(&pi->lock);
-    80004b30:	8526                	mv	a0,s1
-    80004b32:	ffffc097          	auipc	ra,0xffffc
-    80004b36:	09e080e7          	jalr	158(ra) # 80000bd0 <acquire>
+    80004dc2:	8526                	mv	a0,s1
+    80004dc4:	ffffc097          	auipc	ra,0xffffc
+    80004dc8:	e0c080e7          	jalr	-500(ra) # 80000bd0 <acquire>
   while(pi->nread == pi->nwrite && pi->writeopen){  //DOC: pipe-empty
-    80004b3a:	2184a703          	lw	a4,536(s1)
-    80004b3e:	21c4a783          	lw	a5,540(s1)
+    80004dcc:	2184a703          	lw	a4,536(s1)
+    80004dd0:	21c4a783          	lw	a5,540(s1)
     if(pr->killed){
       release(&pi->lock);
       return -1;
     }
     sleep(&pi->nread, &pi->lock); //DOC: piperead-sleep
-    80004b42:	21848993          	addi	s3,s1,536
+    80004dd4:	21848993          	addi	s3,s1,536
   while(pi->nread == pi->nwrite && pi->writeopen){  //DOC: pipe-empty
-    80004b46:	02f71463          	bne	a4,a5,80004b6e <piperead+0x62>
-    80004b4a:	2244a783          	lw	a5,548(s1)
-    80004b4e:	c385                	beqz	a5,80004b6e <piperead+0x62>
+    80004dd8:	02f71463          	bne	a4,a5,80004e00 <piperead+0x62>
+    80004ddc:	2244a783          	lw	a5,548(s1)
+    80004de0:	c385                	beqz	a5,80004e00 <piperead+0x62>
     if(pr->killed){
-    80004b50:	028a2783          	lw	a5,40(s4)
-    80004b54:	ebc9                	bnez	a5,80004be6 <piperead+0xda>
+    80004de2:	028a2783          	lw	a5,40(s4)
+    80004de6:	ebc9                	bnez	a5,80004e78 <piperead+0xda>
     sleep(&pi->nread, &pi->lock); //DOC: piperead-sleep
-    80004b56:	85a6                	mv	a1,s1
-    80004b58:	854e                	mv	a0,s3
-    80004b5a:	ffffd097          	auipc	ra,0xffffd
-    80004b5e:	50c080e7          	jalr	1292(ra) # 80002066 <sleep>
+    80004de8:	85a6                	mv	a1,s1
+    80004dea:	854e                	mv	a0,s3
+    80004dec:	ffffd097          	auipc	ra,0xffffd
+    80004df0:	414080e7          	jalr	1044(ra) # 80002200 <sleep>
   while(pi->nread == pi->nwrite && pi->writeopen){  //DOC: pipe-empty
-    80004b62:	2184a703          	lw	a4,536(s1)
-    80004b66:	21c4a783          	lw	a5,540(s1)
-    80004b6a:	fef700e3          	beq	a4,a5,80004b4a <piperead+0x3e>
+    80004df4:	2184a703          	lw	a4,536(s1)
+    80004df8:	21c4a783          	lw	a5,540(s1)
+    80004dfc:	fef700e3          	beq	a4,a5,80004ddc <piperead+0x3e>
   }
   for(i = 0; i < n; i++){  //DOC: piperead-copy
-    80004b6e:	4981                	li	s3,0
+    80004e00:	4981                	li	s3,0
     if(pi->nread == pi->nwrite)
       break;
     ch = pi->data[pi->nread++ % PIPESIZE];
     if(copyout(pr->pagetable, addr + i, &ch, 1) == -1)
-    80004b70:	5b7d                	li	s6,-1
+    80004e02:	5b7d                	li	s6,-1
   for(i = 0; i < n; i++){  //DOC: piperead-copy
-    80004b72:	05505463          	blez	s5,80004bba <piperead+0xae>
+    80004e04:	05505463          	blez	s5,80004e4c <piperead+0xae>
     if(pi->nread == pi->nwrite)
-    80004b76:	2184a783          	lw	a5,536(s1)
-    80004b7a:	21c4a703          	lw	a4,540(s1)
-    80004b7e:	02f70e63          	beq	a4,a5,80004bba <piperead+0xae>
+    80004e08:	2184a783          	lw	a5,536(s1)
+    80004e0c:	21c4a703          	lw	a4,540(s1)
+    80004e10:	02f70e63          	beq	a4,a5,80004e4c <piperead+0xae>
     ch = pi->data[pi->nread++ % PIPESIZE];
-    80004b82:	0017871b          	addiw	a4,a5,1
-    80004b86:	20e4ac23          	sw	a4,536(s1)
-    80004b8a:	1ff7f793          	andi	a5,a5,511
-    80004b8e:	97a6                	add	a5,a5,s1
-    80004b90:	0187c783          	lbu	a5,24(a5)
-    80004b94:	faf40fa3          	sb	a5,-65(s0)
+    80004e14:	0017871b          	addiw	a4,a5,1
+    80004e18:	20e4ac23          	sw	a4,536(s1)
+    80004e1c:	1ff7f793          	andi	a5,a5,511
+    80004e20:	97a6                	add	a5,a5,s1
+    80004e22:	0187c783          	lbu	a5,24(a5)
+    80004e26:	faf40fa3          	sb	a5,-65(s0)
     if(copyout(pr->pagetable, addr + i, &ch, 1) == -1)
-    80004b98:	4685                	li	a3,1
-    80004b9a:	fbf40613          	addi	a2,s0,-65
-    80004b9e:	85ca                	mv	a1,s2
-    80004ba0:	050a3503          	ld	a0,80(s4)
-    80004ba4:	ffffd097          	auipc	ra,0xffffd
-    80004ba8:	ab6080e7          	jalr	-1354(ra) # 8000165a <copyout>
-    80004bac:	01650763          	beq	a0,s6,80004bba <piperead+0xae>
+    80004e2a:	4685                	li	a3,1
+    80004e2c:	fbf40613          	addi	a2,s0,-65
+    80004e30:	85ca                	mv	a1,s2
+    80004e32:	050a3503          	ld	a0,80(s4)
+    80004e36:	ffffd097          	auipc	ra,0xffffd
+    80004e3a:	824080e7          	jalr	-2012(ra) # 8000165a <copyout>
+    80004e3e:	01650763          	beq	a0,s6,80004e4c <piperead+0xae>
   for(i = 0; i < n; i++){  //DOC: piperead-copy
-    80004bb0:	2985                	addiw	s3,s3,1
-    80004bb2:	0905                	addi	s2,s2,1
-    80004bb4:	fd3a91e3          	bne	s5,s3,80004b76 <piperead+0x6a>
-    80004bb8:	89d6                	mv	s3,s5
+    80004e42:	2985                	addiw	s3,s3,1
+    80004e44:	0905                	addi	s2,s2,1
+    80004e46:	fd3a91e3          	bne	s5,s3,80004e08 <piperead+0x6a>
+    80004e4a:	89d6                	mv	s3,s5
       break;
   }
   wakeup(&pi->nwrite);  //DOC: piperead-wakeup
-    80004bba:	21c48513          	addi	a0,s1,540
-    80004bbe:	ffffd097          	auipc	ra,0xffffd
-    80004bc2:	634080e7          	jalr	1588(ra) # 800021f2 <wakeup>
+    80004e4c:	21c48513          	addi	a0,s1,540
+    80004e50:	ffffd097          	auipc	ra,0xffffd
+    80004e54:	53c080e7          	jalr	1340(ra) # 8000238c <wakeup>
   release(&pi->lock);
-    80004bc6:	8526                	mv	a0,s1
-    80004bc8:	ffffc097          	auipc	ra,0xffffc
-    80004bcc:	0bc080e7          	jalr	188(ra) # 80000c84 <release>
+    80004e58:	8526                	mv	a0,s1
+    80004e5a:	ffffc097          	auipc	ra,0xffffc
+    80004e5e:	e2a080e7          	jalr	-470(ra) # 80000c84 <release>
   return i;
 }
-    80004bd0:	854e                	mv	a0,s3
-    80004bd2:	60a6                	ld	ra,72(sp)
-    80004bd4:	6406                	ld	s0,64(sp)
-    80004bd6:	74e2                	ld	s1,56(sp)
-    80004bd8:	7942                	ld	s2,48(sp)
-    80004bda:	79a2                	ld	s3,40(sp)
-    80004bdc:	7a02                	ld	s4,32(sp)
-    80004bde:	6ae2                	ld	s5,24(sp)
-    80004be0:	6b42                	ld	s6,16(sp)
-    80004be2:	6161                	addi	sp,sp,80
-    80004be4:	8082                	ret
+    80004e62:	854e                	mv	a0,s3
+    80004e64:	60a6                	ld	ra,72(sp)
+    80004e66:	6406                	ld	s0,64(sp)
+    80004e68:	74e2                	ld	s1,56(sp)
+    80004e6a:	7942                	ld	s2,48(sp)
+    80004e6c:	79a2                	ld	s3,40(sp)
+    80004e6e:	7a02                	ld	s4,32(sp)
+    80004e70:	6ae2                	ld	s5,24(sp)
+    80004e72:	6b42                	ld	s6,16(sp)
+    80004e74:	6161                	addi	sp,sp,80
+    80004e76:	8082                	ret
       release(&pi->lock);
-    80004be6:	8526                	mv	a0,s1
-    80004be8:	ffffc097          	auipc	ra,0xffffc
-    80004bec:	09c080e7          	jalr	156(ra) # 80000c84 <release>
+    80004e78:	8526                	mv	a0,s1
+    80004e7a:	ffffc097          	auipc	ra,0xffffc
+    80004e7e:	e0a080e7          	jalr	-502(ra) # 80000c84 <release>
       return -1;
-    80004bf0:	59fd                	li	s3,-1
-    80004bf2:	bff9                	j	80004bd0 <piperead+0xc4>
+    80004e82:	59fd                	li	s3,-1
+    80004e84:	bff9                	j	80004e62 <piperead+0xc4>
 
-0000000080004bf4 <exec>:
+0000000080004e86 <exec>:
 
 static int loadseg(pde_t *pgdir, uint64 addr, struct inode *ip, uint offset, uint sz);
 
 int
 exec(char *path, char **argv)
 {
-    80004bf4:	de010113          	addi	sp,sp,-544
-    80004bf8:	20113c23          	sd	ra,536(sp)
-    80004bfc:	20813823          	sd	s0,528(sp)
-    80004c00:	20913423          	sd	s1,520(sp)
-    80004c04:	21213023          	sd	s2,512(sp)
-    80004c08:	ffce                	sd	s3,504(sp)
-    80004c0a:	fbd2                	sd	s4,496(sp)
-    80004c0c:	f7d6                	sd	s5,488(sp)
-    80004c0e:	f3da                	sd	s6,480(sp)
-    80004c10:	efde                	sd	s7,472(sp)
-    80004c12:	ebe2                	sd	s8,464(sp)
-    80004c14:	e7e6                	sd	s9,456(sp)
-    80004c16:	e3ea                	sd	s10,448(sp)
-    80004c18:	ff6e                	sd	s11,440(sp)
-    80004c1a:	1400                	addi	s0,sp,544
-    80004c1c:	892a                	mv	s2,a0
-    80004c1e:	dea43423          	sd	a0,-536(s0)
-    80004c22:	deb43823          	sd	a1,-528(s0)
+    80004e86:	de010113          	addi	sp,sp,-544
+    80004e8a:	20113c23          	sd	ra,536(sp)
+    80004e8e:	20813823          	sd	s0,528(sp)
+    80004e92:	20913423          	sd	s1,520(sp)
+    80004e96:	21213023          	sd	s2,512(sp)
+    80004e9a:	ffce                	sd	s3,504(sp)
+    80004e9c:	fbd2                	sd	s4,496(sp)
+    80004e9e:	f7d6                	sd	s5,488(sp)
+    80004ea0:	f3da                	sd	s6,480(sp)
+    80004ea2:	efde                	sd	s7,472(sp)
+    80004ea4:	ebe2                	sd	s8,464(sp)
+    80004ea6:	e7e6                	sd	s9,456(sp)
+    80004ea8:	e3ea                	sd	s10,448(sp)
+    80004eaa:	ff6e                	sd	s11,440(sp)
+    80004eac:	1400                	addi	s0,sp,544
+    80004eae:	892a                	mv	s2,a0
+    80004eb0:	dea43423          	sd	a0,-536(s0)
+    80004eb4:	deb43823          	sd	a1,-528(s0)
   uint64 argc, sz = 0, sp, ustack[MAXARG], stackbase;
   struct elfhdr elf;
   struct inode *ip;
   struct proghdr ph;
   pagetable_t pagetable = 0, oldpagetable;
   struct proc *p = myproc();
-    80004c26:	ffffd097          	auipc	ra,0xffffd
-    80004c2a:	d70080e7          	jalr	-656(ra) # 80001996 <myproc>
-    80004c2e:	84aa                	mv	s1,a0
+    80004eb8:	ffffd097          	auipc	ra,0xffffd
+    80004ebc:	b88080e7          	jalr	-1144(ra) # 80001a40 <myproc>
+    80004ec0:	84aa                	mv	s1,a0
 
   begin_op();
-    80004c30:	fffff097          	auipc	ra,0xfffff
-    80004c34:	4a8080e7          	jalr	1192(ra) # 800040d8 <begin_op>
+    80004ec2:	fffff097          	auipc	ra,0xfffff
+    80004ec6:	4a8080e7          	jalr	1192(ra) # 8000436a <begin_op>
 
   if((ip = namei(path)) == 0){
-    80004c38:	854a                	mv	a0,s2
-    80004c3a:	fffff097          	auipc	ra,0xfffff
-    80004c3e:	27e080e7          	jalr	638(ra) # 80003eb8 <namei>
-    80004c42:	c93d                	beqz	a0,80004cb8 <exec+0xc4>
-    80004c44:	8aaa                	mv	s5,a0
+    80004eca:	854a                	mv	a0,s2
+    80004ecc:	fffff097          	auipc	ra,0xfffff
+    80004ed0:	27e080e7          	jalr	638(ra) # 8000414a <namei>
+    80004ed4:	c93d                	beqz	a0,80004f4a <exec+0xc4>
+    80004ed6:	8aaa                	mv	s5,a0
     end_op();
     return -1;
   }
   ilock(ip);
-    80004c46:	fffff097          	auipc	ra,0xfffff
-    80004c4a:	ab6080e7          	jalr	-1354(ra) # 800036fc <ilock>
+    80004ed8:	fffff097          	auipc	ra,0xfffff
+    80004edc:	ab6080e7          	jalr	-1354(ra) # 8000398e <ilock>
 
   // Check ELF header
   if(readi(ip, 0, (uint64)&elf, 0, sizeof(elf)) != sizeof(elf))
-    80004c4e:	04000713          	li	a4,64
-    80004c52:	4681                	li	a3,0
-    80004c54:	e5040613          	addi	a2,s0,-432
-    80004c58:	4581                	li	a1,0
-    80004c5a:	8556                	mv	a0,s5
-    80004c5c:	fffff097          	auipc	ra,0xfffff
-    80004c60:	d54080e7          	jalr	-684(ra) # 800039b0 <readi>
-    80004c64:	04000793          	li	a5,64
-    80004c68:	00f51a63          	bne	a0,a5,80004c7c <exec+0x88>
+    80004ee0:	04000713          	li	a4,64
+    80004ee4:	4681                	li	a3,0
+    80004ee6:	e5040613          	addi	a2,s0,-432
+    80004eea:	4581                	li	a1,0
+    80004eec:	8556                	mv	a0,s5
+    80004eee:	fffff097          	auipc	ra,0xfffff
+    80004ef2:	d54080e7          	jalr	-684(ra) # 80003c42 <readi>
+    80004ef6:	04000793          	li	a5,64
+    80004efa:	00f51a63          	bne	a0,a5,80004f0e <exec+0x88>
     goto bad;
   if(elf.magic != ELF_MAGIC)
-    80004c6c:	e5042703          	lw	a4,-432(s0)
-    80004c70:	464c47b7          	lui	a5,0x464c4
-    80004c74:	57f78793          	addi	a5,a5,1407 # 464c457f <_entry-0x39b3ba81>
-    80004c78:	04f70663          	beq	a4,a5,80004cc4 <exec+0xd0>
+    80004efe:	e5042703          	lw	a4,-432(s0)
+    80004f02:	464c47b7          	lui	a5,0x464c4
+    80004f06:	57f78793          	addi	a5,a5,1407 # 464c457f <_entry-0x39b3ba81>
+    80004f0a:	04f70663          	beq	a4,a5,80004f56 <exec+0xd0>
 
  bad:
   if(pagetable)
     proc_freepagetable(pagetable, sz);
   if(ip){
     iunlockput(ip);
-    80004c7c:	8556                	mv	a0,s5
-    80004c7e:	fffff097          	auipc	ra,0xfffff
-    80004c82:	ce0080e7          	jalr	-800(ra) # 8000395e <iunlockput>
+    80004f0e:	8556                	mv	a0,s5
+    80004f10:	fffff097          	auipc	ra,0xfffff
+    80004f14:	ce0080e7          	jalr	-800(ra) # 80003bf0 <iunlockput>
     end_op();
-    80004c86:	fffff097          	auipc	ra,0xfffff
-    80004c8a:	4d0080e7          	jalr	1232(ra) # 80004156 <end_op>
+    80004f18:	fffff097          	auipc	ra,0xfffff
+    80004f1c:	4d0080e7          	jalr	1232(ra) # 800043e8 <end_op>
   }
   return -1;
-    80004c8e:	557d                	li	a0,-1
+    80004f20:	557d                	li	a0,-1
 }
-    80004c90:	21813083          	ld	ra,536(sp)
-    80004c94:	21013403          	ld	s0,528(sp)
-    80004c98:	20813483          	ld	s1,520(sp)
-    80004c9c:	20013903          	ld	s2,512(sp)
-    80004ca0:	79fe                	ld	s3,504(sp)
-    80004ca2:	7a5e                	ld	s4,496(sp)
-    80004ca4:	7abe                	ld	s5,488(sp)
-    80004ca6:	7b1e                	ld	s6,480(sp)
-    80004ca8:	6bfe                	ld	s7,472(sp)
-    80004caa:	6c5e                	ld	s8,464(sp)
-    80004cac:	6cbe                	ld	s9,456(sp)
-    80004cae:	6d1e                	ld	s10,448(sp)
-    80004cb0:	7dfa                	ld	s11,440(sp)
-    80004cb2:	22010113          	addi	sp,sp,544
-    80004cb6:	8082                	ret
+    80004f22:	21813083          	ld	ra,536(sp)
+    80004f26:	21013403          	ld	s0,528(sp)
+    80004f2a:	20813483          	ld	s1,520(sp)
+    80004f2e:	20013903          	ld	s2,512(sp)
+    80004f32:	79fe                	ld	s3,504(sp)
+    80004f34:	7a5e                	ld	s4,496(sp)
+    80004f36:	7abe                	ld	s5,488(sp)
+    80004f38:	7b1e                	ld	s6,480(sp)
+    80004f3a:	6bfe                	ld	s7,472(sp)
+    80004f3c:	6c5e                	ld	s8,464(sp)
+    80004f3e:	6cbe                	ld	s9,456(sp)
+    80004f40:	6d1e                	ld	s10,448(sp)
+    80004f42:	7dfa                	ld	s11,440(sp)
+    80004f44:	22010113          	addi	sp,sp,544
+    80004f48:	8082                	ret
     end_op();
-    80004cb8:	fffff097          	auipc	ra,0xfffff
-    80004cbc:	49e080e7          	jalr	1182(ra) # 80004156 <end_op>
+    80004f4a:	fffff097          	auipc	ra,0xfffff
+    80004f4e:	49e080e7          	jalr	1182(ra) # 800043e8 <end_op>
     return -1;
-    80004cc0:	557d                	li	a0,-1
-    80004cc2:	b7f9                	j	80004c90 <exec+0x9c>
+    80004f52:	557d                	li	a0,-1
+    80004f54:	b7f9                	j	80004f22 <exec+0x9c>
   if((pagetable = proc_pagetable(p)) == 0)
-    80004cc4:	8526                	mv	a0,s1
-    80004cc6:	ffffd097          	auipc	ra,0xffffd
-    80004cca:	d94080e7          	jalr	-620(ra) # 80001a5a <proc_pagetable>
-    80004cce:	8b2a                	mv	s6,a0
-    80004cd0:	d555                	beqz	a0,80004c7c <exec+0x88>
+    80004f56:	8526                	mv	a0,s1
+    80004f58:	ffffd097          	auipc	ra,0xffffd
+    80004f5c:	bac080e7          	jalr	-1108(ra) # 80001b04 <proc_pagetable>
+    80004f60:	8b2a                	mv	s6,a0
+    80004f62:	d555                	beqz	a0,80004f0e <exec+0x88>
   for(i=0, off=elf.phoff; i<elf.phnum; i++, off+=sizeof(ph)){
-    80004cd2:	e7042783          	lw	a5,-400(s0)
-    80004cd6:	e8845703          	lhu	a4,-376(s0)
-    80004cda:	c735                	beqz	a4,80004d46 <exec+0x152>
+    80004f64:	e7042783          	lw	a5,-400(s0)
+    80004f68:	e8845703          	lhu	a4,-376(s0)
+    80004f6c:	c735                	beqz	a4,80004fd8 <exec+0x152>
   uint64 argc, sz = 0, sp, ustack[MAXARG], stackbase;
-    80004cdc:	4481                	li	s1,0
+    80004f6e:	4481                	li	s1,0
   for(i=0, off=elf.phoff; i<elf.phnum; i++, off+=sizeof(ph)){
-    80004cde:	e0043423          	sd	zero,-504(s0)
+    80004f70:	e0043423          	sd	zero,-504(s0)
     if((ph.vaddr % PGSIZE) != 0)
-    80004ce2:	6a05                	lui	s4,0x1
-    80004ce4:	fffa0713          	addi	a4,s4,-1 # fff <_entry-0x7ffff001>
-    80004ce8:	dee43023          	sd	a4,-544(s0)
+    80004f74:	6a05                	lui	s4,0x1
+    80004f76:	fffa0713          	addi	a4,s4,-1 # fff <_entry-0x7ffff001>
+    80004f7a:	dee43023          	sd	a4,-544(s0)
 loadseg(pagetable_t pagetable, uint64 va, struct inode *ip, uint offset, uint sz)
 {
   uint i, n;
   uint64 pa;
 
   for(i = 0; i < sz; i += PGSIZE){
-    80004cec:	6d85                	lui	s11,0x1
-    80004cee:	7d7d                	lui	s10,0xfffff
-    80004cf0:	ac1d                	j	80004f26 <exec+0x332>
+    80004f7e:	6d85                	lui	s11,0x1
+    80004f80:	7d7d                	lui	s10,0xfffff
+    80004f82:	ac1d                	j	800051b8 <exec+0x332>
     pa = walkaddr(pagetable, va + i);
     if(pa == 0)
       panic("loadseg: address should exist");
-    80004cf2:	00004517          	auipc	a0,0x4
-    80004cf6:	a5e50513          	addi	a0,a0,-1442 # 80008750 <syscalls+0x290>
-    80004cfa:	ffffc097          	auipc	ra,0xffffc
-    80004cfe:	840080e7          	jalr	-1984(ra) # 8000053a <panic>
+    80004f84:	00004517          	auipc	a0,0x4
+    80004f88:	84450513          	addi	a0,a0,-1980 # 800087c8 <syscalls+0x298>
+    80004f8c:	ffffb097          	auipc	ra,0xffffb
+    80004f90:	5ae080e7          	jalr	1454(ra) # 8000053a <panic>
     if(sz - i < PGSIZE)
       n = sz - i;
     else
       n = PGSIZE;
     if(readi(ip, 0, (uint64)pa, offset+i, n) != n)
-    80004d02:	874a                	mv	a4,s2
-    80004d04:	009c86bb          	addw	a3,s9,s1
-    80004d08:	4581                	li	a1,0
-    80004d0a:	8556                	mv	a0,s5
-    80004d0c:	fffff097          	auipc	ra,0xfffff
-    80004d10:	ca4080e7          	jalr	-860(ra) # 800039b0 <readi>
-    80004d14:	2501                	sext.w	a0,a0
-    80004d16:	1aa91863          	bne	s2,a0,80004ec6 <exec+0x2d2>
+    80004f94:	874a                	mv	a4,s2
+    80004f96:	009c86bb          	addw	a3,s9,s1
+    80004f9a:	4581                	li	a1,0
+    80004f9c:	8556                	mv	a0,s5
+    80004f9e:	fffff097          	auipc	ra,0xfffff
+    80004fa2:	ca4080e7          	jalr	-860(ra) # 80003c42 <readi>
+    80004fa6:	2501                	sext.w	a0,a0
+    80004fa8:	1aa91863          	bne	s2,a0,80005158 <exec+0x2d2>
   for(i = 0; i < sz; i += PGSIZE){
-    80004d1a:	009d84bb          	addw	s1,s11,s1
-    80004d1e:	013d09bb          	addw	s3,s10,s3
-    80004d22:	1f74f263          	bgeu	s1,s7,80004f06 <exec+0x312>
+    80004fac:	009d84bb          	addw	s1,s11,s1
+    80004fb0:	013d09bb          	addw	s3,s10,s3
+    80004fb4:	1f74f263          	bgeu	s1,s7,80005198 <exec+0x312>
     pa = walkaddr(pagetable, va + i);
-    80004d26:	02049593          	slli	a1,s1,0x20
-    80004d2a:	9181                	srli	a1,a1,0x20
-    80004d2c:	95e2                	add	a1,a1,s8
-    80004d2e:	855a                	mv	a0,s6
-    80004d30:	ffffc097          	auipc	ra,0xffffc
-    80004d34:	322080e7          	jalr	802(ra) # 80001052 <walkaddr>
-    80004d38:	862a                	mv	a2,a0
+    80004fb8:	02049593          	slli	a1,s1,0x20
+    80004fbc:	9181                	srli	a1,a1,0x20
+    80004fbe:	95e2                	add	a1,a1,s8
+    80004fc0:	855a                	mv	a0,s6
+    80004fc2:	ffffc097          	auipc	ra,0xffffc
+    80004fc6:	090080e7          	jalr	144(ra) # 80001052 <walkaddr>
+    80004fca:	862a                	mv	a2,a0
     if(pa == 0)
-    80004d3a:	dd45                	beqz	a0,80004cf2 <exec+0xfe>
+    80004fcc:	dd45                	beqz	a0,80004f84 <exec+0xfe>
       n = PGSIZE;
-    80004d3c:	8952                	mv	s2,s4
+    80004fce:	8952                	mv	s2,s4
     if(sz - i < PGSIZE)
-    80004d3e:	fd49f2e3          	bgeu	s3,s4,80004d02 <exec+0x10e>
+    80004fd0:	fd49f2e3          	bgeu	s3,s4,80004f94 <exec+0x10e>
       n = sz - i;
-    80004d42:	894e                	mv	s2,s3
-    80004d44:	bf7d                	j	80004d02 <exec+0x10e>
+    80004fd4:	894e                	mv	s2,s3
+    80004fd6:	bf7d                	j	80004f94 <exec+0x10e>
   uint64 argc, sz = 0, sp, ustack[MAXARG], stackbase;
-    80004d46:	4481                	li	s1,0
+    80004fd8:	4481                	li	s1,0
   iunlockput(ip);
-    80004d48:	8556                	mv	a0,s5
-    80004d4a:	fffff097          	auipc	ra,0xfffff
-    80004d4e:	c14080e7          	jalr	-1004(ra) # 8000395e <iunlockput>
+    80004fda:	8556                	mv	a0,s5
+    80004fdc:	fffff097          	auipc	ra,0xfffff
+    80004fe0:	c14080e7          	jalr	-1004(ra) # 80003bf0 <iunlockput>
   end_op();
-    80004d52:	fffff097          	auipc	ra,0xfffff
-    80004d56:	404080e7          	jalr	1028(ra) # 80004156 <end_op>
+    80004fe4:	fffff097          	auipc	ra,0xfffff
+    80004fe8:	404080e7          	jalr	1028(ra) # 800043e8 <end_op>
   p = myproc();
-    80004d5a:	ffffd097          	auipc	ra,0xffffd
-    80004d5e:	c3c080e7          	jalr	-964(ra) # 80001996 <myproc>
-    80004d62:	8baa                	mv	s7,a0
+    80004fec:	ffffd097          	auipc	ra,0xffffd
+    80004ff0:	a54080e7          	jalr	-1452(ra) # 80001a40 <myproc>
+    80004ff4:	8baa                	mv	s7,a0
   uint64 oldsz = p->sz;
-    80004d64:	04853d03          	ld	s10,72(a0)
+    80004ff6:	04853d03          	ld	s10,72(a0)
   sz = PGROUNDUP(sz);
-    80004d68:	6785                	lui	a5,0x1
-    80004d6a:	17fd                	addi	a5,a5,-1 # fff <_entry-0x7ffff001>
-    80004d6c:	97a6                	add	a5,a5,s1
-    80004d6e:	777d                	lui	a4,0xfffff
-    80004d70:	8ff9                	and	a5,a5,a4
-    80004d72:	def43c23          	sd	a5,-520(s0)
+    80004ffa:	6785                	lui	a5,0x1
+    80004ffc:	17fd                	addi	a5,a5,-1 # fff <_entry-0x7ffff001>
+    80004ffe:	97a6                	add	a5,a5,s1
+    80005000:	777d                	lui	a4,0xfffff
+    80005002:	8ff9                	and	a5,a5,a4
+    80005004:	def43c23          	sd	a5,-520(s0)
   if((sz1 = uvmalloc(pagetable, sz, sz + 2*PGSIZE)) == 0)
-    80004d76:	6609                	lui	a2,0x2
-    80004d78:	963e                	add	a2,a2,a5
-    80004d7a:	85be                	mv	a1,a5
-    80004d7c:	855a                	mv	a0,s6
-    80004d7e:	ffffc097          	auipc	ra,0xffffc
-    80004d82:	688080e7          	jalr	1672(ra) # 80001406 <uvmalloc>
-    80004d86:	8c2a                	mv	s8,a0
+    80005008:	6609                	lui	a2,0x2
+    8000500a:	963e                	add	a2,a2,a5
+    8000500c:	85be                	mv	a1,a5
+    8000500e:	855a                	mv	a0,s6
+    80005010:	ffffc097          	auipc	ra,0xffffc
+    80005014:	3f6080e7          	jalr	1014(ra) # 80001406 <uvmalloc>
+    80005018:	8c2a                	mv	s8,a0
   ip = 0;
-    80004d88:	4a81                	li	s5,0
+    8000501a:	4a81                	li	s5,0
   if((sz1 = uvmalloc(pagetable, sz, sz + 2*PGSIZE)) == 0)
-    80004d8a:	12050e63          	beqz	a0,80004ec6 <exec+0x2d2>
+    8000501c:	12050e63          	beqz	a0,80005158 <exec+0x2d2>
   uvmclear(pagetable, sz-2*PGSIZE);
-    80004d8e:	75f9                	lui	a1,0xffffe
-    80004d90:	95aa                	add	a1,a1,a0
-    80004d92:	855a                	mv	a0,s6
-    80004d94:	ffffd097          	auipc	ra,0xffffd
-    80004d98:	894080e7          	jalr	-1900(ra) # 80001628 <uvmclear>
+    80005020:	75f9                	lui	a1,0xffffe
+    80005022:	95aa                	add	a1,a1,a0
+    80005024:	855a                	mv	a0,s6
+    80005026:	ffffc097          	auipc	ra,0xffffc
+    8000502a:	602080e7          	jalr	1538(ra) # 80001628 <uvmclear>
   stackbase = sp - PGSIZE;
-    80004d9c:	7afd                	lui	s5,0xfffff
-    80004d9e:	9ae2                	add	s5,s5,s8
+    8000502e:	7afd                	lui	s5,0xfffff
+    80005030:	9ae2                	add	s5,s5,s8
   for(argc = 0; argv[argc]; argc++) {
-    80004da0:	df043783          	ld	a5,-528(s0)
-    80004da4:	6388                	ld	a0,0(a5)
-    80004da6:	c925                	beqz	a0,80004e16 <exec+0x222>
-    80004da8:	e9040993          	addi	s3,s0,-368
-    80004dac:	f9040c93          	addi	s9,s0,-112
+    80005032:	df043783          	ld	a5,-528(s0)
+    80005036:	6388                	ld	a0,0(a5)
+    80005038:	c925                	beqz	a0,800050a8 <exec+0x222>
+    8000503a:	e9040993          	addi	s3,s0,-368
+    8000503e:	f9040c93          	addi	s9,s0,-112
   sp = sz;
-    80004db0:	8962                	mv	s2,s8
+    80005042:	8962                	mv	s2,s8
   for(argc = 0; argv[argc]; argc++) {
-    80004db2:	4481                	li	s1,0
+    80005044:	4481                	li	s1,0
     sp -= strlen(argv[argc]) + 1;
-    80004db4:	ffffc097          	auipc	ra,0xffffc
-    80004db8:	094080e7          	jalr	148(ra) # 80000e48 <strlen>
-    80004dbc:	0015079b          	addiw	a5,a0,1
-    80004dc0:	40f907b3          	sub	a5,s2,a5
+    80005046:	ffffc097          	auipc	ra,0xffffc
+    8000504a:	e02080e7          	jalr	-510(ra) # 80000e48 <strlen>
+    8000504e:	0015079b          	addiw	a5,a0,1
+    80005052:	40f907b3          	sub	a5,s2,a5
     sp -= sp % 16; // riscv sp must be 16-byte aligned
-    80004dc4:	ff07f913          	andi	s2,a5,-16
+    80005056:	ff07f913          	andi	s2,a5,-16
     if(sp < stackbase)
-    80004dc8:	13596363          	bltu	s2,s5,80004eee <exec+0x2fa>
+    8000505a:	13596363          	bltu	s2,s5,80005180 <exec+0x2fa>
     if(copyout(pagetable, sp, argv[argc], strlen(argv[argc]) + 1) < 0)
-    80004dcc:	df043d83          	ld	s11,-528(s0)
-    80004dd0:	000dba03          	ld	s4,0(s11) # 1000 <_entry-0x7ffff000>
-    80004dd4:	8552                	mv	a0,s4
-    80004dd6:	ffffc097          	auipc	ra,0xffffc
-    80004dda:	072080e7          	jalr	114(ra) # 80000e48 <strlen>
-    80004dde:	0015069b          	addiw	a3,a0,1
-    80004de2:	8652                	mv	a2,s4
-    80004de4:	85ca                	mv	a1,s2
-    80004de6:	855a                	mv	a0,s6
-    80004de8:	ffffd097          	auipc	ra,0xffffd
-    80004dec:	872080e7          	jalr	-1934(ra) # 8000165a <copyout>
-    80004df0:	10054363          	bltz	a0,80004ef6 <exec+0x302>
+    8000505e:	df043d83          	ld	s11,-528(s0)
+    80005062:	000dba03          	ld	s4,0(s11) # 1000 <_entry-0x7ffff000>
+    80005066:	8552                	mv	a0,s4
+    80005068:	ffffc097          	auipc	ra,0xffffc
+    8000506c:	de0080e7          	jalr	-544(ra) # 80000e48 <strlen>
+    80005070:	0015069b          	addiw	a3,a0,1
+    80005074:	8652                	mv	a2,s4
+    80005076:	85ca                	mv	a1,s2
+    80005078:	855a                	mv	a0,s6
+    8000507a:	ffffc097          	auipc	ra,0xffffc
+    8000507e:	5e0080e7          	jalr	1504(ra) # 8000165a <copyout>
+    80005082:	10054363          	bltz	a0,80005188 <exec+0x302>
     ustack[argc] = sp;
-    80004df4:	0129b023          	sd	s2,0(s3)
+    80005086:	0129b023          	sd	s2,0(s3)
   for(argc = 0; argv[argc]; argc++) {
-    80004df8:	0485                	addi	s1,s1,1
-    80004dfa:	008d8793          	addi	a5,s11,8
-    80004dfe:	def43823          	sd	a5,-528(s0)
-    80004e02:	008db503          	ld	a0,8(s11)
-    80004e06:	c911                	beqz	a0,80004e1a <exec+0x226>
+    8000508a:	0485                	addi	s1,s1,1
+    8000508c:	008d8793          	addi	a5,s11,8
+    80005090:	def43823          	sd	a5,-528(s0)
+    80005094:	008db503          	ld	a0,8(s11)
+    80005098:	c911                	beqz	a0,800050ac <exec+0x226>
     if(argc >= MAXARG)
-    80004e08:	09a1                	addi	s3,s3,8
-    80004e0a:	fb3c95e3          	bne	s9,s3,80004db4 <exec+0x1c0>
+    8000509a:	09a1                	addi	s3,s3,8
+    8000509c:	fb3c95e3          	bne	s9,s3,80005046 <exec+0x1c0>
   sz = sz1;
-    80004e0e:	df843c23          	sd	s8,-520(s0)
+    800050a0:	df843c23          	sd	s8,-520(s0)
   ip = 0;
-    80004e12:	4a81                	li	s5,0
-    80004e14:	a84d                	j	80004ec6 <exec+0x2d2>
+    800050a4:	4a81                	li	s5,0
+    800050a6:	a84d                	j	80005158 <exec+0x2d2>
   sp = sz;
-    80004e16:	8962                	mv	s2,s8
+    800050a8:	8962                	mv	s2,s8
   for(argc = 0; argv[argc]; argc++) {
-    80004e18:	4481                	li	s1,0
+    800050aa:	4481                	li	s1,0
   ustack[argc] = 0;
-    80004e1a:	00349793          	slli	a5,s1,0x3
-    80004e1e:	f9078793          	addi	a5,a5,-112
-    80004e22:	97a2                	add	a5,a5,s0
-    80004e24:	f007b023          	sd	zero,-256(a5)
+    800050ac:	00349793          	slli	a5,s1,0x3
+    800050b0:	f9078793          	addi	a5,a5,-112
+    800050b4:	97a2                	add	a5,a5,s0
+    800050b6:	f007b023          	sd	zero,-256(a5)
   sp -= (argc+1) * sizeof(uint64);
-    80004e28:	00148693          	addi	a3,s1,1
-    80004e2c:	068e                	slli	a3,a3,0x3
-    80004e2e:	40d90933          	sub	s2,s2,a3
+    800050ba:	00148693          	addi	a3,s1,1
+    800050be:	068e                	slli	a3,a3,0x3
+    800050c0:	40d90933          	sub	s2,s2,a3
   sp -= sp % 16;
-    80004e32:	ff097913          	andi	s2,s2,-16
+    800050c4:	ff097913          	andi	s2,s2,-16
   if(sp < stackbase)
-    80004e36:	01597663          	bgeu	s2,s5,80004e42 <exec+0x24e>
+    800050c8:	01597663          	bgeu	s2,s5,800050d4 <exec+0x24e>
   sz = sz1;
-    80004e3a:	df843c23          	sd	s8,-520(s0)
+    800050cc:	df843c23          	sd	s8,-520(s0)
   ip = 0;
-    80004e3e:	4a81                	li	s5,0
-    80004e40:	a059                	j	80004ec6 <exec+0x2d2>
+    800050d0:	4a81                	li	s5,0
+    800050d2:	a059                	j	80005158 <exec+0x2d2>
   if(copyout(pagetable, sp, (char *)ustack, (argc+1)*sizeof(uint64)) < 0)
-    80004e42:	e9040613          	addi	a2,s0,-368
-    80004e46:	85ca                	mv	a1,s2
-    80004e48:	855a                	mv	a0,s6
-    80004e4a:	ffffd097          	auipc	ra,0xffffd
-    80004e4e:	810080e7          	jalr	-2032(ra) # 8000165a <copyout>
-    80004e52:	0a054663          	bltz	a0,80004efe <exec+0x30a>
+    800050d4:	e9040613          	addi	a2,s0,-368
+    800050d8:	85ca                	mv	a1,s2
+    800050da:	855a                	mv	a0,s6
+    800050dc:	ffffc097          	auipc	ra,0xffffc
+    800050e0:	57e080e7          	jalr	1406(ra) # 8000165a <copyout>
+    800050e4:	0a054663          	bltz	a0,80005190 <exec+0x30a>
   p->trapframe->a1 = sp;
-    80004e56:	058bb783          	ld	a5,88(s7)
-    80004e5a:	0727bc23          	sd	s2,120(a5)
+    800050e8:	058bb783          	ld	a5,88(s7)
+    800050ec:	0727bc23          	sd	s2,120(a5)
   for(last=s=path; *s; s++)
-    80004e5e:	de843783          	ld	a5,-536(s0)
-    80004e62:	0007c703          	lbu	a4,0(a5)
-    80004e66:	cf11                	beqz	a4,80004e82 <exec+0x28e>
-    80004e68:	0785                	addi	a5,a5,1
+    800050f0:	de843783          	ld	a5,-536(s0)
+    800050f4:	0007c703          	lbu	a4,0(a5)
+    800050f8:	cf11                	beqz	a4,80005114 <exec+0x28e>
+    800050fa:	0785                	addi	a5,a5,1
     if(*s == '/')
-    80004e6a:	02f00693          	li	a3,47
-    80004e6e:	a039                	j	80004e7c <exec+0x288>
+    800050fc:	02f00693          	li	a3,47
+    80005100:	a039                	j	8000510e <exec+0x288>
       last = s+1;
-    80004e70:	def43423          	sd	a5,-536(s0)
+    80005102:	def43423          	sd	a5,-536(s0)
   for(last=s=path; *s; s++)
-    80004e74:	0785                	addi	a5,a5,1
-    80004e76:	fff7c703          	lbu	a4,-1(a5)
-    80004e7a:	c701                	beqz	a4,80004e82 <exec+0x28e>
+    80005106:	0785                	addi	a5,a5,1
+    80005108:	fff7c703          	lbu	a4,-1(a5)
+    8000510c:	c701                	beqz	a4,80005114 <exec+0x28e>
     if(*s == '/')
-    80004e7c:	fed71ce3          	bne	a4,a3,80004e74 <exec+0x280>
-    80004e80:	bfc5                	j	80004e70 <exec+0x27c>
+    8000510e:	fed71ce3          	bne	a4,a3,80005106 <exec+0x280>
+    80005112:	bfc5                	j	80005102 <exec+0x27c>
   safestrcpy(p->name, last, sizeof(p->name));
-    80004e82:	4641                	li	a2,16
-    80004e84:	de843583          	ld	a1,-536(s0)
-    80004e88:	158b8513          	addi	a0,s7,344
-    80004e8c:	ffffc097          	auipc	ra,0xffffc
-    80004e90:	f8a080e7          	jalr	-118(ra) # 80000e16 <safestrcpy>
+    80005114:	4641                	li	a2,16
+    80005116:	de843583          	ld	a1,-536(s0)
+    8000511a:	158b8513          	addi	a0,s7,344
+    8000511e:	ffffc097          	auipc	ra,0xffffc
+    80005122:	cf8080e7          	jalr	-776(ra) # 80000e16 <safestrcpy>
   oldpagetable = p->pagetable;
-    80004e94:	050bb503          	ld	a0,80(s7)
+    80005126:	050bb503          	ld	a0,80(s7)
   p->pagetable = pagetable;
-    80004e98:	056bb823          	sd	s6,80(s7)
+    8000512a:	056bb823          	sd	s6,80(s7)
   p->sz = sz;
-    80004e9c:	058bb423          	sd	s8,72(s7)
+    8000512e:	058bb423          	sd	s8,72(s7)
   p->trapframe->epc = elf.entry;  // initial program counter = main
-    80004ea0:	058bb783          	ld	a5,88(s7)
-    80004ea4:	e6843703          	ld	a4,-408(s0)
-    80004ea8:	ef98                	sd	a4,24(a5)
+    80005132:	058bb783          	ld	a5,88(s7)
+    80005136:	e6843703          	ld	a4,-408(s0)
+    8000513a:	ef98                	sd	a4,24(a5)
   p->trapframe->sp = sp; // initial stack pointer
-    80004eaa:	058bb783          	ld	a5,88(s7)
-    80004eae:	0327b823          	sd	s2,48(a5)
+    8000513c:	058bb783          	ld	a5,88(s7)
+    80005140:	0327b823          	sd	s2,48(a5)
   proc_freepagetable(oldpagetable, oldsz);
-    80004eb2:	85ea                	mv	a1,s10
-    80004eb4:	ffffd097          	auipc	ra,0xffffd
-    80004eb8:	c42080e7          	jalr	-958(ra) # 80001af6 <proc_freepagetable>
+    80005144:	85ea                	mv	a1,s10
+    80005146:	ffffd097          	auipc	ra,0xffffd
+    8000514a:	a5a080e7          	jalr	-1446(ra) # 80001ba0 <proc_freepagetable>
   return argc; // this ends up in a0, the first argument to main(argc, argv)
-    80004ebc:	0004851b          	sext.w	a0,s1
-    80004ec0:	bbc1                	j	80004c90 <exec+0x9c>
-    80004ec2:	de943c23          	sd	s1,-520(s0)
+    8000514e:	0004851b          	sext.w	a0,s1
+    80005152:	bbc1                	j	80004f22 <exec+0x9c>
+    80005154:	de943c23          	sd	s1,-520(s0)
     proc_freepagetable(pagetable, sz);
-    80004ec6:	df843583          	ld	a1,-520(s0)
-    80004eca:	855a                	mv	a0,s6
-    80004ecc:	ffffd097          	auipc	ra,0xffffd
-    80004ed0:	c2a080e7          	jalr	-982(ra) # 80001af6 <proc_freepagetable>
+    80005158:	df843583          	ld	a1,-520(s0)
+    8000515c:	855a                	mv	a0,s6
+    8000515e:	ffffd097          	auipc	ra,0xffffd
+    80005162:	a42080e7          	jalr	-1470(ra) # 80001ba0 <proc_freepagetable>
   if(ip){
-    80004ed4:	da0a94e3          	bnez	s5,80004c7c <exec+0x88>
+    80005166:	da0a94e3          	bnez	s5,80004f0e <exec+0x88>
   return -1;
-    80004ed8:	557d                	li	a0,-1
-    80004eda:	bb5d                	j	80004c90 <exec+0x9c>
-    80004edc:	de943c23          	sd	s1,-520(s0)
-    80004ee0:	b7dd                	j	80004ec6 <exec+0x2d2>
-    80004ee2:	de943c23          	sd	s1,-520(s0)
-    80004ee6:	b7c5                	j	80004ec6 <exec+0x2d2>
-    80004ee8:	de943c23          	sd	s1,-520(s0)
-    80004eec:	bfe9                	j	80004ec6 <exec+0x2d2>
+    8000516a:	557d                	li	a0,-1
+    8000516c:	bb5d                	j	80004f22 <exec+0x9c>
+    8000516e:	de943c23          	sd	s1,-520(s0)
+    80005172:	b7dd                	j	80005158 <exec+0x2d2>
+    80005174:	de943c23          	sd	s1,-520(s0)
+    80005178:	b7c5                	j	80005158 <exec+0x2d2>
+    8000517a:	de943c23          	sd	s1,-520(s0)
+    8000517e:	bfe9                	j	80005158 <exec+0x2d2>
   sz = sz1;
-    80004eee:	df843c23          	sd	s8,-520(s0)
+    80005180:	df843c23          	sd	s8,-520(s0)
   ip = 0;
-    80004ef2:	4a81                	li	s5,0
-    80004ef4:	bfc9                	j	80004ec6 <exec+0x2d2>
+    80005184:	4a81                	li	s5,0
+    80005186:	bfc9                	j	80005158 <exec+0x2d2>
   sz = sz1;
-    80004ef6:	df843c23          	sd	s8,-520(s0)
+    80005188:	df843c23          	sd	s8,-520(s0)
   ip = 0;
-    80004efa:	4a81                	li	s5,0
-    80004efc:	b7e9                	j	80004ec6 <exec+0x2d2>
+    8000518c:	4a81                	li	s5,0
+    8000518e:	b7e9                	j	80005158 <exec+0x2d2>
   sz = sz1;
-    80004efe:	df843c23          	sd	s8,-520(s0)
+    80005190:	df843c23          	sd	s8,-520(s0)
   ip = 0;
-    80004f02:	4a81                	li	s5,0
-    80004f04:	b7c9                	j	80004ec6 <exec+0x2d2>
+    80005194:	4a81                	li	s5,0
+    80005196:	b7c9                	j	80005158 <exec+0x2d2>
     if((sz1 = uvmalloc(pagetable, sz, ph.vaddr + ph.memsz)) == 0)
-    80004f06:	df843483          	ld	s1,-520(s0)
+    80005198:	df843483          	ld	s1,-520(s0)
   for(i=0, off=elf.phoff; i<elf.phnum; i++, off+=sizeof(ph)){
-    80004f0a:	e0843783          	ld	a5,-504(s0)
-    80004f0e:	0017869b          	addiw	a3,a5,1
-    80004f12:	e0d43423          	sd	a3,-504(s0)
-    80004f16:	e0043783          	ld	a5,-512(s0)
-    80004f1a:	0387879b          	addiw	a5,a5,56
-    80004f1e:	e8845703          	lhu	a4,-376(s0)
-    80004f22:	e2e6d3e3          	bge	a3,a4,80004d48 <exec+0x154>
+    8000519c:	e0843783          	ld	a5,-504(s0)
+    800051a0:	0017869b          	addiw	a3,a5,1
+    800051a4:	e0d43423          	sd	a3,-504(s0)
+    800051a8:	e0043783          	ld	a5,-512(s0)
+    800051ac:	0387879b          	addiw	a5,a5,56
+    800051b0:	e8845703          	lhu	a4,-376(s0)
+    800051b4:	e2e6d3e3          	bge	a3,a4,80004fda <exec+0x154>
     if(readi(ip, 0, (uint64)&ph, off, sizeof(ph)) != sizeof(ph))
-    80004f26:	2781                	sext.w	a5,a5
-    80004f28:	e0f43023          	sd	a5,-512(s0)
-    80004f2c:	03800713          	li	a4,56
-    80004f30:	86be                	mv	a3,a5
-    80004f32:	e1840613          	addi	a2,s0,-488
-    80004f36:	4581                	li	a1,0
-    80004f38:	8556                	mv	a0,s5
-    80004f3a:	fffff097          	auipc	ra,0xfffff
-    80004f3e:	a76080e7          	jalr	-1418(ra) # 800039b0 <readi>
-    80004f42:	03800793          	li	a5,56
-    80004f46:	f6f51ee3          	bne	a0,a5,80004ec2 <exec+0x2ce>
+    800051b8:	2781                	sext.w	a5,a5
+    800051ba:	e0f43023          	sd	a5,-512(s0)
+    800051be:	03800713          	li	a4,56
+    800051c2:	86be                	mv	a3,a5
+    800051c4:	e1840613          	addi	a2,s0,-488
+    800051c8:	4581                	li	a1,0
+    800051ca:	8556                	mv	a0,s5
+    800051cc:	fffff097          	auipc	ra,0xfffff
+    800051d0:	a76080e7          	jalr	-1418(ra) # 80003c42 <readi>
+    800051d4:	03800793          	li	a5,56
+    800051d8:	f6f51ee3          	bne	a0,a5,80005154 <exec+0x2ce>
     if(ph.type != ELF_PROG_LOAD)
-    80004f4a:	e1842783          	lw	a5,-488(s0)
-    80004f4e:	4705                	li	a4,1
-    80004f50:	fae79de3          	bne	a5,a4,80004f0a <exec+0x316>
+    800051dc:	e1842783          	lw	a5,-488(s0)
+    800051e0:	4705                	li	a4,1
+    800051e2:	fae79de3          	bne	a5,a4,8000519c <exec+0x316>
     if(ph.memsz < ph.filesz)
-    80004f54:	e4043603          	ld	a2,-448(s0)
-    80004f58:	e3843783          	ld	a5,-456(s0)
-    80004f5c:	f8f660e3          	bltu	a2,a5,80004edc <exec+0x2e8>
+    800051e6:	e4043603          	ld	a2,-448(s0)
+    800051ea:	e3843783          	ld	a5,-456(s0)
+    800051ee:	f8f660e3          	bltu	a2,a5,8000516e <exec+0x2e8>
     if(ph.vaddr + ph.memsz < ph.vaddr)
-    80004f60:	e2843783          	ld	a5,-472(s0)
-    80004f64:	963e                	add	a2,a2,a5
-    80004f66:	f6f66ee3          	bltu	a2,a5,80004ee2 <exec+0x2ee>
+    800051f2:	e2843783          	ld	a5,-472(s0)
+    800051f6:	963e                	add	a2,a2,a5
+    800051f8:	f6f66ee3          	bltu	a2,a5,80005174 <exec+0x2ee>
     if((sz1 = uvmalloc(pagetable, sz, ph.vaddr + ph.memsz)) == 0)
-    80004f6a:	85a6                	mv	a1,s1
-    80004f6c:	855a                	mv	a0,s6
-    80004f6e:	ffffc097          	auipc	ra,0xffffc
-    80004f72:	498080e7          	jalr	1176(ra) # 80001406 <uvmalloc>
-    80004f76:	dea43c23          	sd	a0,-520(s0)
-    80004f7a:	d53d                	beqz	a0,80004ee8 <exec+0x2f4>
+    800051fc:	85a6                	mv	a1,s1
+    800051fe:	855a                	mv	a0,s6
+    80005200:	ffffc097          	auipc	ra,0xffffc
+    80005204:	206080e7          	jalr	518(ra) # 80001406 <uvmalloc>
+    80005208:	dea43c23          	sd	a0,-520(s0)
+    8000520c:	d53d                	beqz	a0,8000517a <exec+0x2f4>
     if((ph.vaddr % PGSIZE) != 0)
-    80004f7c:	e2843c03          	ld	s8,-472(s0)
-    80004f80:	de043783          	ld	a5,-544(s0)
-    80004f84:	00fc77b3          	and	a5,s8,a5
-    80004f88:	ff9d                	bnez	a5,80004ec6 <exec+0x2d2>
+    8000520e:	e2843c03          	ld	s8,-472(s0)
+    80005212:	de043783          	ld	a5,-544(s0)
+    80005216:	00fc77b3          	and	a5,s8,a5
+    8000521a:	ff9d                	bnez	a5,80005158 <exec+0x2d2>
     if(loadseg(pagetable, ph.vaddr, ip, ph.off, ph.filesz) < 0)
-    80004f8a:	e2042c83          	lw	s9,-480(s0)
-    80004f8e:	e3842b83          	lw	s7,-456(s0)
+    8000521c:	e2042c83          	lw	s9,-480(s0)
+    80005220:	e3842b83          	lw	s7,-456(s0)
   for(i = 0; i < sz; i += PGSIZE){
-    80004f92:	f60b8ae3          	beqz	s7,80004f06 <exec+0x312>
-    80004f96:	89de                	mv	s3,s7
-    80004f98:	4481                	li	s1,0
-    80004f9a:	b371                	j	80004d26 <exec+0x132>
+    80005224:	f60b8ae3          	beqz	s7,80005198 <exec+0x312>
+    80005228:	89de                	mv	s3,s7
+    8000522a:	4481                	li	s1,0
+    8000522c:	b371                	j	80004fb8 <exec+0x132>
 
-0000000080004f9c <argfd>:
+000000008000522e <argfd>:
 
 // Fetch the nth word-sized system call argument as a file descriptor
 // and return both the descriptor and the corresponding struct file.
 static int
 argfd(int n, int *pfd, struct file **pf)
 {
-    80004f9c:	7179                	addi	sp,sp,-48
-    80004f9e:	f406                	sd	ra,40(sp)
-    80004fa0:	f022                	sd	s0,32(sp)
-    80004fa2:	ec26                	sd	s1,24(sp)
-    80004fa4:	e84a                	sd	s2,16(sp)
-    80004fa6:	1800                	addi	s0,sp,48
-    80004fa8:	892e                	mv	s2,a1
-    80004faa:	84b2                	mv	s1,a2
+    8000522e:	7179                	addi	sp,sp,-48
+    80005230:	f406                	sd	ra,40(sp)
+    80005232:	f022                	sd	s0,32(sp)
+    80005234:	ec26                	sd	s1,24(sp)
+    80005236:	e84a                	sd	s2,16(sp)
+    80005238:	1800                	addi	s0,sp,48
+    8000523a:	892e                	mv	s2,a1
+    8000523c:	84b2                	mv	s1,a2
   int fd;
   struct file *f;
 
   if(argint(n, &fd) < 0)
-    80004fac:	fdc40593          	addi	a1,s0,-36
-    80004fb0:	ffffe097          	auipc	ra,0xffffe
-    80004fb4:	ba0080e7          	jalr	-1120(ra) # 80002b50 <argint>
-    80004fb8:	04054063          	bltz	a0,80004ff8 <argfd+0x5c>
+    8000523e:	fdc40593          	addi	a1,s0,-36
+    80005242:	ffffe097          	auipc	ra,0xffffe
+    80005246:	b5e080e7          	jalr	-1186(ra) # 80002da0 <argint>
+    8000524a:	04054063          	bltz	a0,8000528a <argfd+0x5c>
     return -1;
   if(fd < 0 || fd >= NOFILE || (f=myproc()->ofile[fd]) == 0)
-    80004fbc:	fdc42703          	lw	a4,-36(s0)
-    80004fc0:	47bd                	li	a5,15
-    80004fc2:	02e7ed63          	bltu	a5,a4,80004ffc <argfd+0x60>
-    80004fc6:	ffffd097          	auipc	ra,0xffffd
-    80004fca:	9d0080e7          	jalr	-1584(ra) # 80001996 <myproc>
-    80004fce:	fdc42703          	lw	a4,-36(s0)
-    80004fd2:	01a70793          	addi	a5,a4,26 # fffffffffffff01a <end+0xffffffff7ffd901a>
-    80004fd6:	078e                	slli	a5,a5,0x3
-    80004fd8:	953e                	add	a0,a0,a5
-    80004fda:	611c                	ld	a5,0(a0)
-    80004fdc:	c395                	beqz	a5,80005000 <argfd+0x64>
+    8000524e:	fdc42703          	lw	a4,-36(s0)
+    80005252:	47bd                	li	a5,15
+    80005254:	02e7ed63          	bltu	a5,a4,8000528e <argfd+0x60>
+    80005258:	ffffc097          	auipc	ra,0xffffc
+    8000525c:	7e8080e7          	jalr	2024(ra) # 80001a40 <myproc>
+    80005260:	fdc42703          	lw	a4,-36(s0)
+    80005264:	01a70793          	addi	a5,a4,26 # fffffffffffff01a <end+0xffffffff7ffd901a>
+    80005268:	078e                	slli	a5,a5,0x3
+    8000526a:	953e                	add	a0,a0,a5
+    8000526c:	611c                	ld	a5,0(a0)
+    8000526e:	c395                	beqz	a5,80005292 <argfd+0x64>
     return -1;
   if(pfd)
-    80004fde:	00090463          	beqz	s2,80004fe6 <argfd+0x4a>
+    80005270:	00090463          	beqz	s2,80005278 <argfd+0x4a>
     *pfd = fd;
-    80004fe2:	00e92023          	sw	a4,0(s2)
+    80005274:	00e92023          	sw	a4,0(s2)
   if(pf)
     *pf = f;
   return 0;
-    80004fe6:	4501                	li	a0,0
+    80005278:	4501                	li	a0,0
   if(pf)
-    80004fe8:	c091                	beqz	s1,80004fec <argfd+0x50>
+    8000527a:	c091                	beqz	s1,8000527e <argfd+0x50>
     *pf = f;
-    80004fea:	e09c                	sd	a5,0(s1)
+    8000527c:	e09c                	sd	a5,0(s1)
 }
-    80004fec:	70a2                	ld	ra,40(sp)
-    80004fee:	7402                	ld	s0,32(sp)
-    80004ff0:	64e2                	ld	s1,24(sp)
-    80004ff2:	6942                	ld	s2,16(sp)
-    80004ff4:	6145                	addi	sp,sp,48
-    80004ff6:	8082                	ret
+    8000527e:	70a2                	ld	ra,40(sp)
+    80005280:	7402                	ld	s0,32(sp)
+    80005282:	64e2                	ld	s1,24(sp)
+    80005284:	6942                	ld	s2,16(sp)
+    80005286:	6145                	addi	sp,sp,48
+    80005288:	8082                	ret
     return -1;
-    80004ff8:	557d                	li	a0,-1
-    80004ffa:	bfcd                	j	80004fec <argfd+0x50>
+    8000528a:	557d                	li	a0,-1
+    8000528c:	bfcd                	j	8000527e <argfd+0x50>
     return -1;
-    80004ffc:	557d                	li	a0,-1
-    80004ffe:	b7fd                	j	80004fec <argfd+0x50>
-    80005000:	557d                	li	a0,-1
-    80005002:	b7ed                	j	80004fec <argfd+0x50>
+    8000528e:	557d                	li	a0,-1
+    80005290:	b7fd                	j	8000527e <argfd+0x50>
+    80005292:	557d                	li	a0,-1
+    80005294:	b7ed                	j	8000527e <argfd+0x50>
 
-0000000080005004 <fdalloc>:
+0000000080005296 <fdalloc>:
 
 // Allocate a file descriptor for the given file.
 // Takes over file reference from caller on success.
 static int
 fdalloc(struct file *f)
 {
-    80005004:	1101                	addi	sp,sp,-32
-    80005006:	ec06                	sd	ra,24(sp)
-    80005008:	e822                	sd	s0,16(sp)
-    8000500a:	e426                	sd	s1,8(sp)
-    8000500c:	1000                	addi	s0,sp,32
-    8000500e:	84aa                	mv	s1,a0
+    80005296:	1101                	addi	sp,sp,-32
+    80005298:	ec06                	sd	ra,24(sp)
+    8000529a:	e822                	sd	s0,16(sp)
+    8000529c:	e426                	sd	s1,8(sp)
+    8000529e:	1000                	addi	s0,sp,32
+    800052a0:	84aa                	mv	s1,a0
   int fd;
   struct proc *p = myproc();
-    80005010:	ffffd097          	auipc	ra,0xffffd
-    80005014:	986080e7          	jalr	-1658(ra) # 80001996 <myproc>
-    80005018:	862a                	mv	a2,a0
+    800052a2:	ffffc097          	auipc	ra,0xffffc
+    800052a6:	79e080e7          	jalr	1950(ra) # 80001a40 <myproc>
+    800052aa:	862a                	mv	a2,a0
 
   for(fd = 0; fd < NOFILE; fd++){
-    8000501a:	0d050793          	addi	a5,a0,208
-    8000501e:	4501                	li	a0,0
-    80005020:	46c1                	li	a3,16
+    800052ac:	0d050793          	addi	a5,a0,208
+    800052b0:	4501                	li	a0,0
+    800052b2:	46c1                	li	a3,16
     if(p->ofile[fd] == 0){
-    80005022:	6398                	ld	a4,0(a5)
-    80005024:	cb19                	beqz	a4,8000503a <fdalloc+0x36>
+    800052b4:	6398                	ld	a4,0(a5)
+    800052b6:	cb19                	beqz	a4,800052cc <fdalloc+0x36>
   for(fd = 0; fd < NOFILE; fd++){
-    80005026:	2505                	addiw	a0,a0,1
-    80005028:	07a1                	addi	a5,a5,8
-    8000502a:	fed51ce3          	bne	a0,a3,80005022 <fdalloc+0x1e>
+    800052b8:	2505                	addiw	a0,a0,1
+    800052ba:	07a1                	addi	a5,a5,8
+    800052bc:	fed51ce3          	bne	a0,a3,800052b4 <fdalloc+0x1e>
       p->ofile[fd] = f;
       return fd;
     }
   }
   return -1;
-    8000502e:	557d                	li	a0,-1
+    800052c0:	557d                	li	a0,-1
 }
-    80005030:	60e2                	ld	ra,24(sp)
-    80005032:	6442                	ld	s0,16(sp)
-    80005034:	64a2                	ld	s1,8(sp)
-    80005036:	6105                	addi	sp,sp,32
-    80005038:	8082                	ret
+    800052c2:	60e2                	ld	ra,24(sp)
+    800052c4:	6442                	ld	s0,16(sp)
+    800052c6:	64a2                	ld	s1,8(sp)
+    800052c8:	6105                	addi	sp,sp,32
+    800052ca:	8082                	ret
       p->ofile[fd] = f;
-    8000503a:	01a50793          	addi	a5,a0,26
-    8000503e:	078e                	slli	a5,a5,0x3
-    80005040:	963e                	add	a2,a2,a5
-    80005042:	e204                	sd	s1,0(a2)
+    800052cc:	01a50793          	addi	a5,a0,26
+    800052d0:	078e                	slli	a5,a5,0x3
+    800052d2:	963e                	add	a2,a2,a5
+    800052d4:	e204                	sd	s1,0(a2)
       return fd;
-    80005044:	b7f5                	j	80005030 <fdalloc+0x2c>
+    800052d6:	b7f5                	j	800052c2 <fdalloc+0x2c>
 
-0000000080005046 <create>:
+00000000800052d8 <create>:
   return -1;
 }
 
 static struct inode*
 create(char *path, short type, short major, short minor)
 {
-    80005046:	715d                	addi	sp,sp,-80
-    80005048:	e486                	sd	ra,72(sp)
-    8000504a:	e0a2                	sd	s0,64(sp)
-    8000504c:	fc26                	sd	s1,56(sp)
-    8000504e:	f84a                	sd	s2,48(sp)
-    80005050:	f44e                	sd	s3,40(sp)
-    80005052:	f052                	sd	s4,32(sp)
-    80005054:	ec56                	sd	s5,24(sp)
-    80005056:	0880                	addi	s0,sp,80
-    80005058:	89ae                	mv	s3,a1
-    8000505a:	8ab2                	mv	s5,a2
-    8000505c:	8a36                	mv	s4,a3
+    800052d8:	715d                	addi	sp,sp,-80
+    800052da:	e486                	sd	ra,72(sp)
+    800052dc:	e0a2                	sd	s0,64(sp)
+    800052de:	fc26                	sd	s1,56(sp)
+    800052e0:	f84a                	sd	s2,48(sp)
+    800052e2:	f44e                	sd	s3,40(sp)
+    800052e4:	f052                	sd	s4,32(sp)
+    800052e6:	ec56                	sd	s5,24(sp)
+    800052e8:	0880                	addi	s0,sp,80
+    800052ea:	89ae                	mv	s3,a1
+    800052ec:	8ab2                	mv	s5,a2
+    800052ee:	8a36                	mv	s4,a3
   struct inode *ip, *dp;
   char name[DIRSIZ];
 
   if((dp = nameiparent(path, name)) == 0)
-    8000505e:	fb040593          	addi	a1,s0,-80
-    80005062:	fffff097          	auipc	ra,0xfffff
-    80005066:	e74080e7          	jalr	-396(ra) # 80003ed6 <nameiparent>
-    8000506a:	892a                	mv	s2,a0
-    8000506c:	12050e63          	beqz	a0,800051a8 <create+0x162>
+    800052f0:	fb040593          	addi	a1,s0,-80
+    800052f4:	fffff097          	auipc	ra,0xfffff
+    800052f8:	e74080e7          	jalr	-396(ra) # 80004168 <nameiparent>
+    800052fc:	892a                	mv	s2,a0
+    800052fe:	12050e63          	beqz	a0,8000543a <create+0x162>
     return 0;
 
   ilock(dp);
-    80005070:	ffffe097          	auipc	ra,0xffffe
-    80005074:	68c080e7          	jalr	1676(ra) # 800036fc <ilock>
+    80005302:	ffffe097          	auipc	ra,0xffffe
+    80005306:	68c080e7          	jalr	1676(ra) # 8000398e <ilock>
 
   if((ip = dirlookup(dp, name, 0)) != 0){
-    80005078:	4601                	li	a2,0
-    8000507a:	fb040593          	addi	a1,s0,-80
-    8000507e:	854a                	mv	a0,s2
-    80005080:	fffff097          	auipc	ra,0xfffff
-    80005084:	b60080e7          	jalr	-1184(ra) # 80003be0 <dirlookup>
-    80005088:	84aa                	mv	s1,a0
-    8000508a:	c921                	beqz	a0,800050da <create+0x94>
+    8000530a:	4601                	li	a2,0
+    8000530c:	fb040593          	addi	a1,s0,-80
+    80005310:	854a                	mv	a0,s2
+    80005312:	fffff097          	auipc	ra,0xfffff
+    80005316:	b60080e7          	jalr	-1184(ra) # 80003e72 <dirlookup>
+    8000531a:	84aa                	mv	s1,a0
+    8000531c:	c921                	beqz	a0,8000536c <create+0x94>
     iunlockput(dp);
-    8000508c:	854a                	mv	a0,s2
-    8000508e:	fffff097          	auipc	ra,0xfffff
-    80005092:	8d0080e7          	jalr	-1840(ra) # 8000395e <iunlockput>
+    8000531e:	854a                	mv	a0,s2
+    80005320:	fffff097          	auipc	ra,0xfffff
+    80005324:	8d0080e7          	jalr	-1840(ra) # 80003bf0 <iunlockput>
     ilock(ip);
-    80005096:	8526                	mv	a0,s1
-    80005098:	ffffe097          	auipc	ra,0xffffe
-    8000509c:	664080e7          	jalr	1636(ra) # 800036fc <ilock>
+    80005328:	8526                	mv	a0,s1
+    8000532a:	ffffe097          	auipc	ra,0xffffe
+    8000532e:	664080e7          	jalr	1636(ra) # 8000398e <ilock>
     if(type == T_FILE && (ip->type == T_FILE || ip->type == T_DEVICE))
-    800050a0:	2981                	sext.w	s3,s3
-    800050a2:	4789                	li	a5,2
-    800050a4:	02f99463          	bne	s3,a5,800050cc <create+0x86>
-    800050a8:	0444d783          	lhu	a5,68(s1)
-    800050ac:	37f9                	addiw	a5,a5,-2
-    800050ae:	17c2                	slli	a5,a5,0x30
-    800050b0:	93c1                	srli	a5,a5,0x30
-    800050b2:	4705                	li	a4,1
-    800050b4:	00f76c63          	bltu	a4,a5,800050cc <create+0x86>
+    80005332:	2981                	sext.w	s3,s3
+    80005334:	4789                	li	a5,2
+    80005336:	02f99463          	bne	s3,a5,8000535e <create+0x86>
+    8000533a:	0444d783          	lhu	a5,68(s1)
+    8000533e:	37f9                	addiw	a5,a5,-2
+    80005340:	17c2                	slli	a5,a5,0x30
+    80005342:	93c1                	srli	a5,a5,0x30
+    80005344:	4705                	li	a4,1
+    80005346:	00f76c63          	bltu	a4,a5,8000535e <create+0x86>
     panic("create: dirlink");
 
   iunlockput(dp);
 
   return ip;
 }
-    800050b8:	8526                	mv	a0,s1
-    800050ba:	60a6                	ld	ra,72(sp)
-    800050bc:	6406                	ld	s0,64(sp)
-    800050be:	74e2                	ld	s1,56(sp)
-    800050c0:	7942                	ld	s2,48(sp)
-    800050c2:	79a2                	ld	s3,40(sp)
-    800050c4:	7a02                	ld	s4,32(sp)
-    800050c6:	6ae2                	ld	s5,24(sp)
-    800050c8:	6161                	addi	sp,sp,80
-    800050ca:	8082                	ret
+    8000534a:	8526                	mv	a0,s1
+    8000534c:	60a6                	ld	ra,72(sp)
+    8000534e:	6406                	ld	s0,64(sp)
+    80005350:	74e2                	ld	s1,56(sp)
+    80005352:	7942                	ld	s2,48(sp)
+    80005354:	79a2                	ld	s3,40(sp)
+    80005356:	7a02                	ld	s4,32(sp)
+    80005358:	6ae2                	ld	s5,24(sp)
+    8000535a:	6161                	addi	sp,sp,80
+    8000535c:	8082                	ret
     iunlockput(ip);
-    800050cc:	8526                	mv	a0,s1
-    800050ce:	fffff097          	auipc	ra,0xfffff
-    800050d2:	890080e7          	jalr	-1904(ra) # 8000395e <iunlockput>
+    8000535e:	8526                	mv	a0,s1
+    80005360:	fffff097          	auipc	ra,0xfffff
+    80005364:	890080e7          	jalr	-1904(ra) # 80003bf0 <iunlockput>
     return 0;
-    800050d6:	4481                	li	s1,0
-    800050d8:	b7c5                	j	800050b8 <create+0x72>
+    80005368:	4481                	li	s1,0
+    8000536a:	b7c5                	j	8000534a <create+0x72>
   if((ip = ialloc(dp->dev, type)) == 0)
-    800050da:	85ce                	mv	a1,s3
-    800050dc:	00092503          	lw	a0,0(s2)
-    800050e0:	ffffe097          	auipc	ra,0xffffe
-    800050e4:	482080e7          	jalr	1154(ra) # 80003562 <ialloc>
-    800050e8:	84aa                	mv	s1,a0
-    800050ea:	c521                	beqz	a0,80005132 <create+0xec>
+    8000536c:	85ce                	mv	a1,s3
+    8000536e:	00092503          	lw	a0,0(s2)
+    80005372:	ffffe097          	auipc	ra,0xffffe
+    80005376:	482080e7          	jalr	1154(ra) # 800037f4 <ialloc>
+    8000537a:	84aa                	mv	s1,a0
+    8000537c:	c521                	beqz	a0,800053c4 <create+0xec>
   ilock(ip);
-    800050ec:	ffffe097          	auipc	ra,0xffffe
-    800050f0:	610080e7          	jalr	1552(ra) # 800036fc <ilock>
+    8000537e:	ffffe097          	auipc	ra,0xffffe
+    80005382:	610080e7          	jalr	1552(ra) # 8000398e <ilock>
   ip->major = major;
-    800050f4:	05549323          	sh	s5,70(s1)
+    80005386:	05549323          	sh	s5,70(s1)
   ip->minor = minor;
-    800050f8:	05449423          	sh	s4,72(s1)
+    8000538a:	05449423          	sh	s4,72(s1)
   ip->nlink = 1;
-    800050fc:	4a05                	li	s4,1
-    800050fe:	05449523          	sh	s4,74(s1)
+    8000538e:	4a05                	li	s4,1
+    80005390:	05449523          	sh	s4,74(s1)
   iupdate(ip);
-    80005102:	8526                	mv	a0,s1
-    80005104:	ffffe097          	auipc	ra,0xffffe
-    80005108:	52c080e7          	jalr	1324(ra) # 80003630 <iupdate>
+    80005394:	8526                	mv	a0,s1
+    80005396:	ffffe097          	auipc	ra,0xffffe
+    8000539a:	52c080e7          	jalr	1324(ra) # 800038c2 <iupdate>
   if(type == T_DIR){  // Create . and .. entries.
-    8000510c:	2981                	sext.w	s3,s3
-    8000510e:	03498a63          	beq	s3,s4,80005142 <create+0xfc>
+    8000539e:	2981                	sext.w	s3,s3
+    800053a0:	03498a63          	beq	s3,s4,800053d4 <create+0xfc>
   if(dirlink(dp, name, ip->inum) < 0)
-    80005112:	40d0                	lw	a2,4(s1)
-    80005114:	fb040593          	addi	a1,s0,-80
-    80005118:	854a                	mv	a0,s2
-    8000511a:	fffff097          	auipc	ra,0xfffff
-    8000511e:	cdc080e7          	jalr	-804(ra) # 80003df6 <dirlink>
-    80005122:	06054b63          	bltz	a0,80005198 <create+0x152>
+    800053a4:	40d0                	lw	a2,4(s1)
+    800053a6:	fb040593          	addi	a1,s0,-80
+    800053aa:	854a                	mv	a0,s2
+    800053ac:	fffff097          	auipc	ra,0xfffff
+    800053b0:	cdc080e7          	jalr	-804(ra) # 80004088 <dirlink>
+    800053b4:	06054b63          	bltz	a0,8000542a <create+0x152>
   iunlockput(dp);
-    80005126:	854a                	mv	a0,s2
-    80005128:	fffff097          	auipc	ra,0xfffff
-    8000512c:	836080e7          	jalr	-1994(ra) # 8000395e <iunlockput>
+    800053b8:	854a                	mv	a0,s2
+    800053ba:	fffff097          	auipc	ra,0xfffff
+    800053be:	836080e7          	jalr	-1994(ra) # 80003bf0 <iunlockput>
   return ip;
-    80005130:	b761                	j	800050b8 <create+0x72>
+    800053c2:	b761                	j	8000534a <create+0x72>
     panic("create: ialloc");
-    80005132:	00003517          	auipc	a0,0x3
-    80005136:	63e50513          	addi	a0,a0,1598 # 80008770 <syscalls+0x2b0>
-    8000513a:	ffffb097          	auipc	ra,0xffffb
-    8000513e:	400080e7          	jalr	1024(ra) # 8000053a <panic>
+    800053c4:	00003517          	auipc	a0,0x3
+    800053c8:	42450513          	addi	a0,a0,1060 # 800087e8 <syscalls+0x2b8>
+    800053cc:	ffffb097          	auipc	ra,0xffffb
+    800053d0:	16e080e7          	jalr	366(ra) # 8000053a <panic>
     dp->nlink++;  // for ".."
-    80005142:	04a95783          	lhu	a5,74(s2)
-    80005146:	2785                	addiw	a5,a5,1
-    80005148:	04f91523          	sh	a5,74(s2)
+    800053d4:	04a95783          	lhu	a5,74(s2)
+    800053d8:	2785                	addiw	a5,a5,1
+    800053da:	04f91523          	sh	a5,74(s2)
     iupdate(dp);
-    8000514c:	854a                	mv	a0,s2
-    8000514e:	ffffe097          	auipc	ra,0xffffe
-    80005152:	4e2080e7          	jalr	1250(ra) # 80003630 <iupdate>
+    800053de:	854a                	mv	a0,s2
+    800053e0:	ffffe097          	auipc	ra,0xffffe
+    800053e4:	4e2080e7          	jalr	1250(ra) # 800038c2 <iupdate>
     if(dirlink(ip, ".", ip->inum) < 0 || dirlink(ip, "..", dp->inum) < 0)
-    80005156:	40d0                	lw	a2,4(s1)
-    80005158:	00003597          	auipc	a1,0x3
-    8000515c:	62858593          	addi	a1,a1,1576 # 80008780 <syscalls+0x2c0>
-    80005160:	8526                	mv	a0,s1
-    80005162:	fffff097          	auipc	ra,0xfffff
-    80005166:	c94080e7          	jalr	-876(ra) # 80003df6 <dirlink>
-    8000516a:	00054f63          	bltz	a0,80005188 <create+0x142>
-    8000516e:	00492603          	lw	a2,4(s2)
-    80005172:	00003597          	auipc	a1,0x3
-    80005176:	61658593          	addi	a1,a1,1558 # 80008788 <syscalls+0x2c8>
-    8000517a:	8526                	mv	a0,s1
-    8000517c:	fffff097          	auipc	ra,0xfffff
-    80005180:	c7a080e7          	jalr	-902(ra) # 80003df6 <dirlink>
-    80005184:	f80557e3          	bgez	a0,80005112 <create+0xcc>
+    800053e8:	40d0                	lw	a2,4(s1)
+    800053ea:	00003597          	auipc	a1,0x3
+    800053ee:	40e58593          	addi	a1,a1,1038 # 800087f8 <syscalls+0x2c8>
+    800053f2:	8526                	mv	a0,s1
+    800053f4:	fffff097          	auipc	ra,0xfffff
+    800053f8:	c94080e7          	jalr	-876(ra) # 80004088 <dirlink>
+    800053fc:	00054f63          	bltz	a0,8000541a <create+0x142>
+    80005400:	00492603          	lw	a2,4(s2)
+    80005404:	00003597          	auipc	a1,0x3
+    80005408:	3fc58593          	addi	a1,a1,1020 # 80008800 <syscalls+0x2d0>
+    8000540c:	8526                	mv	a0,s1
+    8000540e:	fffff097          	auipc	ra,0xfffff
+    80005412:	c7a080e7          	jalr	-902(ra) # 80004088 <dirlink>
+    80005416:	f80557e3          	bgez	a0,800053a4 <create+0xcc>
       panic("create dots");
-    80005188:	00003517          	auipc	a0,0x3
-    8000518c:	60850513          	addi	a0,a0,1544 # 80008790 <syscalls+0x2d0>
-    80005190:	ffffb097          	auipc	ra,0xffffb
-    80005194:	3aa080e7          	jalr	938(ra) # 8000053a <panic>
+    8000541a:	00003517          	auipc	a0,0x3
+    8000541e:	3ee50513          	addi	a0,a0,1006 # 80008808 <syscalls+0x2d8>
+    80005422:	ffffb097          	auipc	ra,0xffffb
+    80005426:	118080e7          	jalr	280(ra) # 8000053a <panic>
     panic("create: dirlink");
-    80005198:	00003517          	auipc	a0,0x3
-    8000519c:	60850513          	addi	a0,a0,1544 # 800087a0 <syscalls+0x2e0>
-    800051a0:	ffffb097          	auipc	ra,0xffffb
-    800051a4:	39a080e7          	jalr	922(ra) # 8000053a <panic>
+    8000542a:	00003517          	auipc	a0,0x3
+    8000542e:	3ee50513          	addi	a0,a0,1006 # 80008818 <syscalls+0x2e8>
+    80005432:	ffffb097          	auipc	ra,0xffffb
+    80005436:	108080e7          	jalr	264(ra) # 8000053a <panic>
     return 0;
-    800051a8:	84aa                	mv	s1,a0
-    800051aa:	b739                	j	800050b8 <create+0x72>
+    8000543a:	84aa                	mv	s1,a0
+    8000543c:	b739                	j	8000534a <create+0x72>
 
-00000000800051ac <sys_dup>:
+000000008000543e <sys_dup>:
 {
-    800051ac:	7179                	addi	sp,sp,-48
-    800051ae:	f406                	sd	ra,40(sp)
-    800051b0:	f022                	sd	s0,32(sp)
-    800051b2:	ec26                	sd	s1,24(sp)
-    800051b4:	e84a                	sd	s2,16(sp)
-    800051b6:	1800                	addi	s0,sp,48
+    8000543e:	7179                	addi	sp,sp,-48
+    80005440:	f406                	sd	ra,40(sp)
+    80005442:	f022                	sd	s0,32(sp)
+    80005444:	ec26                	sd	s1,24(sp)
+    80005446:	e84a                	sd	s2,16(sp)
+    80005448:	1800                	addi	s0,sp,48
   if(argfd(0, 0, &f) < 0)
-    800051b8:	fd840613          	addi	a2,s0,-40
-    800051bc:	4581                	li	a1,0
-    800051be:	4501                	li	a0,0
-    800051c0:	00000097          	auipc	ra,0x0
-    800051c4:	ddc080e7          	jalr	-548(ra) # 80004f9c <argfd>
+    8000544a:	fd840613          	addi	a2,s0,-40
+    8000544e:	4581                	li	a1,0
+    80005450:	4501                	li	a0,0
+    80005452:	00000097          	auipc	ra,0x0
+    80005456:	ddc080e7          	jalr	-548(ra) # 8000522e <argfd>
     return -1;
-    800051c8:	57fd                	li	a5,-1
+    8000545a:	57fd                	li	a5,-1
   if(argfd(0, 0, &f) < 0)
-    800051ca:	02054363          	bltz	a0,800051f0 <sys_dup+0x44>
+    8000545c:	02054363          	bltz	a0,80005482 <sys_dup+0x44>
   if((fd=fdalloc(f)) < 0)
-    800051ce:	fd843903          	ld	s2,-40(s0)
-    800051d2:	854a                	mv	a0,s2
-    800051d4:	00000097          	auipc	ra,0x0
-    800051d8:	e30080e7          	jalr	-464(ra) # 80005004 <fdalloc>
-    800051dc:	84aa                	mv	s1,a0
+    80005460:	fd843903          	ld	s2,-40(s0)
+    80005464:	854a                	mv	a0,s2
+    80005466:	00000097          	auipc	ra,0x0
+    8000546a:	e30080e7          	jalr	-464(ra) # 80005296 <fdalloc>
+    8000546e:	84aa                	mv	s1,a0
     return -1;
-    800051de:	57fd                	li	a5,-1
+    80005470:	57fd                	li	a5,-1
   if((fd=fdalloc(f)) < 0)
-    800051e0:	00054863          	bltz	a0,800051f0 <sys_dup+0x44>
+    80005472:	00054863          	bltz	a0,80005482 <sys_dup+0x44>
   filedup(f);
-    800051e4:	854a                	mv	a0,s2
-    800051e6:	fffff097          	auipc	ra,0xfffff
-    800051ea:	368080e7          	jalr	872(ra) # 8000454e <filedup>
+    80005476:	854a                	mv	a0,s2
+    80005478:	fffff097          	auipc	ra,0xfffff
+    8000547c:	368080e7          	jalr	872(ra) # 800047e0 <filedup>
   return fd;
-    800051ee:	87a6                	mv	a5,s1
+    80005480:	87a6                	mv	a5,s1
 }
-    800051f0:	853e                	mv	a0,a5
-    800051f2:	70a2                	ld	ra,40(sp)
-    800051f4:	7402                	ld	s0,32(sp)
-    800051f6:	64e2                	ld	s1,24(sp)
-    800051f8:	6942                	ld	s2,16(sp)
-    800051fa:	6145                	addi	sp,sp,48
-    800051fc:	8082                	ret
+    80005482:	853e                	mv	a0,a5
+    80005484:	70a2                	ld	ra,40(sp)
+    80005486:	7402                	ld	s0,32(sp)
+    80005488:	64e2                	ld	s1,24(sp)
+    8000548a:	6942                	ld	s2,16(sp)
+    8000548c:	6145                	addi	sp,sp,48
+    8000548e:	8082                	ret
 
-00000000800051fe <sys_read>:
+0000000080005490 <sys_read>:
 {
-    800051fe:	7179                	addi	sp,sp,-48
-    80005200:	f406                	sd	ra,40(sp)
-    80005202:	f022                	sd	s0,32(sp)
-    80005204:	1800                	addi	s0,sp,48
+    80005490:	7179                	addi	sp,sp,-48
+    80005492:	f406                	sd	ra,40(sp)
+    80005494:	f022                	sd	s0,32(sp)
+    80005496:	1800                	addi	s0,sp,48
   if(argfd(0, 0, &f) < 0 || argint(2, &n) < 0 || argaddr(1, &p) < 0)
-    80005206:	fe840613          	addi	a2,s0,-24
-    8000520a:	4581                	li	a1,0
-    8000520c:	4501                	li	a0,0
-    8000520e:	00000097          	auipc	ra,0x0
-    80005212:	d8e080e7          	jalr	-626(ra) # 80004f9c <argfd>
+    80005498:	fe840613          	addi	a2,s0,-24
+    8000549c:	4581                	li	a1,0
+    8000549e:	4501                	li	a0,0
+    800054a0:	00000097          	auipc	ra,0x0
+    800054a4:	d8e080e7          	jalr	-626(ra) # 8000522e <argfd>
     return -1;
-    80005216:	57fd                	li	a5,-1
+    800054a8:	57fd                	li	a5,-1
   if(argfd(0, 0, &f) < 0 || argint(2, &n) < 0 || argaddr(1, &p) < 0)
-    80005218:	04054163          	bltz	a0,8000525a <sys_read+0x5c>
-    8000521c:	fe440593          	addi	a1,s0,-28
-    80005220:	4509                	li	a0,2
-    80005222:	ffffe097          	auipc	ra,0xffffe
-    80005226:	92e080e7          	jalr	-1746(ra) # 80002b50 <argint>
+    800054aa:	04054163          	bltz	a0,800054ec <sys_read+0x5c>
+    800054ae:	fe440593          	addi	a1,s0,-28
+    800054b2:	4509                	li	a0,2
+    800054b4:	ffffe097          	auipc	ra,0xffffe
+    800054b8:	8ec080e7          	jalr	-1812(ra) # 80002da0 <argint>
     return -1;
-    8000522a:	57fd                	li	a5,-1
+    800054bc:	57fd                	li	a5,-1
   if(argfd(0, 0, &f) < 0 || argint(2, &n) < 0 || argaddr(1, &p) < 0)
-    8000522c:	02054763          	bltz	a0,8000525a <sys_read+0x5c>
-    80005230:	fd840593          	addi	a1,s0,-40
-    80005234:	4505                	li	a0,1
-    80005236:	ffffe097          	auipc	ra,0xffffe
-    8000523a:	93c080e7          	jalr	-1732(ra) # 80002b72 <argaddr>
+    800054be:	02054763          	bltz	a0,800054ec <sys_read+0x5c>
+    800054c2:	fd840593          	addi	a1,s0,-40
+    800054c6:	4505                	li	a0,1
+    800054c8:	ffffe097          	auipc	ra,0xffffe
+    800054cc:	8fa080e7          	jalr	-1798(ra) # 80002dc2 <argaddr>
     return -1;
-    8000523e:	57fd                	li	a5,-1
+    800054d0:	57fd                	li	a5,-1
   if(argfd(0, 0, &f) < 0 || argint(2, &n) < 0 || argaddr(1, &p) < 0)
-    80005240:	00054d63          	bltz	a0,8000525a <sys_read+0x5c>
+    800054d2:	00054d63          	bltz	a0,800054ec <sys_read+0x5c>
   return fileread(f, p, n);
-    80005244:	fe442603          	lw	a2,-28(s0)
-    80005248:	fd843583          	ld	a1,-40(s0)
-    8000524c:	fe843503          	ld	a0,-24(s0)
-    80005250:	fffff097          	auipc	ra,0xfffff
-    80005254:	48a080e7          	jalr	1162(ra) # 800046da <fileread>
-    80005258:	87aa                	mv	a5,a0
+    800054d6:	fe442603          	lw	a2,-28(s0)
+    800054da:	fd843583          	ld	a1,-40(s0)
+    800054de:	fe843503          	ld	a0,-24(s0)
+    800054e2:	fffff097          	auipc	ra,0xfffff
+    800054e6:	48a080e7          	jalr	1162(ra) # 8000496c <fileread>
+    800054ea:	87aa                	mv	a5,a0
 }
-    8000525a:	853e                	mv	a0,a5
-    8000525c:	70a2                	ld	ra,40(sp)
-    8000525e:	7402                	ld	s0,32(sp)
-    80005260:	6145                	addi	sp,sp,48
-    80005262:	8082                	ret
+    800054ec:	853e                	mv	a0,a5
+    800054ee:	70a2                	ld	ra,40(sp)
+    800054f0:	7402                	ld	s0,32(sp)
+    800054f2:	6145                	addi	sp,sp,48
+    800054f4:	8082                	ret
 
-0000000080005264 <sys_write>:
+00000000800054f6 <sys_write>:
 {
-    80005264:	7179                	addi	sp,sp,-48
-    80005266:	f406                	sd	ra,40(sp)
-    80005268:	f022                	sd	s0,32(sp)
-    8000526a:	1800                	addi	s0,sp,48
+    800054f6:	7179                	addi	sp,sp,-48
+    800054f8:	f406                	sd	ra,40(sp)
+    800054fa:	f022                	sd	s0,32(sp)
+    800054fc:	1800                	addi	s0,sp,48
   if(argfd(0, 0, &f) < 0 || argint(2, &n) < 0 || argaddr(1, &p) < 0)
-    8000526c:	fe840613          	addi	a2,s0,-24
-    80005270:	4581                	li	a1,0
-    80005272:	4501                	li	a0,0
-    80005274:	00000097          	auipc	ra,0x0
-    80005278:	d28080e7          	jalr	-728(ra) # 80004f9c <argfd>
+    800054fe:	fe840613          	addi	a2,s0,-24
+    80005502:	4581                	li	a1,0
+    80005504:	4501                	li	a0,0
+    80005506:	00000097          	auipc	ra,0x0
+    8000550a:	d28080e7          	jalr	-728(ra) # 8000522e <argfd>
     return -1;
-    8000527c:	57fd                	li	a5,-1
+    8000550e:	57fd                	li	a5,-1
   if(argfd(0, 0, &f) < 0 || argint(2, &n) < 0 || argaddr(1, &p) < 0)
-    8000527e:	04054163          	bltz	a0,800052c0 <sys_write+0x5c>
-    80005282:	fe440593          	addi	a1,s0,-28
-    80005286:	4509                	li	a0,2
-    80005288:	ffffe097          	auipc	ra,0xffffe
-    8000528c:	8c8080e7          	jalr	-1848(ra) # 80002b50 <argint>
+    80005510:	04054163          	bltz	a0,80005552 <sys_write+0x5c>
+    80005514:	fe440593          	addi	a1,s0,-28
+    80005518:	4509                	li	a0,2
+    8000551a:	ffffe097          	auipc	ra,0xffffe
+    8000551e:	886080e7          	jalr	-1914(ra) # 80002da0 <argint>
     return -1;
-    80005290:	57fd                	li	a5,-1
+    80005522:	57fd                	li	a5,-1
   if(argfd(0, 0, &f) < 0 || argint(2, &n) < 0 || argaddr(1, &p) < 0)
-    80005292:	02054763          	bltz	a0,800052c0 <sys_write+0x5c>
-    80005296:	fd840593          	addi	a1,s0,-40
-    8000529a:	4505                	li	a0,1
-    8000529c:	ffffe097          	auipc	ra,0xffffe
-    800052a0:	8d6080e7          	jalr	-1834(ra) # 80002b72 <argaddr>
+    80005524:	02054763          	bltz	a0,80005552 <sys_write+0x5c>
+    80005528:	fd840593          	addi	a1,s0,-40
+    8000552c:	4505                	li	a0,1
+    8000552e:	ffffe097          	auipc	ra,0xffffe
+    80005532:	894080e7          	jalr	-1900(ra) # 80002dc2 <argaddr>
     return -1;
-    800052a4:	57fd                	li	a5,-1
+    80005536:	57fd                	li	a5,-1
   if(argfd(0, 0, &f) < 0 || argint(2, &n) < 0 || argaddr(1, &p) < 0)
-    800052a6:	00054d63          	bltz	a0,800052c0 <sys_write+0x5c>
+    80005538:	00054d63          	bltz	a0,80005552 <sys_write+0x5c>
   return filewrite(f, p, n);
-    800052aa:	fe442603          	lw	a2,-28(s0)
-    800052ae:	fd843583          	ld	a1,-40(s0)
-    800052b2:	fe843503          	ld	a0,-24(s0)
-    800052b6:	fffff097          	auipc	ra,0xfffff
-    800052ba:	4e6080e7          	jalr	1254(ra) # 8000479c <filewrite>
-    800052be:	87aa                	mv	a5,a0
+    8000553c:	fe442603          	lw	a2,-28(s0)
+    80005540:	fd843583          	ld	a1,-40(s0)
+    80005544:	fe843503          	ld	a0,-24(s0)
+    80005548:	fffff097          	auipc	ra,0xfffff
+    8000554c:	4e6080e7          	jalr	1254(ra) # 80004a2e <filewrite>
+    80005550:	87aa                	mv	a5,a0
 }
-    800052c0:	853e                	mv	a0,a5
-    800052c2:	70a2                	ld	ra,40(sp)
-    800052c4:	7402                	ld	s0,32(sp)
-    800052c6:	6145                	addi	sp,sp,48
-    800052c8:	8082                	ret
+    80005552:	853e                	mv	a0,a5
+    80005554:	70a2                	ld	ra,40(sp)
+    80005556:	7402                	ld	s0,32(sp)
+    80005558:	6145                	addi	sp,sp,48
+    8000555a:	8082                	ret
 
-00000000800052ca <sys_close>:
+000000008000555c <sys_close>:
 {
-    800052ca:	1101                	addi	sp,sp,-32
-    800052cc:	ec06                	sd	ra,24(sp)
-    800052ce:	e822                	sd	s0,16(sp)
-    800052d0:	1000                	addi	s0,sp,32
+    8000555c:	1101                	addi	sp,sp,-32
+    8000555e:	ec06                	sd	ra,24(sp)
+    80005560:	e822                	sd	s0,16(sp)
+    80005562:	1000                	addi	s0,sp,32
   if(argfd(0, &fd, &f) < 0)
-    800052d2:	fe040613          	addi	a2,s0,-32
-    800052d6:	fec40593          	addi	a1,s0,-20
-    800052da:	4501                	li	a0,0
-    800052dc:	00000097          	auipc	ra,0x0
-    800052e0:	cc0080e7          	jalr	-832(ra) # 80004f9c <argfd>
+    80005564:	fe040613          	addi	a2,s0,-32
+    80005568:	fec40593          	addi	a1,s0,-20
+    8000556c:	4501                	li	a0,0
+    8000556e:	00000097          	auipc	ra,0x0
+    80005572:	cc0080e7          	jalr	-832(ra) # 8000522e <argfd>
     return -1;
-    800052e4:	57fd                	li	a5,-1
+    80005576:	57fd                	li	a5,-1
   if(argfd(0, &fd, &f) < 0)
-    800052e6:	02054463          	bltz	a0,8000530e <sys_close+0x44>
+    80005578:	02054463          	bltz	a0,800055a0 <sys_close+0x44>
   myproc()->ofile[fd] = 0;
-    800052ea:	ffffc097          	auipc	ra,0xffffc
-    800052ee:	6ac080e7          	jalr	1708(ra) # 80001996 <myproc>
-    800052f2:	fec42783          	lw	a5,-20(s0)
-    800052f6:	07e9                	addi	a5,a5,26
-    800052f8:	078e                	slli	a5,a5,0x3
-    800052fa:	953e                	add	a0,a0,a5
-    800052fc:	00053023          	sd	zero,0(a0)
+    8000557c:	ffffc097          	auipc	ra,0xffffc
+    80005580:	4c4080e7          	jalr	1220(ra) # 80001a40 <myproc>
+    80005584:	fec42783          	lw	a5,-20(s0)
+    80005588:	07e9                	addi	a5,a5,26
+    8000558a:	078e                	slli	a5,a5,0x3
+    8000558c:	953e                	add	a0,a0,a5
+    8000558e:	00053023          	sd	zero,0(a0)
   fileclose(f);
-    80005300:	fe043503          	ld	a0,-32(s0)
-    80005304:	fffff097          	auipc	ra,0xfffff
-    80005308:	29c080e7          	jalr	668(ra) # 800045a0 <fileclose>
+    80005592:	fe043503          	ld	a0,-32(s0)
+    80005596:	fffff097          	auipc	ra,0xfffff
+    8000559a:	29c080e7          	jalr	668(ra) # 80004832 <fileclose>
   return 0;
-    8000530c:	4781                	li	a5,0
+    8000559e:	4781                	li	a5,0
 }
-    8000530e:	853e                	mv	a0,a5
-    80005310:	60e2                	ld	ra,24(sp)
-    80005312:	6442                	ld	s0,16(sp)
-    80005314:	6105                	addi	sp,sp,32
-    80005316:	8082                	ret
+    800055a0:	853e                	mv	a0,a5
+    800055a2:	60e2                	ld	ra,24(sp)
+    800055a4:	6442                	ld	s0,16(sp)
+    800055a6:	6105                	addi	sp,sp,32
+    800055a8:	8082                	ret
 
-0000000080005318 <sys_fstat>:
+00000000800055aa <sys_fstat>:
 {
-    80005318:	1101                	addi	sp,sp,-32
-    8000531a:	ec06                	sd	ra,24(sp)
-    8000531c:	e822                	sd	s0,16(sp)
-    8000531e:	1000                	addi	s0,sp,32
+    800055aa:	1101                	addi	sp,sp,-32
+    800055ac:	ec06                	sd	ra,24(sp)
+    800055ae:	e822                	sd	s0,16(sp)
+    800055b0:	1000                	addi	s0,sp,32
   if(argfd(0, 0, &f) < 0 || argaddr(1, &st) < 0)
-    80005320:	fe840613          	addi	a2,s0,-24
-    80005324:	4581                	li	a1,0
-    80005326:	4501                	li	a0,0
-    80005328:	00000097          	auipc	ra,0x0
-    8000532c:	c74080e7          	jalr	-908(ra) # 80004f9c <argfd>
+    800055b2:	fe840613          	addi	a2,s0,-24
+    800055b6:	4581                	li	a1,0
+    800055b8:	4501                	li	a0,0
+    800055ba:	00000097          	auipc	ra,0x0
+    800055be:	c74080e7          	jalr	-908(ra) # 8000522e <argfd>
     return -1;
-    80005330:	57fd                	li	a5,-1
+    800055c2:	57fd                	li	a5,-1
   if(argfd(0, 0, &f) < 0 || argaddr(1, &st) < 0)
-    80005332:	02054563          	bltz	a0,8000535c <sys_fstat+0x44>
-    80005336:	fe040593          	addi	a1,s0,-32
-    8000533a:	4505                	li	a0,1
-    8000533c:	ffffe097          	auipc	ra,0xffffe
-    80005340:	836080e7          	jalr	-1994(ra) # 80002b72 <argaddr>
+    800055c4:	02054563          	bltz	a0,800055ee <sys_fstat+0x44>
+    800055c8:	fe040593          	addi	a1,s0,-32
+    800055cc:	4505                	li	a0,1
+    800055ce:	ffffd097          	auipc	ra,0xffffd
+    800055d2:	7f4080e7          	jalr	2036(ra) # 80002dc2 <argaddr>
     return -1;
-    80005344:	57fd                	li	a5,-1
+    800055d6:	57fd                	li	a5,-1
   if(argfd(0, 0, &f) < 0 || argaddr(1, &st) < 0)
-    80005346:	00054b63          	bltz	a0,8000535c <sys_fstat+0x44>
+    800055d8:	00054b63          	bltz	a0,800055ee <sys_fstat+0x44>
   return filestat(f, st);
-    8000534a:	fe043583          	ld	a1,-32(s0)
-    8000534e:	fe843503          	ld	a0,-24(s0)
-    80005352:	fffff097          	auipc	ra,0xfffff
-    80005356:	316080e7          	jalr	790(ra) # 80004668 <filestat>
-    8000535a:	87aa                	mv	a5,a0
+    800055dc:	fe043583          	ld	a1,-32(s0)
+    800055e0:	fe843503          	ld	a0,-24(s0)
+    800055e4:	fffff097          	auipc	ra,0xfffff
+    800055e8:	316080e7          	jalr	790(ra) # 800048fa <filestat>
+    800055ec:	87aa                	mv	a5,a0
 }
-    8000535c:	853e                	mv	a0,a5
-    8000535e:	60e2                	ld	ra,24(sp)
-    80005360:	6442                	ld	s0,16(sp)
-    80005362:	6105                	addi	sp,sp,32
-    80005364:	8082                	ret
+    800055ee:	853e                	mv	a0,a5
+    800055f0:	60e2                	ld	ra,24(sp)
+    800055f2:	6442                	ld	s0,16(sp)
+    800055f4:	6105                	addi	sp,sp,32
+    800055f6:	8082                	ret
 
-0000000080005366 <sys_link>:
+00000000800055f8 <sys_link>:
 {
-    80005366:	7169                	addi	sp,sp,-304
-    80005368:	f606                	sd	ra,296(sp)
-    8000536a:	f222                	sd	s0,288(sp)
-    8000536c:	ee26                	sd	s1,280(sp)
-    8000536e:	ea4a                	sd	s2,272(sp)
-    80005370:	1a00                	addi	s0,sp,304
+    800055f8:	7169                	addi	sp,sp,-304
+    800055fa:	f606                	sd	ra,296(sp)
+    800055fc:	f222                	sd	s0,288(sp)
+    800055fe:	ee26                	sd	s1,280(sp)
+    80005600:	ea4a                	sd	s2,272(sp)
+    80005602:	1a00                	addi	s0,sp,304
   if(argstr(0, old, MAXPATH) < 0 || argstr(1, new, MAXPATH) < 0)
-    80005372:	08000613          	li	a2,128
-    80005376:	ed040593          	addi	a1,s0,-304
-    8000537a:	4501                	li	a0,0
-    8000537c:	ffffe097          	auipc	ra,0xffffe
-    80005380:	818080e7          	jalr	-2024(ra) # 80002b94 <argstr>
+    80005604:	08000613          	li	a2,128
+    80005608:	ed040593          	addi	a1,s0,-304
+    8000560c:	4501                	li	a0,0
+    8000560e:	ffffd097          	auipc	ra,0xffffd
+    80005612:	7d6080e7          	jalr	2006(ra) # 80002de4 <argstr>
     return -1;
-    80005384:	57fd                	li	a5,-1
+    80005616:	57fd                	li	a5,-1
   if(argstr(0, old, MAXPATH) < 0 || argstr(1, new, MAXPATH) < 0)
-    80005386:	10054e63          	bltz	a0,800054a2 <sys_link+0x13c>
-    8000538a:	08000613          	li	a2,128
-    8000538e:	f5040593          	addi	a1,s0,-176
-    80005392:	4505                	li	a0,1
-    80005394:	ffffe097          	auipc	ra,0xffffe
-    80005398:	800080e7          	jalr	-2048(ra) # 80002b94 <argstr>
+    80005618:	10054e63          	bltz	a0,80005734 <sys_link+0x13c>
+    8000561c:	08000613          	li	a2,128
+    80005620:	f5040593          	addi	a1,s0,-176
+    80005624:	4505                	li	a0,1
+    80005626:	ffffd097          	auipc	ra,0xffffd
+    8000562a:	7be080e7          	jalr	1982(ra) # 80002de4 <argstr>
     return -1;
-    8000539c:	57fd                	li	a5,-1
+    8000562e:	57fd                	li	a5,-1
   if(argstr(0, old, MAXPATH) < 0 || argstr(1, new, MAXPATH) < 0)
-    8000539e:	10054263          	bltz	a0,800054a2 <sys_link+0x13c>
+    80005630:	10054263          	bltz	a0,80005734 <sys_link+0x13c>
   begin_op();
-    800053a2:	fffff097          	auipc	ra,0xfffff
-    800053a6:	d36080e7          	jalr	-714(ra) # 800040d8 <begin_op>
+    80005634:	fffff097          	auipc	ra,0xfffff
+    80005638:	d36080e7          	jalr	-714(ra) # 8000436a <begin_op>
   if((ip = namei(old)) == 0){
-    800053aa:	ed040513          	addi	a0,s0,-304
-    800053ae:	fffff097          	auipc	ra,0xfffff
-    800053b2:	b0a080e7          	jalr	-1270(ra) # 80003eb8 <namei>
-    800053b6:	84aa                	mv	s1,a0
-    800053b8:	c551                	beqz	a0,80005444 <sys_link+0xde>
+    8000563c:	ed040513          	addi	a0,s0,-304
+    80005640:	fffff097          	auipc	ra,0xfffff
+    80005644:	b0a080e7          	jalr	-1270(ra) # 8000414a <namei>
+    80005648:	84aa                	mv	s1,a0
+    8000564a:	c551                	beqz	a0,800056d6 <sys_link+0xde>
   ilock(ip);
-    800053ba:	ffffe097          	auipc	ra,0xffffe
-    800053be:	342080e7          	jalr	834(ra) # 800036fc <ilock>
+    8000564c:	ffffe097          	auipc	ra,0xffffe
+    80005650:	342080e7          	jalr	834(ra) # 8000398e <ilock>
   if(ip->type == T_DIR){
-    800053c2:	04449703          	lh	a4,68(s1)
-    800053c6:	4785                	li	a5,1
-    800053c8:	08f70463          	beq	a4,a5,80005450 <sys_link+0xea>
+    80005654:	04449703          	lh	a4,68(s1)
+    80005658:	4785                	li	a5,1
+    8000565a:	08f70463          	beq	a4,a5,800056e2 <sys_link+0xea>
   ip->nlink++;
-    800053cc:	04a4d783          	lhu	a5,74(s1)
-    800053d0:	2785                	addiw	a5,a5,1
-    800053d2:	04f49523          	sh	a5,74(s1)
+    8000565e:	04a4d783          	lhu	a5,74(s1)
+    80005662:	2785                	addiw	a5,a5,1
+    80005664:	04f49523          	sh	a5,74(s1)
   iupdate(ip);
-    800053d6:	8526                	mv	a0,s1
-    800053d8:	ffffe097          	auipc	ra,0xffffe
-    800053dc:	258080e7          	jalr	600(ra) # 80003630 <iupdate>
+    80005668:	8526                	mv	a0,s1
+    8000566a:	ffffe097          	auipc	ra,0xffffe
+    8000566e:	258080e7          	jalr	600(ra) # 800038c2 <iupdate>
   iunlock(ip);
-    800053e0:	8526                	mv	a0,s1
-    800053e2:	ffffe097          	auipc	ra,0xffffe
-    800053e6:	3dc080e7          	jalr	988(ra) # 800037be <iunlock>
+    80005672:	8526                	mv	a0,s1
+    80005674:	ffffe097          	auipc	ra,0xffffe
+    80005678:	3dc080e7          	jalr	988(ra) # 80003a50 <iunlock>
   if((dp = nameiparent(new, name)) == 0)
-    800053ea:	fd040593          	addi	a1,s0,-48
-    800053ee:	f5040513          	addi	a0,s0,-176
-    800053f2:	fffff097          	auipc	ra,0xfffff
-    800053f6:	ae4080e7          	jalr	-1308(ra) # 80003ed6 <nameiparent>
-    800053fa:	892a                	mv	s2,a0
-    800053fc:	c935                	beqz	a0,80005470 <sys_link+0x10a>
+    8000567c:	fd040593          	addi	a1,s0,-48
+    80005680:	f5040513          	addi	a0,s0,-176
+    80005684:	fffff097          	auipc	ra,0xfffff
+    80005688:	ae4080e7          	jalr	-1308(ra) # 80004168 <nameiparent>
+    8000568c:	892a                	mv	s2,a0
+    8000568e:	c935                	beqz	a0,80005702 <sys_link+0x10a>
   ilock(dp);
-    800053fe:	ffffe097          	auipc	ra,0xffffe
-    80005402:	2fe080e7          	jalr	766(ra) # 800036fc <ilock>
+    80005690:	ffffe097          	auipc	ra,0xffffe
+    80005694:	2fe080e7          	jalr	766(ra) # 8000398e <ilock>
   if(dp->dev != ip->dev || dirlink(dp, name, ip->inum) < 0){
-    80005406:	00092703          	lw	a4,0(s2)
-    8000540a:	409c                	lw	a5,0(s1)
-    8000540c:	04f71d63          	bne	a4,a5,80005466 <sys_link+0x100>
-    80005410:	40d0                	lw	a2,4(s1)
-    80005412:	fd040593          	addi	a1,s0,-48
-    80005416:	854a                	mv	a0,s2
-    80005418:	fffff097          	auipc	ra,0xfffff
-    8000541c:	9de080e7          	jalr	-1570(ra) # 80003df6 <dirlink>
-    80005420:	04054363          	bltz	a0,80005466 <sys_link+0x100>
+    80005698:	00092703          	lw	a4,0(s2)
+    8000569c:	409c                	lw	a5,0(s1)
+    8000569e:	04f71d63          	bne	a4,a5,800056f8 <sys_link+0x100>
+    800056a2:	40d0                	lw	a2,4(s1)
+    800056a4:	fd040593          	addi	a1,s0,-48
+    800056a8:	854a                	mv	a0,s2
+    800056aa:	fffff097          	auipc	ra,0xfffff
+    800056ae:	9de080e7          	jalr	-1570(ra) # 80004088 <dirlink>
+    800056b2:	04054363          	bltz	a0,800056f8 <sys_link+0x100>
   iunlockput(dp);
-    80005424:	854a                	mv	a0,s2
-    80005426:	ffffe097          	auipc	ra,0xffffe
-    8000542a:	538080e7          	jalr	1336(ra) # 8000395e <iunlockput>
+    800056b6:	854a                	mv	a0,s2
+    800056b8:	ffffe097          	auipc	ra,0xffffe
+    800056bc:	538080e7          	jalr	1336(ra) # 80003bf0 <iunlockput>
   iput(ip);
-    8000542e:	8526                	mv	a0,s1
-    80005430:	ffffe097          	auipc	ra,0xffffe
-    80005434:	486080e7          	jalr	1158(ra) # 800038b6 <iput>
+    800056c0:	8526                	mv	a0,s1
+    800056c2:	ffffe097          	auipc	ra,0xffffe
+    800056c6:	486080e7          	jalr	1158(ra) # 80003b48 <iput>
   end_op();
-    80005438:	fffff097          	auipc	ra,0xfffff
-    8000543c:	d1e080e7          	jalr	-738(ra) # 80004156 <end_op>
+    800056ca:	fffff097          	auipc	ra,0xfffff
+    800056ce:	d1e080e7          	jalr	-738(ra) # 800043e8 <end_op>
   return 0;
-    80005440:	4781                	li	a5,0
-    80005442:	a085                	j	800054a2 <sys_link+0x13c>
+    800056d2:	4781                	li	a5,0
+    800056d4:	a085                	j	80005734 <sys_link+0x13c>
     end_op();
-    80005444:	fffff097          	auipc	ra,0xfffff
-    80005448:	d12080e7          	jalr	-750(ra) # 80004156 <end_op>
+    800056d6:	fffff097          	auipc	ra,0xfffff
+    800056da:	d12080e7          	jalr	-750(ra) # 800043e8 <end_op>
     return -1;
-    8000544c:	57fd                	li	a5,-1
-    8000544e:	a891                	j	800054a2 <sys_link+0x13c>
+    800056de:	57fd                	li	a5,-1
+    800056e0:	a891                	j	80005734 <sys_link+0x13c>
     iunlockput(ip);
-    80005450:	8526                	mv	a0,s1
-    80005452:	ffffe097          	auipc	ra,0xffffe
-    80005456:	50c080e7          	jalr	1292(ra) # 8000395e <iunlockput>
+    800056e2:	8526                	mv	a0,s1
+    800056e4:	ffffe097          	auipc	ra,0xffffe
+    800056e8:	50c080e7          	jalr	1292(ra) # 80003bf0 <iunlockput>
     end_op();
-    8000545a:	fffff097          	auipc	ra,0xfffff
-    8000545e:	cfc080e7          	jalr	-772(ra) # 80004156 <end_op>
+    800056ec:	fffff097          	auipc	ra,0xfffff
+    800056f0:	cfc080e7          	jalr	-772(ra) # 800043e8 <end_op>
     return -1;
-    80005462:	57fd                	li	a5,-1
-    80005464:	a83d                	j	800054a2 <sys_link+0x13c>
+    800056f4:	57fd                	li	a5,-1
+    800056f6:	a83d                	j	80005734 <sys_link+0x13c>
     iunlockput(dp);
-    80005466:	854a                	mv	a0,s2
-    80005468:	ffffe097          	auipc	ra,0xffffe
-    8000546c:	4f6080e7          	jalr	1270(ra) # 8000395e <iunlockput>
+    800056f8:	854a                	mv	a0,s2
+    800056fa:	ffffe097          	auipc	ra,0xffffe
+    800056fe:	4f6080e7          	jalr	1270(ra) # 80003bf0 <iunlockput>
   ilock(ip);
-    80005470:	8526                	mv	a0,s1
-    80005472:	ffffe097          	auipc	ra,0xffffe
-    80005476:	28a080e7          	jalr	650(ra) # 800036fc <ilock>
+    80005702:	8526                	mv	a0,s1
+    80005704:	ffffe097          	auipc	ra,0xffffe
+    80005708:	28a080e7          	jalr	650(ra) # 8000398e <ilock>
   ip->nlink--;
-    8000547a:	04a4d783          	lhu	a5,74(s1)
-    8000547e:	37fd                	addiw	a5,a5,-1
-    80005480:	04f49523          	sh	a5,74(s1)
+    8000570c:	04a4d783          	lhu	a5,74(s1)
+    80005710:	37fd                	addiw	a5,a5,-1
+    80005712:	04f49523          	sh	a5,74(s1)
   iupdate(ip);
-    80005484:	8526                	mv	a0,s1
-    80005486:	ffffe097          	auipc	ra,0xffffe
-    8000548a:	1aa080e7          	jalr	426(ra) # 80003630 <iupdate>
+    80005716:	8526                	mv	a0,s1
+    80005718:	ffffe097          	auipc	ra,0xffffe
+    8000571c:	1aa080e7          	jalr	426(ra) # 800038c2 <iupdate>
   iunlockput(ip);
-    8000548e:	8526                	mv	a0,s1
-    80005490:	ffffe097          	auipc	ra,0xffffe
-    80005494:	4ce080e7          	jalr	1230(ra) # 8000395e <iunlockput>
+    80005720:	8526                	mv	a0,s1
+    80005722:	ffffe097          	auipc	ra,0xffffe
+    80005726:	4ce080e7          	jalr	1230(ra) # 80003bf0 <iunlockput>
   end_op();
-    80005498:	fffff097          	auipc	ra,0xfffff
-    8000549c:	cbe080e7          	jalr	-834(ra) # 80004156 <end_op>
+    8000572a:	fffff097          	auipc	ra,0xfffff
+    8000572e:	cbe080e7          	jalr	-834(ra) # 800043e8 <end_op>
   return -1;
-    800054a0:	57fd                	li	a5,-1
+    80005732:	57fd                	li	a5,-1
 }
-    800054a2:	853e                	mv	a0,a5
-    800054a4:	70b2                	ld	ra,296(sp)
-    800054a6:	7412                	ld	s0,288(sp)
-    800054a8:	64f2                	ld	s1,280(sp)
-    800054aa:	6952                	ld	s2,272(sp)
-    800054ac:	6155                	addi	sp,sp,304
-    800054ae:	8082                	ret
+    80005734:	853e                	mv	a0,a5
+    80005736:	70b2                	ld	ra,296(sp)
+    80005738:	7412                	ld	s0,288(sp)
+    8000573a:	64f2                	ld	s1,280(sp)
+    8000573c:	6952                	ld	s2,272(sp)
+    8000573e:	6155                	addi	sp,sp,304
+    80005740:	8082                	ret
 
-00000000800054b0 <sys_unlink>:
+0000000080005742 <sys_unlink>:
 {
-    800054b0:	7151                	addi	sp,sp,-240
-    800054b2:	f586                	sd	ra,232(sp)
-    800054b4:	f1a2                	sd	s0,224(sp)
-    800054b6:	eda6                	sd	s1,216(sp)
-    800054b8:	e9ca                	sd	s2,208(sp)
-    800054ba:	e5ce                	sd	s3,200(sp)
-    800054bc:	1980                	addi	s0,sp,240
+    80005742:	7151                	addi	sp,sp,-240
+    80005744:	f586                	sd	ra,232(sp)
+    80005746:	f1a2                	sd	s0,224(sp)
+    80005748:	eda6                	sd	s1,216(sp)
+    8000574a:	e9ca                	sd	s2,208(sp)
+    8000574c:	e5ce                	sd	s3,200(sp)
+    8000574e:	1980                	addi	s0,sp,240
   if(argstr(0, path, MAXPATH) < 0)
-    800054be:	08000613          	li	a2,128
-    800054c2:	f3040593          	addi	a1,s0,-208
-    800054c6:	4501                	li	a0,0
-    800054c8:	ffffd097          	auipc	ra,0xffffd
-    800054cc:	6cc080e7          	jalr	1740(ra) # 80002b94 <argstr>
-    800054d0:	18054163          	bltz	a0,80005652 <sys_unlink+0x1a2>
+    80005750:	08000613          	li	a2,128
+    80005754:	f3040593          	addi	a1,s0,-208
+    80005758:	4501                	li	a0,0
+    8000575a:	ffffd097          	auipc	ra,0xffffd
+    8000575e:	68a080e7          	jalr	1674(ra) # 80002de4 <argstr>
+    80005762:	18054163          	bltz	a0,800058e4 <sys_unlink+0x1a2>
   begin_op();
-    800054d4:	fffff097          	auipc	ra,0xfffff
-    800054d8:	c04080e7          	jalr	-1020(ra) # 800040d8 <begin_op>
+    80005766:	fffff097          	auipc	ra,0xfffff
+    8000576a:	c04080e7          	jalr	-1020(ra) # 8000436a <begin_op>
   if((dp = nameiparent(path, name)) == 0){
-    800054dc:	fb040593          	addi	a1,s0,-80
-    800054e0:	f3040513          	addi	a0,s0,-208
-    800054e4:	fffff097          	auipc	ra,0xfffff
-    800054e8:	9f2080e7          	jalr	-1550(ra) # 80003ed6 <nameiparent>
-    800054ec:	84aa                	mv	s1,a0
-    800054ee:	c979                	beqz	a0,800055c4 <sys_unlink+0x114>
+    8000576e:	fb040593          	addi	a1,s0,-80
+    80005772:	f3040513          	addi	a0,s0,-208
+    80005776:	fffff097          	auipc	ra,0xfffff
+    8000577a:	9f2080e7          	jalr	-1550(ra) # 80004168 <nameiparent>
+    8000577e:	84aa                	mv	s1,a0
+    80005780:	c979                	beqz	a0,80005856 <sys_unlink+0x114>
   ilock(dp);
-    800054f0:	ffffe097          	auipc	ra,0xffffe
-    800054f4:	20c080e7          	jalr	524(ra) # 800036fc <ilock>
+    80005782:	ffffe097          	auipc	ra,0xffffe
+    80005786:	20c080e7          	jalr	524(ra) # 8000398e <ilock>
   if(namecmp(name, ".") == 0 || namecmp(name, "..") == 0)
-    800054f8:	00003597          	auipc	a1,0x3
-    800054fc:	28858593          	addi	a1,a1,648 # 80008780 <syscalls+0x2c0>
-    80005500:	fb040513          	addi	a0,s0,-80
-    80005504:	ffffe097          	auipc	ra,0xffffe
-    80005508:	6c2080e7          	jalr	1730(ra) # 80003bc6 <namecmp>
-    8000550c:	14050a63          	beqz	a0,80005660 <sys_unlink+0x1b0>
-    80005510:	00003597          	auipc	a1,0x3
-    80005514:	27858593          	addi	a1,a1,632 # 80008788 <syscalls+0x2c8>
-    80005518:	fb040513          	addi	a0,s0,-80
-    8000551c:	ffffe097          	auipc	ra,0xffffe
-    80005520:	6aa080e7          	jalr	1706(ra) # 80003bc6 <namecmp>
-    80005524:	12050e63          	beqz	a0,80005660 <sys_unlink+0x1b0>
+    8000578a:	00003597          	auipc	a1,0x3
+    8000578e:	06e58593          	addi	a1,a1,110 # 800087f8 <syscalls+0x2c8>
+    80005792:	fb040513          	addi	a0,s0,-80
+    80005796:	ffffe097          	auipc	ra,0xffffe
+    8000579a:	6c2080e7          	jalr	1730(ra) # 80003e58 <namecmp>
+    8000579e:	14050a63          	beqz	a0,800058f2 <sys_unlink+0x1b0>
+    800057a2:	00003597          	auipc	a1,0x3
+    800057a6:	05e58593          	addi	a1,a1,94 # 80008800 <syscalls+0x2d0>
+    800057aa:	fb040513          	addi	a0,s0,-80
+    800057ae:	ffffe097          	auipc	ra,0xffffe
+    800057b2:	6aa080e7          	jalr	1706(ra) # 80003e58 <namecmp>
+    800057b6:	12050e63          	beqz	a0,800058f2 <sys_unlink+0x1b0>
   if((ip = dirlookup(dp, name, &off)) == 0)
-    80005528:	f2c40613          	addi	a2,s0,-212
-    8000552c:	fb040593          	addi	a1,s0,-80
-    80005530:	8526                	mv	a0,s1
-    80005532:	ffffe097          	auipc	ra,0xffffe
-    80005536:	6ae080e7          	jalr	1710(ra) # 80003be0 <dirlookup>
-    8000553a:	892a                	mv	s2,a0
-    8000553c:	12050263          	beqz	a0,80005660 <sys_unlink+0x1b0>
+    800057ba:	f2c40613          	addi	a2,s0,-212
+    800057be:	fb040593          	addi	a1,s0,-80
+    800057c2:	8526                	mv	a0,s1
+    800057c4:	ffffe097          	auipc	ra,0xffffe
+    800057c8:	6ae080e7          	jalr	1710(ra) # 80003e72 <dirlookup>
+    800057cc:	892a                	mv	s2,a0
+    800057ce:	12050263          	beqz	a0,800058f2 <sys_unlink+0x1b0>
   ilock(ip);
-    80005540:	ffffe097          	auipc	ra,0xffffe
-    80005544:	1bc080e7          	jalr	444(ra) # 800036fc <ilock>
+    800057d2:	ffffe097          	auipc	ra,0xffffe
+    800057d6:	1bc080e7          	jalr	444(ra) # 8000398e <ilock>
   if(ip->nlink < 1)
-    80005548:	04a91783          	lh	a5,74(s2)
-    8000554c:	08f05263          	blez	a5,800055d0 <sys_unlink+0x120>
+    800057da:	04a91783          	lh	a5,74(s2)
+    800057de:	08f05263          	blez	a5,80005862 <sys_unlink+0x120>
   if(ip->type == T_DIR && !isdirempty(ip)){
-    80005550:	04491703          	lh	a4,68(s2)
-    80005554:	4785                	li	a5,1
-    80005556:	08f70563          	beq	a4,a5,800055e0 <sys_unlink+0x130>
+    800057e2:	04491703          	lh	a4,68(s2)
+    800057e6:	4785                	li	a5,1
+    800057e8:	08f70563          	beq	a4,a5,80005872 <sys_unlink+0x130>
   memset(&de, 0, sizeof(de));
-    8000555a:	4641                	li	a2,16
-    8000555c:	4581                	li	a1,0
-    8000555e:	fc040513          	addi	a0,s0,-64
-    80005562:	ffffb097          	auipc	ra,0xffffb
-    80005566:	76a080e7          	jalr	1898(ra) # 80000ccc <memset>
+    800057ec:	4641                	li	a2,16
+    800057ee:	4581                	li	a1,0
+    800057f0:	fc040513          	addi	a0,s0,-64
+    800057f4:	ffffb097          	auipc	ra,0xffffb
+    800057f8:	4d8080e7          	jalr	1240(ra) # 80000ccc <memset>
   if(writei(dp, 0, (uint64)&de, off, sizeof(de)) != sizeof(de))
-    8000556a:	4741                	li	a4,16
-    8000556c:	f2c42683          	lw	a3,-212(s0)
-    80005570:	fc040613          	addi	a2,s0,-64
-    80005574:	4581                	li	a1,0
-    80005576:	8526                	mv	a0,s1
-    80005578:	ffffe097          	auipc	ra,0xffffe
-    8000557c:	530080e7          	jalr	1328(ra) # 80003aa8 <writei>
-    80005580:	47c1                	li	a5,16
-    80005582:	0af51563          	bne	a0,a5,8000562c <sys_unlink+0x17c>
+    800057fc:	4741                	li	a4,16
+    800057fe:	f2c42683          	lw	a3,-212(s0)
+    80005802:	fc040613          	addi	a2,s0,-64
+    80005806:	4581                	li	a1,0
+    80005808:	8526                	mv	a0,s1
+    8000580a:	ffffe097          	auipc	ra,0xffffe
+    8000580e:	530080e7          	jalr	1328(ra) # 80003d3a <writei>
+    80005812:	47c1                	li	a5,16
+    80005814:	0af51563          	bne	a0,a5,800058be <sys_unlink+0x17c>
   if(ip->type == T_DIR){
-    80005586:	04491703          	lh	a4,68(s2)
-    8000558a:	4785                	li	a5,1
-    8000558c:	0af70863          	beq	a4,a5,8000563c <sys_unlink+0x18c>
+    80005818:	04491703          	lh	a4,68(s2)
+    8000581c:	4785                	li	a5,1
+    8000581e:	0af70863          	beq	a4,a5,800058ce <sys_unlink+0x18c>
   iunlockput(dp);
-    80005590:	8526                	mv	a0,s1
-    80005592:	ffffe097          	auipc	ra,0xffffe
-    80005596:	3cc080e7          	jalr	972(ra) # 8000395e <iunlockput>
+    80005822:	8526                	mv	a0,s1
+    80005824:	ffffe097          	auipc	ra,0xffffe
+    80005828:	3cc080e7          	jalr	972(ra) # 80003bf0 <iunlockput>
   ip->nlink--;
-    8000559a:	04a95783          	lhu	a5,74(s2)
-    8000559e:	37fd                	addiw	a5,a5,-1
-    800055a0:	04f91523          	sh	a5,74(s2)
+    8000582c:	04a95783          	lhu	a5,74(s2)
+    80005830:	37fd                	addiw	a5,a5,-1
+    80005832:	04f91523          	sh	a5,74(s2)
   iupdate(ip);
-    800055a4:	854a                	mv	a0,s2
-    800055a6:	ffffe097          	auipc	ra,0xffffe
-    800055aa:	08a080e7          	jalr	138(ra) # 80003630 <iupdate>
+    80005836:	854a                	mv	a0,s2
+    80005838:	ffffe097          	auipc	ra,0xffffe
+    8000583c:	08a080e7          	jalr	138(ra) # 800038c2 <iupdate>
   iunlockput(ip);
-    800055ae:	854a                	mv	a0,s2
-    800055b0:	ffffe097          	auipc	ra,0xffffe
-    800055b4:	3ae080e7          	jalr	942(ra) # 8000395e <iunlockput>
+    80005840:	854a                	mv	a0,s2
+    80005842:	ffffe097          	auipc	ra,0xffffe
+    80005846:	3ae080e7          	jalr	942(ra) # 80003bf0 <iunlockput>
   end_op();
-    800055b8:	fffff097          	auipc	ra,0xfffff
-    800055bc:	b9e080e7          	jalr	-1122(ra) # 80004156 <end_op>
+    8000584a:	fffff097          	auipc	ra,0xfffff
+    8000584e:	b9e080e7          	jalr	-1122(ra) # 800043e8 <end_op>
   return 0;
-    800055c0:	4501                	li	a0,0
-    800055c2:	a84d                	j	80005674 <sys_unlink+0x1c4>
+    80005852:	4501                	li	a0,0
+    80005854:	a84d                	j	80005906 <sys_unlink+0x1c4>
     end_op();
-    800055c4:	fffff097          	auipc	ra,0xfffff
-    800055c8:	b92080e7          	jalr	-1134(ra) # 80004156 <end_op>
+    80005856:	fffff097          	auipc	ra,0xfffff
+    8000585a:	b92080e7          	jalr	-1134(ra) # 800043e8 <end_op>
     return -1;
-    800055cc:	557d                	li	a0,-1
-    800055ce:	a05d                	j	80005674 <sys_unlink+0x1c4>
+    8000585e:	557d                	li	a0,-1
+    80005860:	a05d                	j	80005906 <sys_unlink+0x1c4>
     panic("unlink: nlink < 1");
-    800055d0:	00003517          	auipc	a0,0x3
-    800055d4:	1e050513          	addi	a0,a0,480 # 800087b0 <syscalls+0x2f0>
-    800055d8:	ffffb097          	auipc	ra,0xffffb
-    800055dc:	f62080e7          	jalr	-158(ra) # 8000053a <panic>
+    80005862:	00003517          	auipc	a0,0x3
+    80005866:	fc650513          	addi	a0,a0,-58 # 80008828 <syscalls+0x2f8>
+    8000586a:	ffffb097          	auipc	ra,0xffffb
+    8000586e:	cd0080e7          	jalr	-816(ra) # 8000053a <panic>
   for(off=2*sizeof(de); off<dp->size; off+=sizeof(de)){
-    800055e0:	04c92703          	lw	a4,76(s2)
-    800055e4:	02000793          	li	a5,32
-    800055e8:	f6e7f9e3          	bgeu	a5,a4,8000555a <sys_unlink+0xaa>
-    800055ec:	02000993          	li	s3,32
+    80005872:	04c92703          	lw	a4,76(s2)
+    80005876:	02000793          	li	a5,32
+    8000587a:	f6e7f9e3          	bgeu	a5,a4,800057ec <sys_unlink+0xaa>
+    8000587e:	02000993          	li	s3,32
     if(readi(dp, 0, (uint64)&de, off, sizeof(de)) != sizeof(de))
-    800055f0:	4741                	li	a4,16
-    800055f2:	86ce                	mv	a3,s3
-    800055f4:	f1840613          	addi	a2,s0,-232
-    800055f8:	4581                	li	a1,0
-    800055fa:	854a                	mv	a0,s2
-    800055fc:	ffffe097          	auipc	ra,0xffffe
-    80005600:	3b4080e7          	jalr	948(ra) # 800039b0 <readi>
-    80005604:	47c1                	li	a5,16
-    80005606:	00f51b63          	bne	a0,a5,8000561c <sys_unlink+0x16c>
+    80005882:	4741                	li	a4,16
+    80005884:	86ce                	mv	a3,s3
+    80005886:	f1840613          	addi	a2,s0,-232
+    8000588a:	4581                	li	a1,0
+    8000588c:	854a                	mv	a0,s2
+    8000588e:	ffffe097          	auipc	ra,0xffffe
+    80005892:	3b4080e7          	jalr	948(ra) # 80003c42 <readi>
+    80005896:	47c1                	li	a5,16
+    80005898:	00f51b63          	bne	a0,a5,800058ae <sys_unlink+0x16c>
     if(de.inum != 0)
-    8000560a:	f1845783          	lhu	a5,-232(s0)
-    8000560e:	e7a1                	bnez	a5,80005656 <sys_unlink+0x1a6>
+    8000589c:	f1845783          	lhu	a5,-232(s0)
+    800058a0:	e7a1                	bnez	a5,800058e8 <sys_unlink+0x1a6>
   for(off=2*sizeof(de); off<dp->size; off+=sizeof(de)){
-    80005610:	29c1                	addiw	s3,s3,16
-    80005612:	04c92783          	lw	a5,76(s2)
-    80005616:	fcf9ede3          	bltu	s3,a5,800055f0 <sys_unlink+0x140>
-    8000561a:	b781                	j	8000555a <sys_unlink+0xaa>
+    800058a2:	29c1                	addiw	s3,s3,16
+    800058a4:	04c92783          	lw	a5,76(s2)
+    800058a8:	fcf9ede3          	bltu	s3,a5,80005882 <sys_unlink+0x140>
+    800058ac:	b781                	j	800057ec <sys_unlink+0xaa>
       panic("isdirempty: readi");
-    8000561c:	00003517          	auipc	a0,0x3
-    80005620:	1ac50513          	addi	a0,a0,428 # 800087c8 <syscalls+0x308>
-    80005624:	ffffb097          	auipc	ra,0xffffb
-    80005628:	f16080e7          	jalr	-234(ra) # 8000053a <panic>
+    800058ae:	00003517          	auipc	a0,0x3
+    800058b2:	f9250513          	addi	a0,a0,-110 # 80008840 <syscalls+0x310>
+    800058b6:	ffffb097          	auipc	ra,0xffffb
+    800058ba:	c84080e7          	jalr	-892(ra) # 8000053a <panic>
     panic("unlink: writei");
-    8000562c:	00003517          	auipc	a0,0x3
-    80005630:	1b450513          	addi	a0,a0,436 # 800087e0 <syscalls+0x320>
-    80005634:	ffffb097          	auipc	ra,0xffffb
-    80005638:	f06080e7          	jalr	-250(ra) # 8000053a <panic>
+    800058be:	00003517          	auipc	a0,0x3
+    800058c2:	f9a50513          	addi	a0,a0,-102 # 80008858 <syscalls+0x328>
+    800058c6:	ffffb097          	auipc	ra,0xffffb
+    800058ca:	c74080e7          	jalr	-908(ra) # 8000053a <panic>
     dp->nlink--;
-    8000563c:	04a4d783          	lhu	a5,74(s1)
-    80005640:	37fd                	addiw	a5,a5,-1
-    80005642:	04f49523          	sh	a5,74(s1)
+    800058ce:	04a4d783          	lhu	a5,74(s1)
+    800058d2:	37fd                	addiw	a5,a5,-1
+    800058d4:	04f49523          	sh	a5,74(s1)
     iupdate(dp);
-    80005646:	8526                	mv	a0,s1
-    80005648:	ffffe097          	auipc	ra,0xffffe
-    8000564c:	fe8080e7          	jalr	-24(ra) # 80003630 <iupdate>
-    80005650:	b781                	j	80005590 <sys_unlink+0xe0>
+    800058d8:	8526                	mv	a0,s1
+    800058da:	ffffe097          	auipc	ra,0xffffe
+    800058de:	fe8080e7          	jalr	-24(ra) # 800038c2 <iupdate>
+    800058e2:	b781                	j	80005822 <sys_unlink+0xe0>
     return -1;
-    80005652:	557d                	li	a0,-1
-    80005654:	a005                	j	80005674 <sys_unlink+0x1c4>
+    800058e4:	557d                	li	a0,-1
+    800058e6:	a005                	j	80005906 <sys_unlink+0x1c4>
     iunlockput(ip);
-    80005656:	854a                	mv	a0,s2
-    80005658:	ffffe097          	auipc	ra,0xffffe
-    8000565c:	306080e7          	jalr	774(ra) # 8000395e <iunlockput>
+    800058e8:	854a                	mv	a0,s2
+    800058ea:	ffffe097          	auipc	ra,0xffffe
+    800058ee:	306080e7          	jalr	774(ra) # 80003bf0 <iunlockput>
   iunlockput(dp);
-    80005660:	8526                	mv	a0,s1
-    80005662:	ffffe097          	auipc	ra,0xffffe
-    80005666:	2fc080e7          	jalr	764(ra) # 8000395e <iunlockput>
+    800058f2:	8526                	mv	a0,s1
+    800058f4:	ffffe097          	auipc	ra,0xffffe
+    800058f8:	2fc080e7          	jalr	764(ra) # 80003bf0 <iunlockput>
   end_op();
-    8000566a:	fffff097          	auipc	ra,0xfffff
-    8000566e:	aec080e7          	jalr	-1300(ra) # 80004156 <end_op>
+    800058fc:	fffff097          	auipc	ra,0xfffff
+    80005900:	aec080e7          	jalr	-1300(ra) # 800043e8 <end_op>
   return -1;
-    80005672:	557d                	li	a0,-1
+    80005904:	557d                	li	a0,-1
 }
-    80005674:	70ae                	ld	ra,232(sp)
-    80005676:	740e                	ld	s0,224(sp)
-    80005678:	64ee                	ld	s1,216(sp)
-    8000567a:	694e                	ld	s2,208(sp)
-    8000567c:	69ae                	ld	s3,200(sp)
-    8000567e:	616d                	addi	sp,sp,240
-    80005680:	8082                	ret
+    80005906:	70ae                	ld	ra,232(sp)
+    80005908:	740e                	ld	s0,224(sp)
+    8000590a:	64ee                	ld	s1,216(sp)
+    8000590c:	694e                	ld	s2,208(sp)
+    8000590e:	69ae                	ld	s3,200(sp)
+    80005910:	616d                	addi	sp,sp,240
+    80005912:	8082                	ret
 
-0000000080005682 <sys_open>:
+0000000080005914 <sys_open>:
 
 uint64
 sys_open(void)
 {
-    80005682:	7131                	addi	sp,sp,-192
-    80005684:	fd06                	sd	ra,184(sp)
-    80005686:	f922                	sd	s0,176(sp)
-    80005688:	f526                	sd	s1,168(sp)
-    8000568a:	f14a                	sd	s2,160(sp)
-    8000568c:	ed4e                	sd	s3,152(sp)
-    8000568e:	0180                	addi	s0,sp,192
+    80005914:	7131                	addi	sp,sp,-192
+    80005916:	fd06                	sd	ra,184(sp)
+    80005918:	f922                	sd	s0,176(sp)
+    8000591a:	f526                	sd	s1,168(sp)
+    8000591c:	f14a                	sd	s2,160(sp)
+    8000591e:	ed4e                	sd	s3,152(sp)
+    80005920:	0180                	addi	s0,sp,192
   int fd, omode;
   struct file *f;
   struct inode *ip;
   int n;
 
   if((n = argstr(0, path, MAXPATH)) < 0 || argint(1, &omode) < 0)
-    80005690:	08000613          	li	a2,128
-    80005694:	f5040593          	addi	a1,s0,-176
-    80005698:	4501                	li	a0,0
-    8000569a:	ffffd097          	auipc	ra,0xffffd
-    8000569e:	4fa080e7          	jalr	1274(ra) # 80002b94 <argstr>
+    80005922:	08000613          	li	a2,128
+    80005926:	f5040593          	addi	a1,s0,-176
+    8000592a:	4501                	li	a0,0
+    8000592c:	ffffd097          	auipc	ra,0xffffd
+    80005930:	4b8080e7          	jalr	1208(ra) # 80002de4 <argstr>
     return -1;
-    800056a2:	54fd                	li	s1,-1
+    80005934:	54fd                	li	s1,-1
   if((n = argstr(0, path, MAXPATH)) < 0 || argint(1, &omode) < 0)
-    800056a4:	0c054163          	bltz	a0,80005766 <sys_open+0xe4>
-    800056a8:	f4c40593          	addi	a1,s0,-180
-    800056ac:	4505                	li	a0,1
-    800056ae:	ffffd097          	auipc	ra,0xffffd
-    800056b2:	4a2080e7          	jalr	1186(ra) # 80002b50 <argint>
-    800056b6:	0a054863          	bltz	a0,80005766 <sys_open+0xe4>
+    80005936:	0c054163          	bltz	a0,800059f8 <sys_open+0xe4>
+    8000593a:	f4c40593          	addi	a1,s0,-180
+    8000593e:	4505                	li	a0,1
+    80005940:	ffffd097          	auipc	ra,0xffffd
+    80005944:	460080e7          	jalr	1120(ra) # 80002da0 <argint>
+    80005948:	0a054863          	bltz	a0,800059f8 <sys_open+0xe4>
 
   begin_op();
-    800056ba:	fffff097          	auipc	ra,0xfffff
-    800056be:	a1e080e7          	jalr	-1506(ra) # 800040d8 <begin_op>
+    8000594c:	fffff097          	auipc	ra,0xfffff
+    80005950:	a1e080e7          	jalr	-1506(ra) # 8000436a <begin_op>
 
   if(omode & O_CREATE){
-    800056c2:	f4c42783          	lw	a5,-180(s0)
-    800056c6:	2007f793          	andi	a5,a5,512
-    800056ca:	cbdd                	beqz	a5,80005780 <sys_open+0xfe>
+    80005954:	f4c42783          	lw	a5,-180(s0)
+    80005958:	2007f793          	andi	a5,a5,512
+    8000595c:	cbdd                	beqz	a5,80005a12 <sys_open+0xfe>
     ip = create(path, T_FILE, 0, 0);
-    800056cc:	4681                	li	a3,0
-    800056ce:	4601                	li	a2,0
-    800056d0:	4589                	li	a1,2
-    800056d2:	f5040513          	addi	a0,s0,-176
-    800056d6:	00000097          	auipc	ra,0x0
-    800056da:	970080e7          	jalr	-1680(ra) # 80005046 <create>
-    800056de:	892a                	mv	s2,a0
+    8000595e:	4681                	li	a3,0
+    80005960:	4601                	li	a2,0
+    80005962:	4589                	li	a1,2
+    80005964:	f5040513          	addi	a0,s0,-176
+    80005968:	00000097          	auipc	ra,0x0
+    8000596c:	970080e7          	jalr	-1680(ra) # 800052d8 <create>
+    80005970:	892a                	mv	s2,a0
     if(ip == 0){
-    800056e0:	c959                	beqz	a0,80005776 <sys_open+0xf4>
+    80005972:	c959                	beqz	a0,80005a08 <sys_open+0xf4>
       end_op();
       return -1;
     }
   }
 
   if(ip->type == T_DEVICE && (ip->major < 0 || ip->major >= NDEV)){
-    800056e2:	04491703          	lh	a4,68(s2)
-    800056e6:	478d                	li	a5,3
-    800056e8:	00f71763          	bne	a4,a5,800056f6 <sys_open+0x74>
-    800056ec:	04695703          	lhu	a4,70(s2)
-    800056f0:	47a5                	li	a5,9
-    800056f2:	0ce7ec63          	bltu	a5,a4,800057ca <sys_open+0x148>
+    80005974:	04491703          	lh	a4,68(s2)
+    80005978:	478d                	li	a5,3
+    8000597a:	00f71763          	bne	a4,a5,80005988 <sys_open+0x74>
+    8000597e:	04695703          	lhu	a4,70(s2)
+    80005982:	47a5                	li	a5,9
+    80005984:	0ce7ec63          	bltu	a5,a4,80005a5c <sys_open+0x148>
     iunlockput(ip);
     end_op();
     return -1;
   }
 
   if((f = filealloc()) == 0 || (fd = fdalloc(f)) < 0){
-    800056f6:	fffff097          	auipc	ra,0xfffff
-    800056fa:	dee080e7          	jalr	-530(ra) # 800044e4 <filealloc>
-    800056fe:	89aa                	mv	s3,a0
-    80005700:	10050263          	beqz	a0,80005804 <sys_open+0x182>
-    80005704:	00000097          	auipc	ra,0x0
-    80005708:	900080e7          	jalr	-1792(ra) # 80005004 <fdalloc>
-    8000570c:	84aa                	mv	s1,a0
-    8000570e:	0e054663          	bltz	a0,800057fa <sys_open+0x178>
+    80005988:	fffff097          	auipc	ra,0xfffff
+    8000598c:	dee080e7          	jalr	-530(ra) # 80004776 <filealloc>
+    80005990:	89aa                	mv	s3,a0
+    80005992:	10050263          	beqz	a0,80005a96 <sys_open+0x182>
+    80005996:	00000097          	auipc	ra,0x0
+    8000599a:	900080e7          	jalr	-1792(ra) # 80005296 <fdalloc>
+    8000599e:	84aa                	mv	s1,a0
+    800059a0:	0e054663          	bltz	a0,80005a8c <sys_open+0x178>
     iunlockput(ip);
     end_op();
     return -1;
   }
 
   if(ip->type == T_DEVICE){
-    80005712:	04491703          	lh	a4,68(s2)
-    80005716:	478d                	li	a5,3
-    80005718:	0cf70463          	beq	a4,a5,800057e0 <sys_open+0x15e>
+    800059a4:	04491703          	lh	a4,68(s2)
+    800059a8:	478d                	li	a5,3
+    800059aa:	0cf70463          	beq	a4,a5,80005a72 <sys_open+0x15e>
     f->type = FD_DEVICE;
     f->major = ip->major;
   } else {
     f->type = FD_INODE;
-    8000571c:	4789                	li	a5,2
-    8000571e:	00f9a023          	sw	a5,0(s3)
+    800059ae:	4789                	li	a5,2
+    800059b0:	00f9a023          	sw	a5,0(s3)
     f->off = 0;
-    80005722:	0209a023          	sw	zero,32(s3)
+    800059b4:	0209a023          	sw	zero,32(s3)
   }
   f->ip = ip;
-    80005726:	0129bc23          	sd	s2,24(s3)
+    800059b8:	0129bc23          	sd	s2,24(s3)
   f->readable = !(omode & O_WRONLY);
-    8000572a:	f4c42783          	lw	a5,-180(s0)
-    8000572e:	0017c713          	xori	a4,a5,1
-    80005732:	8b05                	andi	a4,a4,1
-    80005734:	00e98423          	sb	a4,8(s3)
+    800059bc:	f4c42783          	lw	a5,-180(s0)
+    800059c0:	0017c713          	xori	a4,a5,1
+    800059c4:	8b05                	andi	a4,a4,1
+    800059c6:	00e98423          	sb	a4,8(s3)
   f->writable = (omode & O_WRONLY) || (omode & O_RDWR);
-    80005738:	0037f713          	andi	a4,a5,3
-    8000573c:	00e03733          	snez	a4,a4
-    80005740:	00e984a3          	sb	a4,9(s3)
+    800059ca:	0037f713          	andi	a4,a5,3
+    800059ce:	00e03733          	snez	a4,a4
+    800059d2:	00e984a3          	sb	a4,9(s3)
 
   if((omode & O_TRUNC) && ip->type == T_FILE){
-    80005744:	4007f793          	andi	a5,a5,1024
-    80005748:	c791                	beqz	a5,80005754 <sys_open+0xd2>
-    8000574a:	04491703          	lh	a4,68(s2)
-    8000574e:	4789                	li	a5,2
-    80005750:	08f70f63          	beq	a4,a5,800057ee <sys_open+0x16c>
+    800059d6:	4007f793          	andi	a5,a5,1024
+    800059da:	c791                	beqz	a5,800059e6 <sys_open+0xd2>
+    800059dc:	04491703          	lh	a4,68(s2)
+    800059e0:	4789                	li	a5,2
+    800059e2:	08f70f63          	beq	a4,a5,80005a80 <sys_open+0x16c>
     itrunc(ip);
   }
 
   iunlock(ip);
-    80005754:	854a                	mv	a0,s2
-    80005756:	ffffe097          	auipc	ra,0xffffe
-    8000575a:	068080e7          	jalr	104(ra) # 800037be <iunlock>
+    800059e6:	854a                	mv	a0,s2
+    800059e8:	ffffe097          	auipc	ra,0xffffe
+    800059ec:	068080e7          	jalr	104(ra) # 80003a50 <iunlock>
   end_op();
-    8000575e:	fffff097          	auipc	ra,0xfffff
-    80005762:	9f8080e7          	jalr	-1544(ra) # 80004156 <end_op>
+    800059f0:	fffff097          	auipc	ra,0xfffff
+    800059f4:	9f8080e7          	jalr	-1544(ra) # 800043e8 <end_op>
 
   return fd;
 }
-    80005766:	8526                	mv	a0,s1
-    80005768:	70ea                	ld	ra,184(sp)
-    8000576a:	744a                	ld	s0,176(sp)
-    8000576c:	74aa                	ld	s1,168(sp)
-    8000576e:	790a                	ld	s2,160(sp)
-    80005770:	69ea                	ld	s3,152(sp)
-    80005772:	6129                	addi	sp,sp,192
-    80005774:	8082                	ret
+    800059f8:	8526                	mv	a0,s1
+    800059fa:	70ea                	ld	ra,184(sp)
+    800059fc:	744a                	ld	s0,176(sp)
+    800059fe:	74aa                	ld	s1,168(sp)
+    80005a00:	790a                	ld	s2,160(sp)
+    80005a02:	69ea                	ld	s3,152(sp)
+    80005a04:	6129                	addi	sp,sp,192
+    80005a06:	8082                	ret
       end_op();
-    80005776:	fffff097          	auipc	ra,0xfffff
-    8000577a:	9e0080e7          	jalr	-1568(ra) # 80004156 <end_op>
+    80005a08:	fffff097          	auipc	ra,0xfffff
+    80005a0c:	9e0080e7          	jalr	-1568(ra) # 800043e8 <end_op>
       return -1;
-    8000577e:	b7e5                	j	80005766 <sys_open+0xe4>
+    80005a10:	b7e5                	j	800059f8 <sys_open+0xe4>
     if((ip = namei(path)) == 0){
-    80005780:	f5040513          	addi	a0,s0,-176
-    80005784:	ffffe097          	auipc	ra,0xffffe
-    80005788:	734080e7          	jalr	1844(ra) # 80003eb8 <namei>
-    8000578c:	892a                	mv	s2,a0
-    8000578e:	c905                	beqz	a0,800057be <sys_open+0x13c>
+    80005a12:	f5040513          	addi	a0,s0,-176
+    80005a16:	ffffe097          	auipc	ra,0xffffe
+    80005a1a:	734080e7          	jalr	1844(ra) # 8000414a <namei>
+    80005a1e:	892a                	mv	s2,a0
+    80005a20:	c905                	beqz	a0,80005a50 <sys_open+0x13c>
     ilock(ip);
-    80005790:	ffffe097          	auipc	ra,0xffffe
-    80005794:	f6c080e7          	jalr	-148(ra) # 800036fc <ilock>
+    80005a22:	ffffe097          	auipc	ra,0xffffe
+    80005a26:	f6c080e7          	jalr	-148(ra) # 8000398e <ilock>
     if(ip->type == T_DIR && omode != O_RDONLY){
-    80005798:	04491703          	lh	a4,68(s2)
-    8000579c:	4785                	li	a5,1
-    8000579e:	f4f712e3          	bne	a4,a5,800056e2 <sys_open+0x60>
-    800057a2:	f4c42783          	lw	a5,-180(s0)
-    800057a6:	dba1                	beqz	a5,800056f6 <sys_open+0x74>
+    80005a2a:	04491703          	lh	a4,68(s2)
+    80005a2e:	4785                	li	a5,1
+    80005a30:	f4f712e3          	bne	a4,a5,80005974 <sys_open+0x60>
+    80005a34:	f4c42783          	lw	a5,-180(s0)
+    80005a38:	dba1                	beqz	a5,80005988 <sys_open+0x74>
       iunlockput(ip);
-    800057a8:	854a                	mv	a0,s2
-    800057aa:	ffffe097          	auipc	ra,0xffffe
-    800057ae:	1b4080e7          	jalr	436(ra) # 8000395e <iunlockput>
+    80005a3a:	854a                	mv	a0,s2
+    80005a3c:	ffffe097          	auipc	ra,0xffffe
+    80005a40:	1b4080e7          	jalr	436(ra) # 80003bf0 <iunlockput>
       end_op();
-    800057b2:	fffff097          	auipc	ra,0xfffff
-    800057b6:	9a4080e7          	jalr	-1628(ra) # 80004156 <end_op>
+    80005a44:	fffff097          	auipc	ra,0xfffff
+    80005a48:	9a4080e7          	jalr	-1628(ra) # 800043e8 <end_op>
       return -1;
-    800057ba:	54fd                	li	s1,-1
-    800057bc:	b76d                	j	80005766 <sys_open+0xe4>
+    80005a4c:	54fd                	li	s1,-1
+    80005a4e:	b76d                	j	800059f8 <sys_open+0xe4>
       end_op();
-    800057be:	fffff097          	auipc	ra,0xfffff
-    800057c2:	998080e7          	jalr	-1640(ra) # 80004156 <end_op>
+    80005a50:	fffff097          	auipc	ra,0xfffff
+    80005a54:	998080e7          	jalr	-1640(ra) # 800043e8 <end_op>
       return -1;
-    800057c6:	54fd                	li	s1,-1
-    800057c8:	bf79                	j	80005766 <sys_open+0xe4>
+    80005a58:	54fd                	li	s1,-1
+    80005a5a:	bf79                	j	800059f8 <sys_open+0xe4>
     iunlockput(ip);
-    800057ca:	854a                	mv	a0,s2
-    800057cc:	ffffe097          	auipc	ra,0xffffe
-    800057d0:	192080e7          	jalr	402(ra) # 8000395e <iunlockput>
+    80005a5c:	854a                	mv	a0,s2
+    80005a5e:	ffffe097          	auipc	ra,0xffffe
+    80005a62:	192080e7          	jalr	402(ra) # 80003bf0 <iunlockput>
     end_op();
-    800057d4:	fffff097          	auipc	ra,0xfffff
-    800057d8:	982080e7          	jalr	-1662(ra) # 80004156 <end_op>
+    80005a66:	fffff097          	auipc	ra,0xfffff
+    80005a6a:	982080e7          	jalr	-1662(ra) # 800043e8 <end_op>
     return -1;
-    800057dc:	54fd                	li	s1,-1
-    800057de:	b761                	j	80005766 <sys_open+0xe4>
+    80005a6e:	54fd                	li	s1,-1
+    80005a70:	b761                	j	800059f8 <sys_open+0xe4>
     f->type = FD_DEVICE;
-    800057e0:	00f9a023          	sw	a5,0(s3)
+    80005a72:	00f9a023          	sw	a5,0(s3)
     f->major = ip->major;
-    800057e4:	04691783          	lh	a5,70(s2)
-    800057e8:	02f99223          	sh	a5,36(s3)
-    800057ec:	bf2d                	j	80005726 <sys_open+0xa4>
+    80005a76:	04691783          	lh	a5,70(s2)
+    80005a7a:	02f99223          	sh	a5,36(s3)
+    80005a7e:	bf2d                	j	800059b8 <sys_open+0xa4>
     itrunc(ip);
-    800057ee:	854a                	mv	a0,s2
-    800057f0:	ffffe097          	auipc	ra,0xffffe
-    800057f4:	01a080e7          	jalr	26(ra) # 8000380a <itrunc>
-    800057f8:	bfb1                	j	80005754 <sys_open+0xd2>
+    80005a80:	854a                	mv	a0,s2
+    80005a82:	ffffe097          	auipc	ra,0xffffe
+    80005a86:	01a080e7          	jalr	26(ra) # 80003a9c <itrunc>
+    80005a8a:	bfb1                	j	800059e6 <sys_open+0xd2>
       fileclose(f);
-    800057fa:	854e                	mv	a0,s3
-    800057fc:	fffff097          	auipc	ra,0xfffff
-    80005800:	da4080e7          	jalr	-604(ra) # 800045a0 <fileclose>
+    80005a8c:	854e                	mv	a0,s3
+    80005a8e:	fffff097          	auipc	ra,0xfffff
+    80005a92:	da4080e7          	jalr	-604(ra) # 80004832 <fileclose>
     iunlockput(ip);
-    80005804:	854a                	mv	a0,s2
-    80005806:	ffffe097          	auipc	ra,0xffffe
-    8000580a:	158080e7          	jalr	344(ra) # 8000395e <iunlockput>
+    80005a96:	854a                	mv	a0,s2
+    80005a98:	ffffe097          	auipc	ra,0xffffe
+    80005a9c:	158080e7          	jalr	344(ra) # 80003bf0 <iunlockput>
     end_op();
-    8000580e:	fffff097          	auipc	ra,0xfffff
-    80005812:	948080e7          	jalr	-1720(ra) # 80004156 <end_op>
+    80005aa0:	fffff097          	auipc	ra,0xfffff
+    80005aa4:	948080e7          	jalr	-1720(ra) # 800043e8 <end_op>
     return -1;
-    80005816:	54fd                	li	s1,-1
-    80005818:	b7b9                	j	80005766 <sys_open+0xe4>
+    80005aa8:	54fd                	li	s1,-1
+    80005aaa:	b7b9                	j	800059f8 <sys_open+0xe4>
 
-000000008000581a <sys_mkdir>:
+0000000080005aac <sys_mkdir>:
 
 uint64
 sys_mkdir(void)
 {
-    8000581a:	7175                	addi	sp,sp,-144
-    8000581c:	e506                	sd	ra,136(sp)
-    8000581e:	e122                	sd	s0,128(sp)
-    80005820:	0900                	addi	s0,sp,144
+    80005aac:	7175                	addi	sp,sp,-144
+    80005aae:	e506                	sd	ra,136(sp)
+    80005ab0:	e122                	sd	s0,128(sp)
+    80005ab2:	0900                	addi	s0,sp,144
   char path[MAXPATH];
   struct inode *ip;
 
   begin_op();
-    80005822:	fffff097          	auipc	ra,0xfffff
-    80005826:	8b6080e7          	jalr	-1866(ra) # 800040d8 <begin_op>
+    80005ab4:	fffff097          	auipc	ra,0xfffff
+    80005ab8:	8b6080e7          	jalr	-1866(ra) # 8000436a <begin_op>
   if(argstr(0, path, MAXPATH) < 0 || (ip = create(path, T_DIR, 0, 0)) == 0){
-    8000582a:	08000613          	li	a2,128
-    8000582e:	f7040593          	addi	a1,s0,-144
-    80005832:	4501                	li	a0,0
-    80005834:	ffffd097          	auipc	ra,0xffffd
-    80005838:	360080e7          	jalr	864(ra) # 80002b94 <argstr>
-    8000583c:	02054963          	bltz	a0,8000586e <sys_mkdir+0x54>
-    80005840:	4681                	li	a3,0
-    80005842:	4601                	li	a2,0
-    80005844:	4585                	li	a1,1
-    80005846:	f7040513          	addi	a0,s0,-144
-    8000584a:	fffff097          	auipc	ra,0xfffff
-    8000584e:	7fc080e7          	jalr	2044(ra) # 80005046 <create>
-    80005852:	cd11                	beqz	a0,8000586e <sys_mkdir+0x54>
+    80005abc:	08000613          	li	a2,128
+    80005ac0:	f7040593          	addi	a1,s0,-144
+    80005ac4:	4501                	li	a0,0
+    80005ac6:	ffffd097          	auipc	ra,0xffffd
+    80005aca:	31e080e7          	jalr	798(ra) # 80002de4 <argstr>
+    80005ace:	02054963          	bltz	a0,80005b00 <sys_mkdir+0x54>
+    80005ad2:	4681                	li	a3,0
+    80005ad4:	4601                	li	a2,0
+    80005ad6:	4585                	li	a1,1
+    80005ad8:	f7040513          	addi	a0,s0,-144
+    80005adc:	fffff097          	auipc	ra,0xfffff
+    80005ae0:	7fc080e7          	jalr	2044(ra) # 800052d8 <create>
+    80005ae4:	cd11                	beqz	a0,80005b00 <sys_mkdir+0x54>
     end_op();
     return -1;
   }
   iunlockput(ip);
-    80005854:	ffffe097          	auipc	ra,0xffffe
-    80005858:	10a080e7          	jalr	266(ra) # 8000395e <iunlockput>
+    80005ae6:	ffffe097          	auipc	ra,0xffffe
+    80005aea:	10a080e7          	jalr	266(ra) # 80003bf0 <iunlockput>
   end_op();
-    8000585c:	fffff097          	auipc	ra,0xfffff
-    80005860:	8fa080e7          	jalr	-1798(ra) # 80004156 <end_op>
+    80005aee:	fffff097          	auipc	ra,0xfffff
+    80005af2:	8fa080e7          	jalr	-1798(ra) # 800043e8 <end_op>
   return 0;
-    80005864:	4501                	li	a0,0
+    80005af6:	4501                	li	a0,0
 }
-    80005866:	60aa                	ld	ra,136(sp)
-    80005868:	640a                	ld	s0,128(sp)
-    8000586a:	6149                	addi	sp,sp,144
-    8000586c:	8082                	ret
+    80005af8:	60aa                	ld	ra,136(sp)
+    80005afa:	640a                	ld	s0,128(sp)
+    80005afc:	6149                	addi	sp,sp,144
+    80005afe:	8082                	ret
     end_op();
-    8000586e:	fffff097          	auipc	ra,0xfffff
-    80005872:	8e8080e7          	jalr	-1816(ra) # 80004156 <end_op>
+    80005b00:	fffff097          	auipc	ra,0xfffff
+    80005b04:	8e8080e7          	jalr	-1816(ra) # 800043e8 <end_op>
     return -1;
-    80005876:	557d                	li	a0,-1
-    80005878:	b7fd                	j	80005866 <sys_mkdir+0x4c>
+    80005b08:	557d                	li	a0,-1
+    80005b0a:	b7fd                	j	80005af8 <sys_mkdir+0x4c>
 
-000000008000587a <sys_mknod>:
+0000000080005b0c <sys_mknod>:
 
 uint64
 sys_mknod(void)
 {
-    8000587a:	7135                	addi	sp,sp,-160
-    8000587c:	ed06                	sd	ra,152(sp)
-    8000587e:	e922                	sd	s0,144(sp)
-    80005880:	1100                	addi	s0,sp,160
+    80005b0c:	7135                	addi	sp,sp,-160
+    80005b0e:	ed06                	sd	ra,152(sp)
+    80005b10:	e922                	sd	s0,144(sp)
+    80005b12:	1100                	addi	s0,sp,160
   struct inode *ip;
   char path[MAXPATH];
   int major, minor;
 
   begin_op();
-    80005882:	fffff097          	auipc	ra,0xfffff
-    80005886:	856080e7          	jalr	-1962(ra) # 800040d8 <begin_op>
+    80005b14:	fffff097          	auipc	ra,0xfffff
+    80005b18:	856080e7          	jalr	-1962(ra) # 8000436a <begin_op>
   if((argstr(0, path, MAXPATH)) < 0 ||
-    8000588a:	08000613          	li	a2,128
-    8000588e:	f7040593          	addi	a1,s0,-144
-    80005892:	4501                	li	a0,0
-    80005894:	ffffd097          	auipc	ra,0xffffd
-    80005898:	300080e7          	jalr	768(ra) # 80002b94 <argstr>
-    8000589c:	04054a63          	bltz	a0,800058f0 <sys_mknod+0x76>
+    80005b1c:	08000613          	li	a2,128
+    80005b20:	f7040593          	addi	a1,s0,-144
+    80005b24:	4501                	li	a0,0
+    80005b26:	ffffd097          	auipc	ra,0xffffd
+    80005b2a:	2be080e7          	jalr	702(ra) # 80002de4 <argstr>
+    80005b2e:	04054a63          	bltz	a0,80005b82 <sys_mknod+0x76>
      argint(1, &major) < 0 ||
-    800058a0:	f6c40593          	addi	a1,s0,-148
-    800058a4:	4505                	li	a0,1
-    800058a6:	ffffd097          	auipc	ra,0xffffd
-    800058aa:	2aa080e7          	jalr	682(ra) # 80002b50 <argint>
+    80005b32:	f6c40593          	addi	a1,s0,-148
+    80005b36:	4505                	li	a0,1
+    80005b38:	ffffd097          	auipc	ra,0xffffd
+    80005b3c:	268080e7          	jalr	616(ra) # 80002da0 <argint>
   if((argstr(0, path, MAXPATH)) < 0 ||
-    800058ae:	04054163          	bltz	a0,800058f0 <sys_mknod+0x76>
+    80005b40:	04054163          	bltz	a0,80005b82 <sys_mknod+0x76>
      argint(2, &minor) < 0 ||
-    800058b2:	f6840593          	addi	a1,s0,-152
-    800058b6:	4509                	li	a0,2
-    800058b8:	ffffd097          	auipc	ra,0xffffd
-    800058bc:	298080e7          	jalr	664(ra) # 80002b50 <argint>
+    80005b44:	f6840593          	addi	a1,s0,-152
+    80005b48:	4509                	li	a0,2
+    80005b4a:	ffffd097          	auipc	ra,0xffffd
+    80005b4e:	256080e7          	jalr	598(ra) # 80002da0 <argint>
      argint(1, &major) < 0 ||
-    800058c0:	02054863          	bltz	a0,800058f0 <sys_mknod+0x76>
+    80005b52:	02054863          	bltz	a0,80005b82 <sys_mknod+0x76>
      (ip = create(path, T_DEVICE, major, minor)) == 0){
-    800058c4:	f6841683          	lh	a3,-152(s0)
-    800058c8:	f6c41603          	lh	a2,-148(s0)
-    800058cc:	458d                	li	a1,3
-    800058ce:	f7040513          	addi	a0,s0,-144
-    800058d2:	fffff097          	auipc	ra,0xfffff
-    800058d6:	774080e7          	jalr	1908(ra) # 80005046 <create>
+    80005b56:	f6841683          	lh	a3,-152(s0)
+    80005b5a:	f6c41603          	lh	a2,-148(s0)
+    80005b5e:	458d                	li	a1,3
+    80005b60:	f7040513          	addi	a0,s0,-144
+    80005b64:	fffff097          	auipc	ra,0xfffff
+    80005b68:	774080e7          	jalr	1908(ra) # 800052d8 <create>
      argint(2, &minor) < 0 ||
-    800058da:	c919                	beqz	a0,800058f0 <sys_mknod+0x76>
+    80005b6c:	c919                	beqz	a0,80005b82 <sys_mknod+0x76>
     end_op();
     return -1;
   }
   iunlockput(ip);
-    800058dc:	ffffe097          	auipc	ra,0xffffe
-    800058e0:	082080e7          	jalr	130(ra) # 8000395e <iunlockput>
+    80005b6e:	ffffe097          	auipc	ra,0xffffe
+    80005b72:	082080e7          	jalr	130(ra) # 80003bf0 <iunlockput>
   end_op();
-    800058e4:	fffff097          	auipc	ra,0xfffff
-    800058e8:	872080e7          	jalr	-1934(ra) # 80004156 <end_op>
+    80005b76:	fffff097          	auipc	ra,0xfffff
+    80005b7a:	872080e7          	jalr	-1934(ra) # 800043e8 <end_op>
   return 0;
-    800058ec:	4501                	li	a0,0
-    800058ee:	a031                	j	800058fa <sys_mknod+0x80>
+    80005b7e:	4501                	li	a0,0
+    80005b80:	a031                	j	80005b8c <sys_mknod+0x80>
     end_op();
-    800058f0:	fffff097          	auipc	ra,0xfffff
-    800058f4:	866080e7          	jalr	-1946(ra) # 80004156 <end_op>
+    80005b82:	fffff097          	auipc	ra,0xfffff
+    80005b86:	866080e7          	jalr	-1946(ra) # 800043e8 <end_op>
     return -1;
-    800058f8:	557d                	li	a0,-1
+    80005b8a:	557d                	li	a0,-1
 }
-    800058fa:	60ea                	ld	ra,152(sp)
-    800058fc:	644a                	ld	s0,144(sp)
-    800058fe:	610d                	addi	sp,sp,160
-    80005900:	8082                	ret
+    80005b8c:	60ea                	ld	ra,152(sp)
+    80005b8e:	644a                	ld	s0,144(sp)
+    80005b90:	610d                	addi	sp,sp,160
+    80005b92:	8082                	ret
 
-0000000080005902 <sys_chdir>:
+0000000080005b94 <sys_chdir>:
 
 uint64
 sys_chdir(void)
 {
-    80005902:	7135                	addi	sp,sp,-160
-    80005904:	ed06                	sd	ra,152(sp)
-    80005906:	e922                	sd	s0,144(sp)
-    80005908:	e526                	sd	s1,136(sp)
-    8000590a:	e14a                	sd	s2,128(sp)
-    8000590c:	1100                	addi	s0,sp,160
+    80005b94:	7135                	addi	sp,sp,-160
+    80005b96:	ed06                	sd	ra,152(sp)
+    80005b98:	e922                	sd	s0,144(sp)
+    80005b9a:	e526                	sd	s1,136(sp)
+    80005b9c:	e14a                	sd	s2,128(sp)
+    80005b9e:	1100                	addi	s0,sp,160
   char path[MAXPATH];
   struct inode *ip;
   struct proc *p = myproc();
-    8000590e:	ffffc097          	auipc	ra,0xffffc
-    80005912:	088080e7          	jalr	136(ra) # 80001996 <myproc>
-    80005916:	892a                	mv	s2,a0
+    80005ba0:	ffffc097          	auipc	ra,0xffffc
+    80005ba4:	ea0080e7          	jalr	-352(ra) # 80001a40 <myproc>
+    80005ba8:	892a                	mv	s2,a0
   
   begin_op();
-    80005918:	ffffe097          	auipc	ra,0xffffe
-    8000591c:	7c0080e7          	jalr	1984(ra) # 800040d8 <begin_op>
+    80005baa:	ffffe097          	auipc	ra,0xffffe
+    80005bae:	7c0080e7          	jalr	1984(ra) # 8000436a <begin_op>
   if(argstr(0, path, MAXPATH) < 0 || (ip = namei(path)) == 0){
-    80005920:	08000613          	li	a2,128
-    80005924:	f6040593          	addi	a1,s0,-160
-    80005928:	4501                	li	a0,0
-    8000592a:	ffffd097          	auipc	ra,0xffffd
-    8000592e:	26a080e7          	jalr	618(ra) # 80002b94 <argstr>
-    80005932:	04054b63          	bltz	a0,80005988 <sys_chdir+0x86>
-    80005936:	f6040513          	addi	a0,s0,-160
-    8000593a:	ffffe097          	auipc	ra,0xffffe
-    8000593e:	57e080e7          	jalr	1406(ra) # 80003eb8 <namei>
-    80005942:	84aa                	mv	s1,a0
-    80005944:	c131                	beqz	a0,80005988 <sys_chdir+0x86>
+    80005bb2:	08000613          	li	a2,128
+    80005bb6:	f6040593          	addi	a1,s0,-160
+    80005bba:	4501                	li	a0,0
+    80005bbc:	ffffd097          	auipc	ra,0xffffd
+    80005bc0:	228080e7          	jalr	552(ra) # 80002de4 <argstr>
+    80005bc4:	04054b63          	bltz	a0,80005c1a <sys_chdir+0x86>
+    80005bc8:	f6040513          	addi	a0,s0,-160
+    80005bcc:	ffffe097          	auipc	ra,0xffffe
+    80005bd0:	57e080e7          	jalr	1406(ra) # 8000414a <namei>
+    80005bd4:	84aa                	mv	s1,a0
+    80005bd6:	c131                	beqz	a0,80005c1a <sys_chdir+0x86>
     end_op();
     return -1;
   }
   ilock(ip);
-    80005946:	ffffe097          	auipc	ra,0xffffe
-    8000594a:	db6080e7          	jalr	-586(ra) # 800036fc <ilock>
+    80005bd8:	ffffe097          	auipc	ra,0xffffe
+    80005bdc:	db6080e7          	jalr	-586(ra) # 8000398e <ilock>
   if(ip->type != T_DIR){
-    8000594e:	04449703          	lh	a4,68(s1)
-    80005952:	4785                	li	a5,1
-    80005954:	04f71063          	bne	a4,a5,80005994 <sys_chdir+0x92>
+    80005be0:	04449703          	lh	a4,68(s1)
+    80005be4:	4785                	li	a5,1
+    80005be6:	04f71063          	bne	a4,a5,80005c26 <sys_chdir+0x92>
     iunlockput(ip);
     end_op();
     return -1;
   }
   iunlock(ip);
-    80005958:	8526                	mv	a0,s1
-    8000595a:	ffffe097          	auipc	ra,0xffffe
-    8000595e:	e64080e7          	jalr	-412(ra) # 800037be <iunlock>
+    80005bea:	8526                	mv	a0,s1
+    80005bec:	ffffe097          	auipc	ra,0xffffe
+    80005bf0:	e64080e7          	jalr	-412(ra) # 80003a50 <iunlock>
   iput(p->cwd);
-    80005962:	15093503          	ld	a0,336(s2)
-    80005966:	ffffe097          	auipc	ra,0xffffe
-    8000596a:	f50080e7          	jalr	-176(ra) # 800038b6 <iput>
+    80005bf4:	15093503          	ld	a0,336(s2)
+    80005bf8:	ffffe097          	auipc	ra,0xffffe
+    80005bfc:	f50080e7          	jalr	-176(ra) # 80003b48 <iput>
   end_op();
-    8000596e:	ffffe097          	auipc	ra,0xffffe
-    80005972:	7e8080e7          	jalr	2024(ra) # 80004156 <end_op>
+    80005c00:	ffffe097          	auipc	ra,0xffffe
+    80005c04:	7e8080e7          	jalr	2024(ra) # 800043e8 <end_op>
   p->cwd = ip;
-    80005976:	14993823          	sd	s1,336(s2)
+    80005c08:	14993823          	sd	s1,336(s2)
   return 0;
-    8000597a:	4501                	li	a0,0
+    80005c0c:	4501                	li	a0,0
 }
-    8000597c:	60ea                	ld	ra,152(sp)
-    8000597e:	644a                	ld	s0,144(sp)
-    80005980:	64aa                	ld	s1,136(sp)
-    80005982:	690a                	ld	s2,128(sp)
-    80005984:	610d                	addi	sp,sp,160
-    80005986:	8082                	ret
+    80005c0e:	60ea                	ld	ra,152(sp)
+    80005c10:	644a                	ld	s0,144(sp)
+    80005c12:	64aa                	ld	s1,136(sp)
+    80005c14:	690a                	ld	s2,128(sp)
+    80005c16:	610d                	addi	sp,sp,160
+    80005c18:	8082                	ret
     end_op();
-    80005988:	ffffe097          	auipc	ra,0xffffe
-    8000598c:	7ce080e7          	jalr	1998(ra) # 80004156 <end_op>
+    80005c1a:	ffffe097          	auipc	ra,0xffffe
+    80005c1e:	7ce080e7          	jalr	1998(ra) # 800043e8 <end_op>
     return -1;
-    80005990:	557d                	li	a0,-1
-    80005992:	b7ed                	j	8000597c <sys_chdir+0x7a>
+    80005c22:	557d                	li	a0,-1
+    80005c24:	b7ed                	j	80005c0e <sys_chdir+0x7a>
     iunlockput(ip);
-    80005994:	8526                	mv	a0,s1
-    80005996:	ffffe097          	auipc	ra,0xffffe
-    8000599a:	fc8080e7          	jalr	-56(ra) # 8000395e <iunlockput>
+    80005c26:	8526                	mv	a0,s1
+    80005c28:	ffffe097          	auipc	ra,0xffffe
+    80005c2c:	fc8080e7          	jalr	-56(ra) # 80003bf0 <iunlockput>
     end_op();
-    8000599e:	ffffe097          	auipc	ra,0xffffe
-    800059a2:	7b8080e7          	jalr	1976(ra) # 80004156 <end_op>
+    80005c30:	ffffe097          	auipc	ra,0xffffe
+    80005c34:	7b8080e7          	jalr	1976(ra) # 800043e8 <end_op>
     return -1;
-    800059a6:	557d                	li	a0,-1
-    800059a8:	bfd1                	j	8000597c <sys_chdir+0x7a>
+    80005c38:	557d                	li	a0,-1
+    80005c3a:	bfd1                	j	80005c0e <sys_chdir+0x7a>
 
-00000000800059aa <sys_exec>:
+0000000080005c3c <sys_exec>:
 
 uint64
 sys_exec(void)
 {
-    800059aa:	7145                	addi	sp,sp,-464
-    800059ac:	e786                	sd	ra,456(sp)
-    800059ae:	e3a2                	sd	s0,448(sp)
-    800059b0:	ff26                	sd	s1,440(sp)
-    800059b2:	fb4a                	sd	s2,432(sp)
-    800059b4:	f74e                	sd	s3,424(sp)
-    800059b6:	f352                	sd	s4,416(sp)
-    800059b8:	ef56                	sd	s5,408(sp)
-    800059ba:	0b80                	addi	s0,sp,464
+    80005c3c:	7145                	addi	sp,sp,-464
+    80005c3e:	e786                	sd	ra,456(sp)
+    80005c40:	e3a2                	sd	s0,448(sp)
+    80005c42:	ff26                	sd	s1,440(sp)
+    80005c44:	fb4a                	sd	s2,432(sp)
+    80005c46:	f74e                	sd	s3,424(sp)
+    80005c48:	f352                	sd	s4,416(sp)
+    80005c4a:	ef56                	sd	s5,408(sp)
+    80005c4c:	0b80                	addi	s0,sp,464
   char path[MAXPATH], *argv[MAXARG];
   int i;
   uint64 uargv, uarg;
 
   if(argstr(0, path, MAXPATH) < 0 || argaddr(1, &uargv) < 0){
-    800059bc:	08000613          	li	a2,128
-    800059c0:	f4040593          	addi	a1,s0,-192
-    800059c4:	4501                	li	a0,0
-    800059c6:	ffffd097          	auipc	ra,0xffffd
-    800059ca:	1ce080e7          	jalr	462(ra) # 80002b94 <argstr>
+    80005c4e:	08000613          	li	a2,128
+    80005c52:	f4040593          	addi	a1,s0,-192
+    80005c56:	4501                	li	a0,0
+    80005c58:	ffffd097          	auipc	ra,0xffffd
+    80005c5c:	18c080e7          	jalr	396(ra) # 80002de4 <argstr>
     return -1;
-    800059ce:	597d                	li	s2,-1
+    80005c60:	597d                	li	s2,-1
   if(argstr(0, path, MAXPATH) < 0 || argaddr(1, &uargv) < 0){
-    800059d0:	0c054b63          	bltz	a0,80005aa6 <sys_exec+0xfc>
-    800059d4:	e3840593          	addi	a1,s0,-456
-    800059d8:	4505                	li	a0,1
-    800059da:	ffffd097          	auipc	ra,0xffffd
-    800059de:	198080e7          	jalr	408(ra) # 80002b72 <argaddr>
-    800059e2:	0c054263          	bltz	a0,80005aa6 <sys_exec+0xfc>
+    80005c62:	0c054b63          	bltz	a0,80005d38 <sys_exec+0xfc>
+    80005c66:	e3840593          	addi	a1,s0,-456
+    80005c6a:	4505                	li	a0,1
+    80005c6c:	ffffd097          	auipc	ra,0xffffd
+    80005c70:	156080e7          	jalr	342(ra) # 80002dc2 <argaddr>
+    80005c74:	0c054263          	bltz	a0,80005d38 <sys_exec+0xfc>
   }
   memset(argv, 0, sizeof(argv));
-    800059e6:	10000613          	li	a2,256
-    800059ea:	4581                	li	a1,0
-    800059ec:	e4040513          	addi	a0,s0,-448
-    800059f0:	ffffb097          	auipc	ra,0xffffb
-    800059f4:	2dc080e7          	jalr	732(ra) # 80000ccc <memset>
+    80005c78:	10000613          	li	a2,256
+    80005c7c:	4581                	li	a1,0
+    80005c7e:	e4040513          	addi	a0,s0,-448
+    80005c82:	ffffb097          	auipc	ra,0xffffb
+    80005c86:	04a080e7          	jalr	74(ra) # 80000ccc <memset>
   for(i=0;; i++){
     if(i >= NELEM(argv)){
-    800059f8:	e4040493          	addi	s1,s0,-448
+    80005c8a:	e4040493          	addi	s1,s0,-448
   memset(argv, 0, sizeof(argv));
-    800059fc:	89a6                	mv	s3,s1
-    800059fe:	4901                	li	s2,0
+    80005c8e:	89a6                	mv	s3,s1
+    80005c90:	4901                	li	s2,0
     if(i >= NELEM(argv)){
-    80005a00:	02000a13          	li	s4,32
-    80005a04:	00090a9b          	sext.w	s5,s2
+    80005c92:	02000a13          	li	s4,32
+    80005c96:	00090a9b          	sext.w	s5,s2
       goto bad;
     }
     if(fetchaddr(uargv+sizeof(uint64)*i, (uint64*)&uarg) < 0){
-    80005a08:	00391513          	slli	a0,s2,0x3
-    80005a0c:	e3040593          	addi	a1,s0,-464
-    80005a10:	e3843783          	ld	a5,-456(s0)
-    80005a14:	953e                	add	a0,a0,a5
-    80005a16:	ffffd097          	auipc	ra,0xffffd
-    80005a1a:	0a0080e7          	jalr	160(ra) # 80002ab6 <fetchaddr>
-    80005a1e:	02054a63          	bltz	a0,80005a52 <sys_exec+0xa8>
+    80005c9a:	00391513          	slli	a0,s2,0x3
+    80005c9e:	e3040593          	addi	a1,s0,-464
+    80005ca2:	e3843783          	ld	a5,-456(s0)
+    80005ca6:	953e                	add	a0,a0,a5
+    80005ca8:	ffffd097          	auipc	ra,0xffffd
+    80005cac:	05e080e7          	jalr	94(ra) # 80002d06 <fetchaddr>
+    80005cb0:	02054a63          	bltz	a0,80005ce4 <sys_exec+0xa8>
       goto bad;
     }
     if(uarg == 0){
-    80005a22:	e3043783          	ld	a5,-464(s0)
-    80005a26:	c3b9                	beqz	a5,80005a6c <sys_exec+0xc2>
+    80005cb4:	e3043783          	ld	a5,-464(s0)
+    80005cb8:	c3b9                	beqz	a5,80005cfe <sys_exec+0xc2>
       argv[i] = 0;
       break;
     }
     argv[i] = kalloc();
-    80005a28:	ffffb097          	auipc	ra,0xffffb
-    80005a2c:	0b8080e7          	jalr	184(ra) # 80000ae0 <kalloc>
-    80005a30:	85aa                	mv	a1,a0
-    80005a32:	00a9b023          	sd	a0,0(s3)
+    80005cba:	ffffb097          	auipc	ra,0xffffb
+    80005cbe:	e26080e7          	jalr	-474(ra) # 80000ae0 <kalloc>
+    80005cc2:	85aa                	mv	a1,a0
+    80005cc4:	00a9b023          	sd	a0,0(s3)
     if(argv[i] == 0)
-    80005a36:	cd11                	beqz	a0,80005a52 <sys_exec+0xa8>
+    80005cc8:	cd11                	beqz	a0,80005ce4 <sys_exec+0xa8>
       goto bad;
     if(fetchstr(uarg, argv[i], PGSIZE) < 0)
-    80005a38:	6605                	lui	a2,0x1
-    80005a3a:	e3043503          	ld	a0,-464(s0)
-    80005a3e:	ffffd097          	auipc	ra,0xffffd
-    80005a42:	0ca080e7          	jalr	202(ra) # 80002b08 <fetchstr>
-    80005a46:	00054663          	bltz	a0,80005a52 <sys_exec+0xa8>
+    80005cca:	6605                	lui	a2,0x1
+    80005ccc:	e3043503          	ld	a0,-464(s0)
+    80005cd0:	ffffd097          	auipc	ra,0xffffd
+    80005cd4:	088080e7          	jalr	136(ra) # 80002d58 <fetchstr>
+    80005cd8:	00054663          	bltz	a0,80005ce4 <sys_exec+0xa8>
     if(i >= NELEM(argv)){
-    80005a4a:	0905                	addi	s2,s2,1
-    80005a4c:	09a1                	addi	s3,s3,8
-    80005a4e:	fb491be3          	bne	s2,s4,80005a04 <sys_exec+0x5a>
+    80005cdc:	0905                	addi	s2,s2,1
+    80005cde:	09a1                	addi	s3,s3,8
+    80005ce0:	fb491be3          	bne	s2,s4,80005c96 <sys_exec+0x5a>
     kfree(argv[i]);
 
   return ret;
 
  bad:
   for(i = 0; i < NELEM(argv) && argv[i] != 0; i++)
-    80005a52:	f4040913          	addi	s2,s0,-192
-    80005a56:	6088                	ld	a0,0(s1)
-    80005a58:	c531                	beqz	a0,80005aa4 <sys_exec+0xfa>
+    80005ce4:	f4040913          	addi	s2,s0,-192
+    80005ce8:	6088                	ld	a0,0(s1)
+    80005cea:	c531                	beqz	a0,80005d36 <sys_exec+0xfa>
     kfree(argv[i]);
-    80005a5a:	ffffb097          	auipc	ra,0xffffb
-    80005a5e:	f88080e7          	jalr	-120(ra) # 800009e2 <kfree>
+    80005cec:	ffffb097          	auipc	ra,0xffffb
+    80005cf0:	cf6080e7          	jalr	-778(ra) # 800009e2 <kfree>
   for(i = 0; i < NELEM(argv) && argv[i] != 0; i++)
-    80005a62:	04a1                	addi	s1,s1,8
-    80005a64:	ff2499e3          	bne	s1,s2,80005a56 <sys_exec+0xac>
+    80005cf4:	04a1                	addi	s1,s1,8
+    80005cf6:	ff2499e3          	bne	s1,s2,80005ce8 <sys_exec+0xac>
   return -1;
-    80005a68:	597d                	li	s2,-1
-    80005a6a:	a835                	j	80005aa6 <sys_exec+0xfc>
+    80005cfa:	597d                	li	s2,-1
+    80005cfc:	a835                	j	80005d38 <sys_exec+0xfc>
       argv[i] = 0;
-    80005a6c:	0a8e                	slli	s5,s5,0x3
-    80005a6e:	fc0a8793          	addi	a5,s5,-64 # ffffffffffffefc0 <end+0xffffffff7ffd8fc0>
-    80005a72:	00878ab3          	add	s5,a5,s0
-    80005a76:	e80ab023          	sd	zero,-384(s5)
+    80005cfe:	0a8e                	slli	s5,s5,0x3
+    80005d00:	fc0a8793          	addi	a5,s5,-64 # ffffffffffffefc0 <end+0xffffffff7ffd8fc0>
+    80005d04:	00878ab3          	add	s5,a5,s0
+    80005d08:	e80ab023          	sd	zero,-384(s5)
   int ret = exec(path, argv);
-    80005a7a:	e4040593          	addi	a1,s0,-448
-    80005a7e:	f4040513          	addi	a0,s0,-192
-    80005a82:	fffff097          	auipc	ra,0xfffff
-    80005a86:	172080e7          	jalr	370(ra) # 80004bf4 <exec>
-    80005a8a:	892a                	mv	s2,a0
+    80005d0c:	e4040593          	addi	a1,s0,-448
+    80005d10:	f4040513          	addi	a0,s0,-192
+    80005d14:	fffff097          	auipc	ra,0xfffff
+    80005d18:	172080e7          	jalr	370(ra) # 80004e86 <exec>
+    80005d1c:	892a                	mv	s2,a0
   for(i = 0; i < NELEM(argv) && argv[i] != 0; i++)
-    80005a8c:	f4040993          	addi	s3,s0,-192
-    80005a90:	6088                	ld	a0,0(s1)
-    80005a92:	c911                	beqz	a0,80005aa6 <sys_exec+0xfc>
+    80005d1e:	f4040993          	addi	s3,s0,-192
+    80005d22:	6088                	ld	a0,0(s1)
+    80005d24:	c911                	beqz	a0,80005d38 <sys_exec+0xfc>
     kfree(argv[i]);
-    80005a94:	ffffb097          	auipc	ra,0xffffb
-    80005a98:	f4e080e7          	jalr	-178(ra) # 800009e2 <kfree>
+    80005d26:	ffffb097          	auipc	ra,0xffffb
+    80005d2a:	cbc080e7          	jalr	-836(ra) # 800009e2 <kfree>
   for(i = 0; i < NELEM(argv) && argv[i] != 0; i++)
-    80005a9c:	04a1                	addi	s1,s1,8
-    80005a9e:	ff3499e3          	bne	s1,s3,80005a90 <sys_exec+0xe6>
-    80005aa2:	a011                	j	80005aa6 <sys_exec+0xfc>
+    80005d2e:	04a1                	addi	s1,s1,8
+    80005d30:	ff3499e3          	bne	s1,s3,80005d22 <sys_exec+0xe6>
+    80005d34:	a011                	j	80005d38 <sys_exec+0xfc>
   return -1;
-    80005aa4:	597d                	li	s2,-1
+    80005d36:	597d                	li	s2,-1
 }
-    80005aa6:	854a                	mv	a0,s2
-    80005aa8:	60be                	ld	ra,456(sp)
-    80005aaa:	641e                	ld	s0,448(sp)
-    80005aac:	74fa                	ld	s1,440(sp)
-    80005aae:	795a                	ld	s2,432(sp)
-    80005ab0:	79ba                	ld	s3,424(sp)
-    80005ab2:	7a1a                	ld	s4,416(sp)
-    80005ab4:	6afa                	ld	s5,408(sp)
-    80005ab6:	6179                	addi	sp,sp,464
-    80005ab8:	8082                	ret
+    80005d38:	854a                	mv	a0,s2
+    80005d3a:	60be                	ld	ra,456(sp)
+    80005d3c:	641e                	ld	s0,448(sp)
+    80005d3e:	74fa                	ld	s1,440(sp)
+    80005d40:	795a                	ld	s2,432(sp)
+    80005d42:	79ba                	ld	s3,424(sp)
+    80005d44:	7a1a                	ld	s4,416(sp)
+    80005d46:	6afa                	ld	s5,408(sp)
+    80005d48:	6179                	addi	sp,sp,464
+    80005d4a:	8082                	ret
 
-0000000080005aba <sys_pipe>:
+0000000080005d4c <sys_pipe>:
 
 uint64
 sys_pipe(void)
 {
-    80005aba:	7139                	addi	sp,sp,-64
-    80005abc:	fc06                	sd	ra,56(sp)
-    80005abe:	f822                	sd	s0,48(sp)
-    80005ac0:	f426                	sd	s1,40(sp)
-    80005ac2:	0080                	addi	s0,sp,64
+    80005d4c:	7139                	addi	sp,sp,-64
+    80005d4e:	fc06                	sd	ra,56(sp)
+    80005d50:	f822                	sd	s0,48(sp)
+    80005d52:	f426                	sd	s1,40(sp)
+    80005d54:	0080                	addi	s0,sp,64
   uint64 fdarray; // user pointer to array of two integers
   struct file *rf, *wf;
   int fd0, fd1;
   struct proc *p = myproc();
-    80005ac4:	ffffc097          	auipc	ra,0xffffc
-    80005ac8:	ed2080e7          	jalr	-302(ra) # 80001996 <myproc>
-    80005acc:	84aa                	mv	s1,a0
+    80005d56:	ffffc097          	auipc	ra,0xffffc
+    80005d5a:	cea080e7          	jalr	-790(ra) # 80001a40 <myproc>
+    80005d5e:	84aa                	mv	s1,a0
 
   if(argaddr(0, &fdarray) < 0)
-    80005ace:	fd840593          	addi	a1,s0,-40
-    80005ad2:	4501                	li	a0,0
-    80005ad4:	ffffd097          	auipc	ra,0xffffd
-    80005ad8:	09e080e7          	jalr	158(ra) # 80002b72 <argaddr>
+    80005d60:	fd840593          	addi	a1,s0,-40
+    80005d64:	4501                	li	a0,0
+    80005d66:	ffffd097          	auipc	ra,0xffffd
+    80005d6a:	05c080e7          	jalr	92(ra) # 80002dc2 <argaddr>
     return -1;
-    80005adc:	57fd                	li	a5,-1
+    80005d6e:	57fd                	li	a5,-1
   if(argaddr(0, &fdarray) < 0)
-    80005ade:	0e054063          	bltz	a0,80005bbe <sys_pipe+0x104>
+    80005d70:	0e054063          	bltz	a0,80005e50 <sys_pipe+0x104>
   if(pipealloc(&rf, &wf) < 0)
-    80005ae2:	fc840593          	addi	a1,s0,-56
-    80005ae6:	fd040513          	addi	a0,s0,-48
-    80005aea:	fffff097          	auipc	ra,0xfffff
-    80005aee:	de6080e7          	jalr	-538(ra) # 800048d0 <pipealloc>
+    80005d74:	fc840593          	addi	a1,s0,-56
+    80005d78:	fd040513          	addi	a0,s0,-48
+    80005d7c:	fffff097          	auipc	ra,0xfffff
+    80005d80:	de6080e7          	jalr	-538(ra) # 80004b62 <pipealloc>
     return -1;
-    80005af2:	57fd                	li	a5,-1
+    80005d84:	57fd                	li	a5,-1
   if(pipealloc(&rf, &wf) < 0)
-    80005af4:	0c054563          	bltz	a0,80005bbe <sys_pipe+0x104>
+    80005d86:	0c054563          	bltz	a0,80005e50 <sys_pipe+0x104>
   fd0 = -1;
-    80005af8:	fcf42223          	sw	a5,-60(s0)
+    80005d8a:	fcf42223          	sw	a5,-60(s0)
   if((fd0 = fdalloc(rf)) < 0 || (fd1 = fdalloc(wf)) < 0){
-    80005afc:	fd043503          	ld	a0,-48(s0)
-    80005b00:	fffff097          	auipc	ra,0xfffff
-    80005b04:	504080e7          	jalr	1284(ra) # 80005004 <fdalloc>
-    80005b08:	fca42223          	sw	a0,-60(s0)
-    80005b0c:	08054c63          	bltz	a0,80005ba4 <sys_pipe+0xea>
-    80005b10:	fc843503          	ld	a0,-56(s0)
-    80005b14:	fffff097          	auipc	ra,0xfffff
-    80005b18:	4f0080e7          	jalr	1264(ra) # 80005004 <fdalloc>
-    80005b1c:	fca42023          	sw	a0,-64(s0)
-    80005b20:	06054963          	bltz	a0,80005b92 <sys_pipe+0xd8>
+    80005d8e:	fd043503          	ld	a0,-48(s0)
+    80005d92:	fffff097          	auipc	ra,0xfffff
+    80005d96:	504080e7          	jalr	1284(ra) # 80005296 <fdalloc>
+    80005d9a:	fca42223          	sw	a0,-60(s0)
+    80005d9e:	08054c63          	bltz	a0,80005e36 <sys_pipe+0xea>
+    80005da2:	fc843503          	ld	a0,-56(s0)
+    80005da6:	fffff097          	auipc	ra,0xfffff
+    80005daa:	4f0080e7          	jalr	1264(ra) # 80005296 <fdalloc>
+    80005dae:	fca42023          	sw	a0,-64(s0)
+    80005db2:	06054963          	bltz	a0,80005e24 <sys_pipe+0xd8>
       p->ofile[fd0] = 0;
     fileclose(rf);
     fileclose(wf);
     return -1;
   }
   if(copyout(p->pagetable, fdarray, (char*)&fd0, sizeof(fd0)) < 0 ||
-    80005b24:	4691                	li	a3,4
-    80005b26:	fc440613          	addi	a2,s0,-60
-    80005b2a:	fd843583          	ld	a1,-40(s0)
-    80005b2e:	68a8                	ld	a0,80(s1)
-    80005b30:	ffffc097          	auipc	ra,0xffffc
-    80005b34:	b2a080e7          	jalr	-1238(ra) # 8000165a <copyout>
-    80005b38:	02054063          	bltz	a0,80005b58 <sys_pipe+0x9e>
+    80005db6:	4691                	li	a3,4
+    80005db8:	fc440613          	addi	a2,s0,-60
+    80005dbc:	fd843583          	ld	a1,-40(s0)
+    80005dc0:	68a8                	ld	a0,80(s1)
+    80005dc2:	ffffc097          	auipc	ra,0xffffc
+    80005dc6:	898080e7          	jalr	-1896(ra) # 8000165a <copyout>
+    80005dca:	02054063          	bltz	a0,80005dea <sys_pipe+0x9e>
      copyout(p->pagetable, fdarray+sizeof(fd0), (char *)&fd1, sizeof(fd1)) < 0){
-    80005b3c:	4691                	li	a3,4
-    80005b3e:	fc040613          	addi	a2,s0,-64
-    80005b42:	fd843583          	ld	a1,-40(s0)
-    80005b46:	0591                	addi	a1,a1,4
-    80005b48:	68a8                	ld	a0,80(s1)
-    80005b4a:	ffffc097          	auipc	ra,0xffffc
-    80005b4e:	b10080e7          	jalr	-1264(ra) # 8000165a <copyout>
+    80005dce:	4691                	li	a3,4
+    80005dd0:	fc040613          	addi	a2,s0,-64
+    80005dd4:	fd843583          	ld	a1,-40(s0)
+    80005dd8:	0591                	addi	a1,a1,4
+    80005dda:	68a8                	ld	a0,80(s1)
+    80005ddc:	ffffc097          	auipc	ra,0xffffc
+    80005de0:	87e080e7          	jalr	-1922(ra) # 8000165a <copyout>
     p->ofile[fd1] = 0;
     fileclose(rf);
     fileclose(wf);
     return -1;
   }
   return 0;
-    80005b52:	4781                	li	a5,0
+    80005de4:	4781                	li	a5,0
   if(copyout(p->pagetable, fdarray, (char*)&fd0, sizeof(fd0)) < 0 ||
-    80005b54:	06055563          	bgez	a0,80005bbe <sys_pipe+0x104>
+    80005de6:	06055563          	bgez	a0,80005e50 <sys_pipe+0x104>
     p->ofile[fd0] = 0;
-    80005b58:	fc442783          	lw	a5,-60(s0)
-    80005b5c:	07e9                	addi	a5,a5,26
-    80005b5e:	078e                	slli	a5,a5,0x3
-    80005b60:	97a6                	add	a5,a5,s1
-    80005b62:	0007b023          	sd	zero,0(a5)
+    80005dea:	fc442783          	lw	a5,-60(s0)
+    80005dee:	07e9                	addi	a5,a5,26
+    80005df0:	078e                	slli	a5,a5,0x3
+    80005df2:	97a6                	add	a5,a5,s1
+    80005df4:	0007b023          	sd	zero,0(a5)
     p->ofile[fd1] = 0;
-    80005b66:	fc042783          	lw	a5,-64(s0)
-    80005b6a:	07e9                	addi	a5,a5,26
-    80005b6c:	078e                	slli	a5,a5,0x3
-    80005b6e:	00f48533          	add	a0,s1,a5
-    80005b72:	00053023          	sd	zero,0(a0)
+    80005df8:	fc042783          	lw	a5,-64(s0)
+    80005dfc:	07e9                	addi	a5,a5,26
+    80005dfe:	078e                	slli	a5,a5,0x3
+    80005e00:	00f48533          	add	a0,s1,a5
+    80005e04:	00053023          	sd	zero,0(a0)
     fileclose(rf);
-    80005b76:	fd043503          	ld	a0,-48(s0)
-    80005b7a:	fffff097          	auipc	ra,0xfffff
-    80005b7e:	a26080e7          	jalr	-1498(ra) # 800045a0 <fileclose>
+    80005e08:	fd043503          	ld	a0,-48(s0)
+    80005e0c:	fffff097          	auipc	ra,0xfffff
+    80005e10:	a26080e7          	jalr	-1498(ra) # 80004832 <fileclose>
     fileclose(wf);
-    80005b82:	fc843503          	ld	a0,-56(s0)
-    80005b86:	fffff097          	auipc	ra,0xfffff
-    80005b8a:	a1a080e7          	jalr	-1510(ra) # 800045a0 <fileclose>
+    80005e14:	fc843503          	ld	a0,-56(s0)
+    80005e18:	fffff097          	auipc	ra,0xfffff
+    80005e1c:	a1a080e7          	jalr	-1510(ra) # 80004832 <fileclose>
     return -1;
-    80005b8e:	57fd                	li	a5,-1
-    80005b90:	a03d                	j	80005bbe <sys_pipe+0x104>
+    80005e20:	57fd                	li	a5,-1
+    80005e22:	a03d                	j	80005e50 <sys_pipe+0x104>
     if(fd0 >= 0)
-    80005b92:	fc442783          	lw	a5,-60(s0)
-    80005b96:	0007c763          	bltz	a5,80005ba4 <sys_pipe+0xea>
+    80005e24:	fc442783          	lw	a5,-60(s0)
+    80005e28:	0007c763          	bltz	a5,80005e36 <sys_pipe+0xea>
       p->ofile[fd0] = 0;
-    80005b9a:	07e9                	addi	a5,a5,26
-    80005b9c:	078e                	slli	a5,a5,0x3
-    80005b9e:	97a6                	add	a5,a5,s1
-    80005ba0:	0007b023          	sd	zero,0(a5)
+    80005e2c:	07e9                	addi	a5,a5,26
+    80005e2e:	078e                	slli	a5,a5,0x3
+    80005e30:	97a6                	add	a5,a5,s1
+    80005e32:	0007b023          	sd	zero,0(a5)
     fileclose(rf);
-    80005ba4:	fd043503          	ld	a0,-48(s0)
-    80005ba8:	fffff097          	auipc	ra,0xfffff
-    80005bac:	9f8080e7          	jalr	-1544(ra) # 800045a0 <fileclose>
+    80005e36:	fd043503          	ld	a0,-48(s0)
+    80005e3a:	fffff097          	auipc	ra,0xfffff
+    80005e3e:	9f8080e7          	jalr	-1544(ra) # 80004832 <fileclose>
     fileclose(wf);
-    80005bb0:	fc843503          	ld	a0,-56(s0)
-    80005bb4:	fffff097          	auipc	ra,0xfffff
-    80005bb8:	9ec080e7          	jalr	-1556(ra) # 800045a0 <fileclose>
+    80005e42:	fc843503          	ld	a0,-56(s0)
+    80005e46:	fffff097          	auipc	ra,0xfffff
+    80005e4a:	9ec080e7          	jalr	-1556(ra) # 80004832 <fileclose>
     return -1;
-    80005bbc:	57fd                	li	a5,-1
+    80005e4e:	57fd                	li	a5,-1
 }
-    80005bbe:	853e                	mv	a0,a5
-    80005bc0:	70e2                	ld	ra,56(sp)
-    80005bc2:	7442                	ld	s0,48(sp)
-    80005bc4:	74a2                	ld	s1,40(sp)
-    80005bc6:	6121                	addi	sp,sp,64
-    80005bc8:	8082                	ret
-    80005bca:	0000                	unimp
-    80005bcc:	0000                	unimp
+    80005e50:	853e                	mv	a0,a5
+    80005e52:	70e2                	ld	ra,56(sp)
+    80005e54:	7442                	ld	s0,48(sp)
+    80005e56:	74a2                	ld	s1,40(sp)
+    80005e58:	6121                	addi	sp,sp,64
+    80005e5a:	8082                	ret
+    80005e5c:	0000                	unimp
 	...
 
-0000000080005bd0 <kernelvec>:
-    80005bd0:	7111                	addi	sp,sp,-256
-    80005bd2:	e006                	sd	ra,0(sp)
-    80005bd4:	e40a                	sd	sp,8(sp)
-    80005bd6:	e80e                	sd	gp,16(sp)
-    80005bd8:	ec12                	sd	tp,24(sp)
-    80005bda:	f016                	sd	t0,32(sp)
-    80005bdc:	f41a                	sd	t1,40(sp)
-    80005bde:	f81e                	sd	t2,48(sp)
-    80005be0:	fc22                	sd	s0,56(sp)
-    80005be2:	e0a6                	sd	s1,64(sp)
-    80005be4:	e4aa                	sd	a0,72(sp)
-    80005be6:	e8ae                	sd	a1,80(sp)
-    80005be8:	ecb2                	sd	a2,88(sp)
-    80005bea:	f0b6                	sd	a3,96(sp)
-    80005bec:	f4ba                	sd	a4,104(sp)
-    80005bee:	f8be                	sd	a5,112(sp)
-    80005bf0:	fcc2                	sd	a6,120(sp)
-    80005bf2:	e146                	sd	a7,128(sp)
-    80005bf4:	e54a                	sd	s2,136(sp)
-    80005bf6:	e94e                	sd	s3,144(sp)
-    80005bf8:	ed52                	sd	s4,152(sp)
-    80005bfa:	f156                	sd	s5,160(sp)
-    80005bfc:	f55a                	sd	s6,168(sp)
-    80005bfe:	f95e                	sd	s7,176(sp)
-    80005c00:	fd62                	sd	s8,184(sp)
-    80005c02:	e1e6                	sd	s9,192(sp)
-    80005c04:	e5ea                	sd	s10,200(sp)
-    80005c06:	e9ee                	sd	s11,208(sp)
-    80005c08:	edf2                	sd	t3,216(sp)
-    80005c0a:	f1f6                	sd	t4,224(sp)
-    80005c0c:	f5fa                	sd	t5,232(sp)
-    80005c0e:	f9fe                	sd	t6,240(sp)
-    80005c10:	d73fc0ef          	jal	ra,80002982 <kerneltrap>
-    80005c14:	6082                	ld	ra,0(sp)
-    80005c16:	6122                	ld	sp,8(sp)
-    80005c18:	61c2                	ld	gp,16(sp)
-    80005c1a:	7282                	ld	t0,32(sp)
-    80005c1c:	7322                	ld	t1,40(sp)
-    80005c1e:	73c2                	ld	t2,48(sp)
-    80005c20:	7462                	ld	s0,56(sp)
-    80005c22:	6486                	ld	s1,64(sp)
-    80005c24:	6526                	ld	a0,72(sp)
-    80005c26:	65c6                	ld	a1,80(sp)
-    80005c28:	6666                	ld	a2,88(sp)
-    80005c2a:	7686                	ld	a3,96(sp)
-    80005c2c:	7726                	ld	a4,104(sp)
-    80005c2e:	77c6                	ld	a5,112(sp)
-    80005c30:	7866                	ld	a6,120(sp)
-    80005c32:	688a                	ld	a7,128(sp)
-    80005c34:	692a                	ld	s2,136(sp)
-    80005c36:	69ca                	ld	s3,144(sp)
-    80005c38:	6a6a                	ld	s4,152(sp)
-    80005c3a:	7a8a                	ld	s5,160(sp)
-    80005c3c:	7b2a                	ld	s6,168(sp)
-    80005c3e:	7bca                	ld	s7,176(sp)
-    80005c40:	7c6a                	ld	s8,184(sp)
-    80005c42:	6c8e                	ld	s9,192(sp)
-    80005c44:	6d2e                	ld	s10,200(sp)
-    80005c46:	6dce                	ld	s11,208(sp)
-    80005c48:	6e6e                	ld	t3,216(sp)
-    80005c4a:	7e8e                	ld	t4,224(sp)
-    80005c4c:	7f2e                	ld	t5,232(sp)
-    80005c4e:	7fce                	ld	t6,240(sp)
-    80005c50:	6111                	addi	sp,sp,256
-    80005c52:	10200073          	sret
-    80005c56:	00000013          	nop
-    80005c5a:	00000013          	nop
-    80005c5e:	0001                	nop
+0000000080005e60 <kernelvec>:
+    80005e60:	7111                	addi	sp,sp,-256
+    80005e62:	e006                	sd	ra,0(sp)
+    80005e64:	e40a                	sd	sp,8(sp)
+    80005e66:	e80e                	sd	gp,16(sp)
+    80005e68:	ec12                	sd	tp,24(sp)
+    80005e6a:	f016                	sd	t0,32(sp)
+    80005e6c:	f41a                	sd	t1,40(sp)
+    80005e6e:	f81e                	sd	t2,48(sp)
+    80005e70:	fc22                	sd	s0,56(sp)
+    80005e72:	e0a6                	sd	s1,64(sp)
+    80005e74:	e4aa                	sd	a0,72(sp)
+    80005e76:	e8ae                	sd	a1,80(sp)
+    80005e78:	ecb2                	sd	a2,88(sp)
+    80005e7a:	f0b6                	sd	a3,96(sp)
+    80005e7c:	f4ba                	sd	a4,104(sp)
+    80005e7e:	f8be                	sd	a5,112(sp)
+    80005e80:	fcc2                	sd	a6,120(sp)
+    80005e82:	e146                	sd	a7,128(sp)
+    80005e84:	e54a                	sd	s2,136(sp)
+    80005e86:	e94e                	sd	s3,144(sp)
+    80005e88:	ed52                	sd	s4,152(sp)
+    80005e8a:	f156                	sd	s5,160(sp)
+    80005e8c:	f55a                	sd	s6,168(sp)
+    80005e8e:	f95e                	sd	s7,176(sp)
+    80005e90:	fd62                	sd	s8,184(sp)
+    80005e92:	e1e6                	sd	s9,192(sp)
+    80005e94:	e5ea                	sd	s10,200(sp)
+    80005e96:	e9ee                	sd	s11,208(sp)
+    80005e98:	edf2                	sd	t3,216(sp)
+    80005e9a:	f1f6                	sd	t4,224(sp)
+    80005e9c:	f5fa                	sd	t5,232(sp)
+    80005e9e:	f9fe                	sd	t6,240(sp)
+    80005ea0:	d33fc0ef          	jal	ra,80002bd2 <kerneltrap>
+    80005ea4:	6082                	ld	ra,0(sp)
+    80005ea6:	6122                	ld	sp,8(sp)
+    80005ea8:	61c2                	ld	gp,16(sp)
+    80005eaa:	7282                	ld	t0,32(sp)
+    80005eac:	7322                	ld	t1,40(sp)
+    80005eae:	73c2                	ld	t2,48(sp)
+    80005eb0:	7462                	ld	s0,56(sp)
+    80005eb2:	6486                	ld	s1,64(sp)
+    80005eb4:	6526                	ld	a0,72(sp)
+    80005eb6:	65c6                	ld	a1,80(sp)
+    80005eb8:	6666                	ld	a2,88(sp)
+    80005eba:	7686                	ld	a3,96(sp)
+    80005ebc:	7726                	ld	a4,104(sp)
+    80005ebe:	77c6                	ld	a5,112(sp)
+    80005ec0:	7866                	ld	a6,120(sp)
+    80005ec2:	688a                	ld	a7,128(sp)
+    80005ec4:	692a                	ld	s2,136(sp)
+    80005ec6:	69ca                	ld	s3,144(sp)
+    80005ec8:	6a6a                	ld	s4,152(sp)
+    80005eca:	7a8a                	ld	s5,160(sp)
+    80005ecc:	7b2a                	ld	s6,168(sp)
+    80005ece:	7bca                	ld	s7,176(sp)
+    80005ed0:	7c6a                	ld	s8,184(sp)
+    80005ed2:	6c8e                	ld	s9,192(sp)
+    80005ed4:	6d2e                	ld	s10,200(sp)
+    80005ed6:	6dce                	ld	s11,208(sp)
+    80005ed8:	6e6e                	ld	t3,216(sp)
+    80005eda:	7e8e                	ld	t4,224(sp)
+    80005edc:	7f2e                	ld	t5,232(sp)
+    80005ede:	7fce                	ld	t6,240(sp)
+    80005ee0:	6111                	addi	sp,sp,256
+    80005ee2:	10200073          	sret
+    80005ee6:	00000013          	nop
+    80005eea:	00000013          	nop
+    80005eee:	0001                	nop
 
-0000000080005c60 <timervec>:
-    80005c60:	34051573          	csrrw	a0,mscratch,a0
-    80005c64:	e10c                	sd	a1,0(a0)
-    80005c66:	e510                	sd	a2,8(a0)
-    80005c68:	e914                	sd	a3,16(a0)
-    80005c6a:	6d0c                	ld	a1,24(a0)
-    80005c6c:	7110                	ld	a2,32(a0)
-    80005c6e:	6194                	ld	a3,0(a1)
-    80005c70:	96b2                	add	a3,a3,a2
-    80005c72:	e194                	sd	a3,0(a1)
-    80005c74:	4589                	li	a1,2
-    80005c76:	14459073          	csrw	sip,a1
-    80005c7a:	6914                	ld	a3,16(a0)
-    80005c7c:	6510                	ld	a2,8(a0)
-    80005c7e:	610c                	ld	a1,0(a0)
-    80005c80:	34051573          	csrrw	a0,mscratch,a0
-    80005c84:	30200073          	mret
+0000000080005ef0 <timervec>:
+    80005ef0:	34051573          	csrrw	a0,mscratch,a0
+    80005ef4:	e10c                	sd	a1,0(a0)
+    80005ef6:	e510                	sd	a2,8(a0)
+    80005ef8:	e914                	sd	a3,16(a0)
+    80005efa:	6d0c                	ld	a1,24(a0)
+    80005efc:	7110                	ld	a2,32(a0)
+    80005efe:	6194                	ld	a3,0(a1)
+    80005f00:	96b2                	add	a3,a3,a2
+    80005f02:	e194                	sd	a3,0(a1)
+    80005f04:	4589                	li	a1,2
+    80005f06:	14459073          	csrw	sip,a1
+    80005f0a:	6914                	ld	a3,16(a0)
+    80005f0c:	6510                	ld	a2,8(a0)
+    80005f0e:	610c                	ld	a1,0(a0)
+    80005f10:	34051573          	csrrw	a0,mscratch,a0
+    80005f14:	30200073          	mret
 	...
 
-0000000080005c8a <plicinit>:
+0000000080005f1a <plicinit>:
 // the riscv Platform Level Interrupt Controller (PLIC).
 //
 
 void
 plicinit(void)
 {
-    80005c8a:	1141                	addi	sp,sp,-16
-    80005c8c:	e422                	sd	s0,8(sp)
-    80005c8e:	0800                	addi	s0,sp,16
+    80005f1a:	1141                	addi	sp,sp,-16
+    80005f1c:	e422                	sd	s0,8(sp)
+    80005f1e:	0800                	addi	s0,sp,16
   // set desired IRQ priorities non-zero (otherwise disabled).
   *(uint32*)(PLIC + UART0_IRQ*4) = 1;
-    80005c90:	0c0007b7          	lui	a5,0xc000
-    80005c94:	4705                	li	a4,1
-    80005c96:	d798                	sw	a4,40(a5)
+    80005f20:	0c0007b7          	lui	a5,0xc000
+    80005f24:	4705                	li	a4,1
+    80005f26:	d798                	sw	a4,40(a5)
   *(uint32*)(PLIC + VIRTIO0_IRQ*4) = 1;
-    80005c98:	c3d8                	sw	a4,4(a5)
+    80005f28:	c3d8                	sw	a4,4(a5)
 }
-    80005c9a:	6422                	ld	s0,8(sp)
-    80005c9c:	0141                	addi	sp,sp,16
-    80005c9e:	8082                	ret
+    80005f2a:	6422                	ld	s0,8(sp)
+    80005f2c:	0141                	addi	sp,sp,16
+    80005f2e:	8082                	ret
 
-0000000080005ca0 <plicinithart>:
+0000000080005f30 <plicinithart>:
 
 void
 plicinithart(void)
 {
-    80005ca0:	1141                	addi	sp,sp,-16
-    80005ca2:	e406                	sd	ra,8(sp)
-    80005ca4:	e022                	sd	s0,0(sp)
-    80005ca6:	0800                	addi	s0,sp,16
+    80005f30:	1141                	addi	sp,sp,-16
+    80005f32:	e406                	sd	ra,8(sp)
+    80005f34:	e022                	sd	s0,0(sp)
+    80005f36:	0800                	addi	s0,sp,16
   int hart = cpuid();
-    80005ca8:	ffffc097          	auipc	ra,0xffffc
-    80005cac:	cc2080e7          	jalr	-830(ra) # 8000196a <cpuid>
+    80005f38:	ffffc097          	auipc	ra,0xffffc
+    80005f3c:	adc080e7          	jalr	-1316(ra) # 80001a14 <cpuid>
   
   // set uart's enable bit for this hart's S-mode. 
   *(uint32*)PLIC_SENABLE(hart)= (1 << UART0_IRQ) | (1 << VIRTIO0_IRQ);
-    80005cb0:	0085171b          	slliw	a4,a0,0x8
-    80005cb4:	0c0027b7          	lui	a5,0xc002
-    80005cb8:	97ba                	add	a5,a5,a4
-    80005cba:	40200713          	li	a4,1026
-    80005cbe:	08e7a023          	sw	a4,128(a5) # c002080 <_entry-0x73ffdf80>
+    80005f40:	0085171b          	slliw	a4,a0,0x8
+    80005f44:	0c0027b7          	lui	a5,0xc002
+    80005f48:	97ba                	add	a5,a5,a4
+    80005f4a:	40200713          	li	a4,1026
+    80005f4e:	08e7a023          	sw	a4,128(a5) # c002080 <_entry-0x73ffdf80>
 
   // set this hart's S-mode priority threshold to 0.
   *(uint32*)PLIC_SPRIORITY(hart) = 0;
-    80005cc2:	00d5151b          	slliw	a0,a0,0xd
-    80005cc6:	0c2017b7          	lui	a5,0xc201
-    80005cca:	97aa                	add	a5,a5,a0
-    80005ccc:	0007a023          	sw	zero,0(a5) # c201000 <_entry-0x73dff000>
+    80005f52:	00d5151b          	slliw	a0,a0,0xd
+    80005f56:	0c2017b7          	lui	a5,0xc201
+    80005f5a:	97aa                	add	a5,a5,a0
+    80005f5c:	0007a023          	sw	zero,0(a5) # c201000 <_entry-0x73dff000>
 }
-    80005cd0:	60a2                	ld	ra,8(sp)
-    80005cd2:	6402                	ld	s0,0(sp)
-    80005cd4:	0141                	addi	sp,sp,16
-    80005cd6:	8082                	ret
+    80005f60:	60a2                	ld	ra,8(sp)
+    80005f62:	6402                	ld	s0,0(sp)
+    80005f64:	0141                	addi	sp,sp,16
+    80005f66:	8082                	ret
 
-0000000080005cd8 <plic_claim>:
+0000000080005f68 <plic_claim>:
 
 // ask the PLIC what interrupt we should serve.
 int
 plic_claim(void)
 {
-    80005cd8:	1141                	addi	sp,sp,-16
-    80005cda:	e406                	sd	ra,8(sp)
-    80005cdc:	e022                	sd	s0,0(sp)
-    80005cde:	0800                	addi	s0,sp,16
+    80005f68:	1141                	addi	sp,sp,-16
+    80005f6a:	e406                	sd	ra,8(sp)
+    80005f6c:	e022                	sd	s0,0(sp)
+    80005f6e:	0800                	addi	s0,sp,16
   int hart = cpuid();
-    80005ce0:	ffffc097          	auipc	ra,0xffffc
-    80005ce4:	c8a080e7          	jalr	-886(ra) # 8000196a <cpuid>
+    80005f70:	ffffc097          	auipc	ra,0xffffc
+    80005f74:	aa4080e7          	jalr	-1372(ra) # 80001a14 <cpuid>
   int irq = *(uint32*)PLIC_SCLAIM(hart);
-    80005ce8:	00d5151b          	slliw	a0,a0,0xd
-    80005cec:	0c2017b7          	lui	a5,0xc201
-    80005cf0:	97aa                	add	a5,a5,a0
+    80005f78:	00d5151b          	slliw	a0,a0,0xd
+    80005f7c:	0c2017b7          	lui	a5,0xc201
+    80005f80:	97aa                	add	a5,a5,a0
   return irq;
 }
-    80005cf2:	43c8                	lw	a0,4(a5)
-    80005cf4:	60a2                	ld	ra,8(sp)
-    80005cf6:	6402                	ld	s0,0(sp)
-    80005cf8:	0141                	addi	sp,sp,16
-    80005cfa:	8082                	ret
+    80005f82:	43c8                	lw	a0,4(a5)
+    80005f84:	60a2                	ld	ra,8(sp)
+    80005f86:	6402                	ld	s0,0(sp)
+    80005f88:	0141                	addi	sp,sp,16
+    80005f8a:	8082                	ret
 
-0000000080005cfc <plic_complete>:
+0000000080005f8c <plic_complete>:
 
 // tell the PLIC we've served this IRQ.
 void
 plic_complete(int irq)
 {
-    80005cfc:	1101                	addi	sp,sp,-32
-    80005cfe:	ec06                	sd	ra,24(sp)
-    80005d00:	e822                	sd	s0,16(sp)
-    80005d02:	e426                	sd	s1,8(sp)
-    80005d04:	1000                	addi	s0,sp,32
-    80005d06:	84aa                	mv	s1,a0
+    80005f8c:	1101                	addi	sp,sp,-32
+    80005f8e:	ec06                	sd	ra,24(sp)
+    80005f90:	e822                	sd	s0,16(sp)
+    80005f92:	e426                	sd	s1,8(sp)
+    80005f94:	1000                	addi	s0,sp,32
+    80005f96:	84aa                	mv	s1,a0
   int hart = cpuid();
-    80005d08:	ffffc097          	auipc	ra,0xffffc
-    80005d0c:	c62080e7          	jalr	-926(ra) # 8000196a <cpuid>
+    80005f98:	ffffc097          	auipc	ra,0xffffc
+    80005f9c:	a7c080e7          	jalr	-1412(ra) # 80001a14 <cpuid>
   *(uint32*)PLIC_SCLAIM(hart) = irq;
-    80005d10:	00d5151b          	slliw	a0,a0,0xd
-    80005d14:	0c2017b7          	lui	a5,0xc201
-    80005d18:	97aa                	add	a5,a5,a0
-    80005d1a:	c3c4                	sw	s1,4(a5)
+    80005fa0:	00d5151b          	slliw	a0,a0,0xd
+    80005fa4:	0c2017b7          	lui	a5,0xc201
+    80005fa8:	97aa                	add	a5,a5,a0
+    80005faa:	c3c4                	sw	s1,4(a5)
 }
-    80005d1c:	60e2                	ld	ra,24(sp)
-    80005d1e:	6442                	ld	s0,16(sp)
-    80005d20:	64a2                	ld	s1,8(sp)
-    80005d22:	6105                	addi	sp,sp,32
-    80005d24:	8082                	ret
+    80005fac:	60e2                	ld	ra,24(sp)
+    80005fae:	6442                	ld	s0,16(sp)
+    80005fb0:	64a2                	ld	s1,8(sp)
+    80005fb2:	6105                	addi	sp,sp,32
+    80005fb4:	8082                	ret
 
-0000000080005d26 <free_desc>:
+0000000080005fb6 <free_desc>:
 }
 
 // mark a descriptor as free.
 static void
 free_desc(int i)
 {
-    80005d26:	1141                	addi	sp,sp,-16
-    80005d28:	e406                	sd	ra,8(sp)
-    80005d2a:	e022                	sd	s0,0(sp)
-    80005d2c:	0800                	addi	s0,sp,16
+    80005fb6:	1141                	addi	sp,sp,-16
+    80005fb8:	e406                	sd	ra,8(sp)
+    80005fba:	e022                	sd	s0,0(sp)
+    80005fbc:	0800                	addi	s0,sp,16
   if(i >= NUM)
-    80005d2e:	479d                	li	a5,7
-    80005d30:	06a7c863          	blt	a5,a0,80005da0 <free_desc+0x7a>
+    80005fbe:	479d                	li	a5,7
+    80005fc0:	06a7c863          	blt	a5,a0,80006030 <free_desc+0x7a>
     panic("free_desc 1");
   if(disk.free[i])
-    80005d34:	0001d717          	auipc	a4,0x1d
-    80005d38:	2cc70713          	addi	a4,a4,716 # 80023000 <disk>
-    80005d3c:	972a                	add	a4,a4,a0
-    80005d3e:	6789                	lui	a5,0x2
-    80005d40:	97ba                	add	a5,a5,a4
-    80005d42:	0187c783          	lbu	a5,24(a5) # 2018 <_entry-0x7fffdfe8>
-    80005d46:	e7ad                	bnez	a5,80005db0 <free_desc+0x8a>
+    80005fc4:	0001d717          	auipc	a4,0x1d
+    80005fc8:	03c70713          	addi	a4,a4,60 # 80023000 <disk>
+    80005fcc:	972a                	add	a4,a4,a0
+    80005fce:	6789                	lui	a5,0x2
+    80005fd0:	97ba                	add	a5,a5,a4
+    80005fd2:	0187c783          	lbu	a5,24(a5) # 2018 <_entry-0x7fffdfe8>
+    80005fd6:	e7ad                	bnez	a5,80006040 <free_desc+0x8a>
     panic("free_desc 2");
   disk.desc[i].addr = 0;
-    80005d48:	00451793          	slli	a5,a0,0x4
-    80005d4c:	0001f717          	auipc	a4,0x1f
-    80005d50:	2b470713          	addi	a4,a4,692 # 80025000 <disk+0x2000>
-    80005d54:	6314                	ld	a3,0(a4)
-    80005d56:	96be                	add	a3,a3,a5
-    80005d58:	0006b023          	sd	zero,0(a3)
+    80005fd8:	00451793          	slli	a5,a0,0x4
+    80005fdc:	0001f717          	auipc	a4,0x1f
+    80005fe0:	02470713          	addi	a4,a4,36 # 80025000 <disk+0x2000>
+    80005fe4:	6314                	ld	a3,0(a4)
+    80005fe6:	96be                	add	a3,a3,a5
+    80005fe8:	0006b023          	sd	zero,0(a3)
   disk.desc[i].len = 0;
-    80005d5c:	6314                	ld	a3,0(a4)
-    80005d5e:	96be                	add	a3,a3,a5
-    80005d60:	0006a423          	sw	zero,8(a3)
+    80005fec:	6314                	ld	a3,0(a4)
+    80005fee:	96be                	add	a3,a3,a5
+    80005ff0:	0006a423          	sw	zero,8(a3)
   disk.desc[i].flags = 0;
-    80005d64:	6314                	ld	a3,0(a4)
-    80005d66:	96be                	add	a3,a3,a5
-    80005d68:	00069623          	sh	zero,12(a3)
+    80005ff4:	6314                	ld	a3,0(a4)
+    80005ff6:	96be                	add	a3,a3,a5
+    80005ff8:	00069623          	sh	zero,12(a3)
   disk.desc[i].next = 0;
-    80005d6c:	6318                	ld	a4,0(a4)
-    80005d6e:	97ba                	add	a5,a5,a4
-    80005d70:	00079723          	sh	zero,14(a5)
+    80005ffc:	6318                	ld	a4,0(a4)
+    80005ffe:	97ba                	add	a5,a5,a4
+    80006000:	00079723          	sh	zero,14(a5)
   disk.free[i] = 1;
-    80005d74:	0001d717          	auipc	a4,0x1d
-    80005d78:	28c70713          	addi	a4,a4,652 # 80023000 <disk>
-    80005d7c:	972a                	add	a4,a4,a0
-    80005d7e:	6789                	lui	a5,0x2
-    80005d80:	97ba                	add	a5,a5,a4
-    80005d82:	4705                	li	a4,1
-    80005d84:	00e78c23          	sb	a4,24(a5) # 2018 <_entry-0x7fffdfe8>
+    80006004:	0001d717          	auipc	a4,0x1d
+    80006008:	ffc70713          	addi	a4,a4,-4 # 80023000 <disk>
+    8000600c:	972a                	add	a4,a4,a0
+    8000600e:	6789                	lui	a5,0x2
+    80006010:	97ba                	add	a5,a5,a4
+    80006012:	4705                	li	a4,1
+    80006014:	00e78c23          	sb	a4,24(a5) # 2018 <_entry-0x7fffdfe8>
   wakeup(&disk.free[0]);
-    80005d88:	0001f517          	auipc	a0,0x1f
-    80005d8c:	29050513          	addi	a0,a0,656 # 80025018 <disk+0x2018>
-    80005d90:	ffffc097          	auipc	ra,0xffffc
-    80005d94:	462080e7          	jalr	1122(ra) # 800021f2 <wakeup>
+    80006018:	0001f517          	auipc	a0,0x1f
+    8000601c:	00050513          	mv	a0,a0
+    80006020:	ffffc097          	auipc	ra,0xffffc
+    80006024:	36c080e7          	jalr	876(ra) # 8000238c <wakeup>
 }
-    80005d98:	60a2                	ld	ra,8(sp)
-    80005d9a:	6402                	ld	s0,0(sp)
-    80005d9c:	0141                	addi	sp,sp,16
-    80005d9e:	8082                	ret
+    80006028:	60a2                	ld	ra,8(sp)
+    8000602a:	6402                	ld	s0,0(sp)
+    8000602c:	0141                	addi	sp,sp,16
+    8000602e:	8082                	ret
     panic("free_desc 1");
-    80005da0:	00003517          	auipc	a0,0x3
-    80005da4:	a5050513          	addi	a0,a0,-1456 # 800087f0 <syscalls+0x330>
-    80005da8:	ffffa097          	auipc	ra,0xffffa
-    80005dac:	792080e7          	jalr	1938(ra) # 8000053a <panic>
+    80006030:	00003517          	auipc	a0,0x3
+    80006034:	83850513          	addi	a0,a0,-1992 # 80008868 <syscalls+0x338>
+    80006038:	ffffa097          	auipc	ra,0xffffa
+    8000603c:	502080e7          	jalr	1282(ra) # 8000053a <panic>
     panic("free_desc 2");
-    80005db0:	00003517          	auipc	a0,0x3
-    80005db4:	a5050513          	addi	a0,a0,-1456 # 80008800 <syscalls+0x340>
-    80005db8:	ffffa097          	auipc	ra,0xffffa
-    80005dbc:	782080e7          	jalr	1922(ra) # 8000053a <panic>
+    80006040:	00003517          	auipc	a0,0x3
+    80006044:	83850513          	addi	a0,a0,-1992 # 80008878 <syscalls+0x348>
+    80006048:	ffffa097          	auipc	ra,0xffffa
+    8000604c:	4f2080e7          	jalr	1266(ra) # 8000053a <panic>
 
-0000000080005dc0 <virtio_disk_init>:
+0000000080006050 <virtio_disk_init>:
 {
-    80005dc0:	1101                	addi	sp,sp,-32
-    80005dc2:	ec06                	sd	ra,24(sp)
-    80005dc4:	e822                	sd	s0,16(sp)
-    80005dc6:	e426                	sd	s1,8(sp)
-    80005dc8:	1000                	addi	s0,sp,32
+    80006050:	1101                	addi	sp,sp,-32
+    80006052:	ec06                	sd	ra,24(sp)
+    80006054:	e822                	sd	s0,16(sp)
+    80006056:	e426                	sd	s1,8(sp)
+    80006058:	1000                	addi	s0,sp,32
   initlock(&disk.vdisk_lock, "virtio_disk");
-    80005dca:	00003597          	auipc	a1,0x3
-    80005dce:	a4658593          	addi	a1,a1,-1466 # 80008810 <syscalls+0x350>
-    80005dd2:	0001f517          	auipc	a0,0x1f
-    80005dd6:	35650513          	addi	a0,a0,854 # 80025128 <disk+0x2128>
-    80005dda:	ffffb097          	auipc	ra,0xffffb
-    80005dde:	d66080e7          	jalr	-666(ra) # 80000b40 <initlock>
+    8000605a:	00003597          	auipc	a1,0x3
+    8000605e:	82e58593          	addi	a1,a1,-2002 # 80008888 <syscalls+0x358>
+    80006062:	0001f517          	auipc	a0,0x1f
+    80006066:	0c650513          	addi	a0,a0,198 # 80025128 <disk+0x2128>
+    8000606a:	ffffb097          	auipc	ra,0xffffb
+    8000606e:	ad6080e7          	jalr	-1322(ra) # 80000b40 <initlock>
   if(*R(VIRTIO_MMIO_MAGIC_VALUE) != 0x74726976 ||
-    80005de2:	100017b7          	lui	a5,0x10001
-    80005de6:	4398                	lw	a4,0(a5)
-    80005de8:	2701                	sext.w	a4,a4
-    80005dea:	747277b7          	lui	a5,0x74727
-    80005dee:	97678793          	addi	a5,a5,-1674 # 74726976 <_entry-0xb8d968a>
-    80005df2:	0ef71063          	bne	a4,a5,80005ed2 <virtio_disk_init+0x112>
+    80006072:	100017b7          	lui	a5,0x10001
+    80006076:	4398                	lw	a4,0(a5)
+    80006078:	2701                	sext.w	a4,a4
+    8000607a:	747277b7          	lui	a5,0x74727
+    8000607e:	97678793          	addi	a5,a5,-1674 # 74726976 <_entry-0xb8d968a>
+    80006082:	0ef71063          	bne	a4,a5,80006162 <virtio_disk_init+0x112>
      *R(VIRTIO_MMIO_VERSION) != 1 ||
-    80005df6:	100017b7          	lui	a5,0x10001
-    80005dfa:	43dc                	lw	a5,4(a5)
-    80005dfc:	2781                	sext.w	a5,a5
+    80006086:	100017b7          	lui	a5,0x10001
+    8000608a:	43dc                	lw	a5,4(a5)
+    8000608c:	2781                	sext.w	a5,a5
   if(*R(VIRTIO_MMIO_MAGIC_VALUE) != 0x74726976 ||
-    80005dfe:	4705                	li	a4,1
-    80005e00:	0ce79963          	bne	a5,a4,80005ed2 <virtio_disk_init+0x112>
+    8000608e:	4705                	li	a4,1
+    80006090:	0ce79963          	bne	a5,a4,80006162 <virtio_disk_init+0x112>
      *R(VIRTIO_MMIO_DEVICE_ID) != 2 ||
-    80005e04:	100017b7          	lui	a5,0x10001
-    80005e08:	479c                	lw	a5,8(a5)
-    80005e0a:	2781                	sext.w	a5,a5
+    80006094:	100017b7          	lui	a5,0x10001
+    80006098:	479c                	lw	a5,8(a5)
+    8000609a:	2781                	sext.w	a5,a5
      *R(VIRTIO_MMIO_VERSION) != 1 ||
-    80005e0c:	4709                	li	a4,2
-    80005e0e:	0ce79263          	bne	a5,a4,80005ed2 <virtio_disk_init+0x112>
+    8000609c:	4709                	li	a4,2
+    8000609e:	0ce79263          	bne	a5,a4,80006162 <virtio_disk_init+0x112>
      *R(VIRTIO_MMIO_VENDOR_ID) != 0x554d4551){
-    80005e12:	100017b7          	lui	a5,0x10001
-    80005e16:	47d8                	lw	a4,12(a5)
-    80005e18:	2701                	sext.w	a4,a4
+    800060a2:	100017b7          	lui	a5,0x10001
+    800060a6:	47d8                	lw	a4,12(a5)
+    800060a8:	2701                	sext.w	a4,a4
      *R(VIRTIO_MMIO_DEVICE_ID) != 2 ||
-    80005e1a:	554d47b7          	lui	a5,0x554d4
-    80005e1e:	55178793          	addi	a5,a5,1361 # 554d4551 <_entry-0x2ab2baaf>
-    80005e22:	0af71863          	bne	a4,a5,80005ed2 <virtio_disk_init+0x112>
+    800060aa:	554d47b7          	lui	a5,0x554d4
+    800060ae:	55178793          	addi	a5,a5,1361 # 554d4551 <_entry-0x2ab2baaf>
+    800060b2:	0af71863          	bne	a4,a5,80006162 <virtio_disk_init+0x112>
   *R(VIRTIO_MMIO_STATUS) = status;
-    80005e26:	100017b7          	lui	a5,0x10001
-    80005e2a:	4705                	li	a4,1
-    80005e2c:	dbb8                	sw	a4,112(a5)
+    800060b6:	100017b7          	lui	a5,0x10001
+    800060ba:	4705                	li	a4,1
+    800060bc:	dbb8                	sw	a4,112(a5)
   *R(VIRTIO_MMIO_STATUS) = status;
-    80005e2e:	470d                	li	a4,3
-    80005e30:	dbb8                	sw	a4,112(a5)
+    800060be:	470d                	li	a4,3
+    800060c0:	dbb8                	sw	a4,112(a5)
   uint64 features = *R(VIRTIO_MMIO_DEVICE_FEATURES);
-    80005e32:	4b98                	lw	a4,16(a5)
+    800060c2:	4b98                	lw	a4,16(a5)
   *R(VIRTIO_MMIO_DRIVER_FEATURES) = features;
-    80005e34:	c7ffe6b7          	lui	a3,0xc7ffe
-    80005e38:	75f68693          	addi	a3,a3,1887 # ffffffffc7ffe75f <end+0xffffffff47fd875f>
-    80005e3c:	8f75                	and	a4,a4,a3
-    80005e3e:	d398                	sw	a4,32(a5)
+    800060c4:	c7ffe6b7          	lui	a3,0xc7ffe
+    800060c8:	75f68693          	addi	a3,a3,1887 # ffffffffc7ffe75f <end+0xffffffff47fd875f>
+    800060cc:	8f75                	and	a4,a4,a3
+    800060ce:	d398                	sw	a4,32(a5)
   *R(VIRTIO_MMIO_STATUS) = status;
-    80005e40:	472d                	li	a4,11
-    80005e42:	dbb8                	sw	a4,112(a5)
+    800060d0:	472d                	li	a4,11
+    800060d2:	dbb8                	sw	a4,112(a5)
   *R(VIRTIO_MMIO_STATUS) = status;
-    80005e44:	473d                	li	a4,15
-    80005e46:	dbb8                	sw	a4,112(a5)
+    800060d4:	473d                	li	a4,15
+    800060d6:	dbb8                	sw	a4,112(a5)
   *R(VIRTIO_MMIO_GUEST_PAGE_SIZE) = PGSIZE;
-    80005e48:	6705                	lui	a4,0x1
-    80005e4a:	d798                	sw	a4,40(a5)
+    800060d8:	6705                	lui	a4,0x1
+    800060da:	d798                	sw	a4,40(a5)
   *R(VIRTIO_MMIO_QUEUE_SEL) = 0;
-    80005e4c:	0207a823          	sw	zero,48(a5) # 10001030 <_entry-0x6fffefd0>
+    800060dc:	0207a823          	sw	zero,48(a5) # 10001030 <_entry-0x6fffefd0>
   uint32 max = *R(VIRTIO_MMIO_QUEUE_NUM_MAX);
-    80005e50:	5bdc                	lw	a5,52(a5)
-    80005e52:	2781                	sext.w	a5,a5
+    800060e0:	5bdc                	lw	a5,52(a5)
+    800060e2:	2781                	sext.w	a5,a5
   if(max == 0)
-    80005e54:	c7d9                	beqz	a5,80005ee2 <virtio_disk_init+0x122>
+    800060e4:	c7d9                	beqz	a5,80006172 <virtio_disk_init+0x122>
   if(max < NUM)
-    80005e56:	471d                	li	a4,7
-    80005e58:	08f77d63          	bgeu	a4,a5,80005ef2 <virtio_disk_init+0x132>
+    800060e6:	471d                	li	a4,7
+    800060e8:	08f77d63          	bgeu	a4,a5,80006182 <virtio_disk_init+0x132>
   *R(VIRTIO_MMIO_QUEUE_NUM) = NUM;
-    80005e5c:	100014b7          	lui	s1,0x10001
-    80005e60:	47a1                	li	a5,8
-    80005e62:	dc9c                	sw	a5,56(s1)
+    800060ec:	100014b7          	lui	s1,0x10001
+    800060f0:	47a1                	li	a5,8
+    800060f2:	dc9c                	sw	a5,56(s1)
   memset(disk.pages, 0, sizeof(disk.pages));
-    80005e64:	6609                	lui	a2,0x2
-    80005e66:	4581                	li	a1,0
-    80005e68:	0001d517          	auipc	a0,0x1d
-    80005e6c:	19850513          	addi	a0,a0,408 # 80023000 <disk>
-    80005e70:	ffffb097          	auipc	ra,0xffffb
-    80005e74:	e5c080e7          	jalr	-420(ra) # 80000ccc <memset>
+    800060f4:	6609                	lui	a2,0x2
+    800060f6:	4581                	li	a1,0
+    800060f8:	0001d517          	auipc	a0,0x1d
+    800060fc:	f0850513          	addi	a0,a0,-248 # 80023000 <disk>
+    80006100:	ffffb097          	auipc	ra,0xffffb
+    80006104:	bcc080e7          	jalr	-1076(ra) # 80000ccc <memset>
   *R(VIRTIO_MMIO_QUEUE_PFN) = ((uint64)disk.pages) >> PGSHIFT;
-    80005e78:	0001d717          	auipc	a4,0x1d
-    80005e7c:	18870713          	addi	a4,a4,392 # 80023000 <disk>
-    80005e80:	00c75793          	srli	a5,a4,0xc
-    80005e84:	2781                	sext.w	a5,a5
-    80005e86:	c0bc                	sw	a5,64(s1)
+    80006108:	0001d717          	auipc	a4,0x1d
+    8000610c:	ef870713          	addi	a4,a4,-264 # 80023000 <disk>
+    80006110:	00c75793          	srli	a5,a4,0xc
+    80006114:	2781                	sext.w	a5,a5
+    80006116:	c0bc                	sw	a5,64(s1)
   disk.desc = (struct virtq_desc *) disk.pages;
-    80005e88:	0001f797          	auipc	a5,0x1f
-    80005e8c:	17878793          	addi	a5,a5,376 # 80025000 <disk+0x2000>
-    80005e90:	e398                	sd	a4,0(a5)
+    80006118:	0001f797          	auipc	a5,0x1f
+    8000611c:	ee878793          	addi	a5,a5,-280 # 80025000 <disk+0x2000>
+    80006120:	e398                	sd	a4,0(a5)
   disk.avail = (struct virtq_avail *)(disk.pages + NUM*sizeof(struct virtq_desc));
-    80005e92:	0001d717          	auipc	a4,0x1d
-    80005e96:	1ee70713          	addi	a4,a4,494 # 80023080 <disk+0x80>
-    80005e9a:	e798                	sd	a4,8(a5)
+    80006122:	0001d717          	auipc	a4,0x1d
+    80006126:	f5e70713          	addi	a4,a4,-162 # 80023080 <disk+0x80>
+    8000612a:	e798                	sd	a4,8(a5)
   disk.used = (struct virtq_used *) (disk.pages + PGSIZE);
-    80005e9c:	0001e717          	auipc	a4,0x1e
-    80005ea0:	16470713          	addi	a4,a4,356 # 80024000 <disk+0x1000>
-    80005ea4:	eb98                	sd	a4,16(a5)
+    8000612c:	0001e717          	auipc	a4,0x1e
+    80006130:	ed470713          	addi	a4,a4,-300 # 80024000 <disk+0x1000>
+    80006134:	eb98                	sd	a4,16(a5)
     disk.free[i] = 1;
-    80005ea6:	4705                	li	a4,1
-    80005ea8:	00e78c23          	sb	a4,24(a5)
-    80005eac:	00e78ca3          	sb	a4,25(a5)
-    80005eb0:	00e78d23          	sb	a4,26(a5)
-    80005eb4:	00e78da3          	sb	a4,27(a5)
-    80005eb8:	00e78e23          	sb	a4,28(a5)
-    80005ebc:	00e78ea3          	sb	a4,29(a5)
-    80005ec0:	00e78f23          	sb	a4,30(a5)
-    80005ec4:	00e78fa3          	sb	a4,31(a5)
+    80006136:	4705                	li	a4,1
+    80006138:	00e78c23          	sb	a4,24(a5)
+    8000613c:	00e78ca3          	sb	a4,25(a5)
+    80006140:	00e78d23          	sb	a4,26(a5)
+    80006144:	00e78da3          	sb	a4,27(a5)
+    80006148:	00e78e23          	sb	a4,28(a5)
+    8000614c:	00e78ea3          	sb	a4,29(a5)
+    80006150:	00e78f23          	sb	a4,30(a5)
+    80006154:	00e78fa3          	sb	a4,31(a5)
 }
-    80005ec8:	60e2                	ld	ra,24(sp)
-    80005eca:	6442                	ld	s0,16(sp)
-    80005ecc:	64a2                	ld	s1,8(sp)
-    80005ece:	6105                	addi	sp,sp,32
-    80005ed0:	8082                	ret
+    80006158:	60e2                	ld	ra,24(sp)
+    8000615a:	6442                	ld	s0,16(sp)
+    8000615c:	64a2                	ld	s1,8(sp)
+    8000615e:	6105                	addi	sp,sp,32
+    80006160:	8082                	ret
     panic("could not find virtio disk");
-    80005ed2:	00003517          	auipc	a0,0x3
-    80005ed6:	94e50513          	addi	a0,a0,-1714 # 80008820 <syscalls+0x360>
-    80005eda:	ffffa097          	auipc	ra,0xffffa
-    80005ede:	660080e7          	jalr	1632(ra) # 8000053a <panic>
+    80006162:	00002517          	auipc	a0,0x2
+    80006166:	73650513          	addi	a0,a0,1846 # 80008898 <syscalls+0x368>
+    8000616a:	ffffa097          	auipc	ra,0xffffa
+    8000616e:	3d0080e7          	jalr	976(ra) # 8000053a <panic>
     panic("virtio disk has no queue 0");
-    80005ee2:	00003517          	auipc	a0,0x3
-    80005ee6:	95e50513          	addi	a0,a0,-1698 # 80008840 <syscalls+0x380>
-    80005eea:	ffffa097          	auipc	ra,0xffffa
-    80005eee:	650080e7          	jalr	1616(ra) # 8000053a <panic>
+    80006172:	00002517          	auipc	a0,0x2
+    80006176:	74650513          	addi	a0,a0,1862 # 800088b8 <syscalls+0x388>
+    8000617a:	ffffa097          	auipc	ra,0xffffa
+    8000617e:	3c0080e7          	jalr	960(ra) # 8000053a <panic>
     panic("virtio disk max queue too short");
-    80005ef2:	00003517          	auipc	a0,0x3
-    80005ef6:	96e50513          	addi	a0,a0,-1682 # 80008860 <syscalls+0x3a0>
-    80005efa:	ffffa097          	auipc	ra,0xffffa
-    80005efe:	640080e7          	jalr	1600(ra) # 8000053a <panic>
+    80006182:	00002517          	auipc	a0,0x2
+    80006186:	75650513          	addi	a0,a0,1878 # 800088d8 <syscalls+0x3a8>
+    8000618a:	ffffa097          	auipc	ra,0xffffa
+    8000618e:	3b0080e7          	jalr	944(ra) # 8000053a <panic>
 
-0000000080005f02 <virtio_disk_rw>:
+0000000080006192 <virtio_disk_rw>:
   return 0;
 }
 
 void
 virtio_disk_rw(struct buf *b, int write)
 {
-    80005f02:	7119                	addi	sp,sp,-128
-    80005f04:	fc86                	sd	ra,120(sp)
-    80005f06:	f8a2                	sd	s0,112(sp)
-    80005f08:	f4a6                	sd	s1,104(sp)
-    80005f0a:	f0ca                	sd	s2,96(sp)
-    80005f0c:	ecce                	sd	s3,88(sp)
-    80005f0e:	e8d2                	sd	s4,80(sp)
-    80005f10:	e4d6                	sd	s5,72(sp)
-    80005f12:	e0da                	sd	s6,64(sp)
-    80005f14:	fc5e                	sd	s7,56(sp)
-    80005f16:	f862                	sd	s8,48(sp)
-    80005f18:	f466                	sd	s9,40(sp)
-    80005f1a:	f06a                	sd	s10,32(sp)
-    80005f1c:	ec6e                	sd	s11,24(sp)
-    80005f1e:	0100                	addi	s0,sp,128
-    80005f20:	8aaa                	mv	s5,a0
-    80005f22:	8d2e                	mv	s10,a1
+    80006192:	7119                	addi	sp,sp,-128
+    80006194:	fc86                	sd	ra,120(sp)
+    80006196:	f8a2                	sd	s0,112(sp)
+    80006198:	f4a6                	sd	s1,104(sp)
+    8000619a:	f0ca                	sd	s2,96(sp)
+    8000619c:	ecce                	sd	s3,88(sp)
+    8000619e:	e8d2                	sd	s4,80(sp)
+    800061a0:	e4d6                	sd	s5,72(sp)
+    800061a2:	e0da                	sd	s6,64(sp)
+    800061a4:	fc5e                	sd	s7,56(sp)
+    800061a6:	f862                	sd	s8,48(sp)
+    800061a8:	f466                	sd	s9,40(sp)
+    800061aa:	f06a                	sd	s10,32(sp)
+    800061ac:	ec6e                	sd	s11,24(sp)
+    800061ae:	0100                	addi	s0,sp,128
+    800061b0:	8aaa                	mv	s5,a0
+    800061b2:	8d2e                	mv	s10,a1
   uint64 sector = b->blockno * (BSIZE / 512);
-    80005f24:	00c52c83          	lw	s9,12(a0)
-    80005f28:	001c9c9b          	slliw	s9,s9,0x1
-    80005f2c:	1c82                	slli	s9,s9,0x20
-    80005f2e:	020cdc93          	srli	s9,s9,0x20
+    800061b4:	00c52c83          	lw	s9,12(a0)
+    800061b8:	001c9c9b          	slliw	s9,s9,0x1
+    800061bc:	1c82                	slli	s9,s9,0x20
+    800061be:	020cdc93          	srli	s9,s9,0x20
 
   acquire(&disk.vdisk_lock);
-    80005f32:	0001f517          	auipc	a0,0x1f
-    80005f36:	1f650513          	addi	a0,a0,502 # 80025128 <disk+0x2128>
-    80005f3a:	ffffb097          	auipc	ra,0xffffb
-    80005f3e:	c96080e7          	jalr	-874(ra) # 80000bd0 <acquire>
+    800061c2:	0001f517          	auipc	a0,0x1f
+    800061c6:	f6650513          	addi	a0,a0,-154 # 80025128 <disk+0x2128>
+    800061ca:	ffffb097          	auipc	ra,0xffffb
+    800061ce:	a06080e7          	jalr	-1530(ra) # 80000bd0 <acquire>
   for(int i = 0; i < 3; i++){
-    80005f42:	4981                	li	s3,0
+    800061d2:	4981                	li	s3,0
   for(int i = 0; i < NUM; i++){
-    80005f44:	44a1                	li	s1,8
+    800061d4:	44a1                	li	s1,8
       disk.free[i] = 0;
-    80005f46:	0001dc17          	auipc	s8,0x1d
-    80005f4a:	0bac0c13          	addi	s8,s8,186 # 80023000 <disk>
-    80005f4e:	6b89                	lui	s7,0x2
+    800061d6:	0001dc17          	auipc	s8,0x1d
+    800061da:	e2ac0c13          	addi	s8,s8,-470 # 80023000 <disk>
+    800061de:	6b89                	lui	s7,0x2
   for(int i = 0; i < 3; i++){
-    80005f50:	4b0d                	li	s6,3
-    80005f52:	a0ad                	j	80005fbc <virtio_disk_rw+0xba>
+    800061e0:	4b0d                	li	s6,3
+    800061e2:	a0ad                	j	8000624c <virtio_disk_rw+0xba>
       disk.free[i] = 0;
-    80005f54:	00fc0733          	add	a4,s8,a5
-    80005f58:	975e                	add	a4,a4,s7
-    80005f5a:	00070c23          	sb	zero,24(a4)
+    800061e4:	00fc0733          	add	a4,s8,a5
+    800061e8:	975e                	add	a4,a4,s7
+    800061ea:	00070c23          	sb	zero,24(a4)
     idx[i] = alloc_desc();
-    80005f5e:	c19c                	sw	a5,0(a1)
+    800061ee:	c19c                	sw	a5,0(a1)
     if(idx[i] < 0){
-    80005f60:	0207c563          	bltz	a5,80005f8a <virtio_disk_rw+0x88>
+    800061f0:	0207c563          	bltz	a5,8000621a <virtio_disk_rw+0x88>
   for(int i = 0; i < 3; i++){
-    80005f64:	2905                	addiw	s2,s2,1
-    80005f66:	0611                	addi	a2,a2,4 # 2004 <_entry-0x7fffdffc>
-    80005f68:	19690c63          	beq	s2,s6,80006100 <virtio_disk_rw+0x1fe>
+    800061f4:	2905                	addiw	s2,s2,1
+    800061f6:	0611                	addi	a2,a2,4 # 2004 <_entry-0x7fffdffc>
+    800061f8:	19690c63          	beq	s2,s6,80006390 <virtio_disk_rw+0x1fe>
     idx[i] = alloc_desc();
-    80005f6c:	85b2                	mv	a1,a2
+    800061fc:	85b2                	mv	a1,a2
   for(int i = 0; i < NUM; i++){
-    80005f6e:	0001f717          	auipc	a4,0x1f
-    80005f72:	0aa70713          	addi	a4,a4,170 # 80025018 <disk+0x2018>
-    80005f76:	87ce                	mv	a5,s3
+    800061fe:	0001f717          	auipc	a4,0x1f
+    80006202:	e1a70713          	addi	a4,a4,-486 # 80025018 <disk+0x2018>
+    80006206:	87ce                	mv	a5,s3
     if(disk.free[i]){
-    80005f78:	00074683          	lbu	a3,0(a4)
-    80005f7c:	fee1                	bnez	a3,80005f54 <virtio_disk_rw+0x52>
+    80006208:	00074683          	lbu	a3,0(a4)
+    8000620c:	fee1                	bnez	a3,800061e4 <virtio_disk_rw+0x52>
   for(int i = 0; i < NUM; i++){
-    80005f7e:	2785                	addiw	a5,a5,1
-    80005f80:	0705                	addi	a4,a4,1
-    80005f82:	fe979be3          	bne	a5,s1,80005f78 <virtio_disk_rw+0x76>
+    8000620e:	2785                	addiw	a5,a5,1
+    80006210:	0705                	addi	a4,a4,1
+    80006212:	fe979be3          	bne	a5,s1,80006208 <virtio_disk_rw+0x76>
     idx[i] = alloc_desc();
-    80005f86:	57fd                	li	a5,-1
-    80005f88:	c19c                	sw	a5,0(a1)
+    80006216:	57fd                	li	a5,-1
+    80006218:	c19c                	sw	a5,0(a1)
       for(int j = 0; j < i; j++)
-    80005f8a:	01205d63          	blez	s2,80005fa4 <virtio_disk_rw+0xa2>
-    80005f8e:	8dce                	mv	s11,s3
+    8000621a:	01205d63          	blez	s2,80006234 <virtio_disk_rw+0xa2>
+    8000621e:	8dce                	mv	s11,s3
         free_desc(idx[j]);
-    80005f90:	000a2503          	lw	a0,0(s4)
-    80005f94:	00000097          	auipc	ra,0x0
-    80005f98:	d92080e7          	jalr	-622(ra) # 80005d26 <free_desc>
+    80006220:	000a2503          	lw	a0,0(s4)
+    80006224:	00000097          	auipc	ra,0x0
+    80006228:	d92080e7          	jalr	-622(ra) # 80005fb6 <free_desc>
       for(int j = 0; j < i; j++)
-    80005f9c:	2d85                	addiw	s11,s11,1
-    80005f9e:	0a11                	addi	s4,s4,4
-    80005fa0:	ff2d98e3          	bne	s11,s2,80005f90 <virtio_disk_rw+0x8e>
+    8000622c:	2d85                	addiw	s11,s11,1
+    8000622e:	0a11                	addi	s4,s4,4
+    80006230:	ff2d98e3          	bne	s11,s2,80006220 <virtio_disk_rw+0x8e>
   int idx[3];
   while(1){
     if(alloc3_desc(idx) == 0) {
       break;
     }
     sleep(&disk.free[0], &disk.vdisk_lock);
-    80005fa4:	0001f597          	auipc	a1,0x1f
-    80005fa8:	18458593          	addi	a1,a1,388 # 80025128 <disk+0x2128>
-    80005fac:	0001f517          	auipc	a0,0x1f
-    80005fb0:	06c50513          	addi	a0,a0,108 # 80025018 <disk+0x2018>
-    80005fb4:	ffffc097          	auipc	ra,0xffffc
-    80005fb8:	0b2080e7          	jalr	178(ra) # 80002066 <sleep>
+    80006234:	0001f597          	auipc	a1,0x1f
+    80006238:	ef458593          	addi	a1,a1,-268 # 80025128 <disk+0x2128>
+    8000623c:	0001f517          	auipc	a0,0x1f
+    80006240:	ddc50513          	addi	a0,a0,-548 # 80025018 <disk+0x2018>
+    80006244:	ffffc097          	auipc	ra,0xffffc
+    80006248:	fbc080e7          	jalr	-68(ra) # 80002200 <sleep>
   for(int i = 0; i < 3; i++){
-    80005fbc:	f8040a13          	addi	s4,s0,-128
+    8000624c:	f8040a13          	addi	s4,s0,-128
 {
-    80005fc0:	8652                	mv	a2,s4
+    80006250:	8652                	mv	a2,s4
   for(int i = 0; i < 3; i++){
-    80005fc2:	894e                	mv	s2,s3
-    80005fc4:	b765                	j	80005f6c <virtio_disk_rw+0x6a>
+    80006252:	894e                	mv	s2,s3
+    80006254:	b765                	j	800061fc <virtio_disk_rw+0x6a>
   disk.desc[idx[0]].next = idx[1];
 
   disk.desc[idx[1]].addr = (uint64) b->data;
   disk.desc[idx[1]].len = BSIZE;
   if(write)
     disk.desc[idx[1]].flags = 0; // device reads b->data
-    80005fc6:	0001f697          	auipc	a3,0x1f
-    80005fca:	03a6b683          	ld	a3,58(a3) # 80025000 <disk+0x2000>
-    80005fce:	96ba                	add	a3,a3,a4
-    80005fd0:	00069623          	sh	zero,12(a3)
+    80006256:	0001f697          	auipc	a3,0x1f
+    8000625a:	daa6b683          	ld	a3,-598(a3) # 80025000 <disk+0x2000>
+    8000625e:	96ba                	add	a3,a3,a4
+    80006260:	00069623          	sh	zero,12(a3)
   else
     disk.desc[idx[1]].flags = VRING_DESC_F_WRITE; // device writes b->data
   disk.desc[idx[1]].flags |= VRING_DESC_F_NEXT;
-    80005fd4:	0001d817          	auipc	a6,0x1d
-    80005fd8:	02c80813          	addi	a6,a6,44 # 80023000 <disk>
-    80005fdc:	0001f697          	auipc	a3,0x1f
-    80005fe0:	02468693          	addi	a3,a3,36 # 80025000 <disk+0x2000>
-    80005fe4:	6290                	ld	a2,0(a3)
-    80005fe6:	963a                	add	a2,a2,a4
-    80005fe8:	00c65583          	lhu	a1,12(a2)
-    80005fec:	0015e593          	ori	a1,a1,1
-    80005ff0:	00b61623          	sh	a1,12(a2)
+    80006264:	0001d817          	auipc	a6,0x1d
+    80006268:	d9c80813          	addi	a6,a6,-612 # 80023000 <disk>
+    8000626c:	0001f697          	auipc	a3,0x1f
+    80006270:	d9468693          	addi	a3,a3,-620 # 80025000 <disk+0x2000>
+    80006274:	6290                	ld	a2,0(a3)
+    80006276:	963a                	add	a2,a2,a4
+    80006278:	00c65583          	lhu	a1,12(a2)
+    8000627c:	0015e593          	ori	a1,a1,1
+    80006280:	00b61623          	sh	a1,12(a2)
   disk.desc[idx[1]].next = idx[2];
-    80005ff4:	f8842603          	lw	a2,-120(s0)
-    80005ff8:	628c                	ld	a1,0(a3)
-    80005ffa:	972e                	add	a4,a4,a1
-    80005ffc:	00c71723          	sh	a2,14(a4)
+    80006284:	f8842603          	lw	a2,-120(s0)
+    80006288:	628c                	ld	a1,0(a3)
+    8000628a:	972e                	add	a4,a4,a1
+    8000628c:	00c71723          	sh	a2,14(a4)
 
   disk.info[idx[0]].status = 0xff; // device writes 0 on success
-    80006000:	20050593          	addi	a1,a0,512
-    80006004:	0592                	slli	a1,a1,0x4
-    80006006:	95c2                	add	a1,a1,a6
-    80006008:	577d                	li	a4,-1
-    8000600a:	02e58823          	sb	a4,48(a1)
+    80006290:	20050593          	addi	a1,a0,512
+    80006294:	0592                	slli	a1,a1,0x4
+    80006296:	95c2                	add	a1,a1,a6
+    80006298:	577d                	li	a4,-1
+    8000629a:	02e58823          	sb	a4,48(a1)
   disk.desc[idx[2]].addr = (uint64) &disk.info[idx[0]].status;
-    8000600e:	00461713          	slli	a4,a2,0x4
-    80006012:	6290                	ld	a2,0(a3)
-    80006014:	963a                	add	a2,a2,a4
-    80006016:	03078793          	addi	a5,a5,48
-    8000601a:	97c2                	add	a5,a5,a6
-    8000601c:	e21c                	sd	a5,0(a2)
+    8000629e:	00461713          	slli	a4,a2,0x4
+    800062a2:	6290                	ld	a2,0(a3)
+    800062a4:	963a                	add	a2,a2,a4
+    800062a6:	03078793          	addi	a5,a5,48
+    800062aa:	97c2                	add	a5,a5,a6
+    800062ac:	e21c                	sd	a5,0(a2)
   disk.desc[idx[2]].len = 1;
-    8000601e:	629c                	ld	a5,0(a3)
-    80006020:	97ba                	add	a5,a5,a4
-    80006022:	4605                	li	a2,1
-    80006024:	c790                	sw	a2,8(a5)
+    800062ae:	629c                	ld	a5,0(a3)
+    800062b0:	97ba                	add	a5,a5,a4
+    800062b2:	4605                	li	a2,1
+    800062b4:	c790                	sw	a2,8(a5)
   disk.desc[idx[2]].flags = VRING_DESC_F_WRITE; // device writes the status
-    80006026:	629c                	ld	a5,0(a3)
-    80006028:	97ba                	add	a5,a5,a4
-    8000602a:	4809                	li	a6,2
-    8000602c:	01079623          	sh	a6,12(a5)
+    800062b6:	629c                	ld	a5,0(a3)
+    800062b8:	97ba                	add	a5,a5,a4
+    800062ba:	4809                	li	a6,2
+    800062bc:	01079623          	sh	a6,12(a5)
   disk.desc[idx[2]].next = 0;
-    80006030:	629c                	ld	a5,0(a3)
-    80006032:	97ba                	add	a5,a5,a4
-    80006034:	00079723          	sh	zero,14(a5)
+    800062c0:	629c                	ld	a5,0(a3)
+    800062c2:	97ba                	add	a5,a5,a4
+    800062c4:	00079723          	sh	zero,14(a5)
 
   // record struct buf for virtio_disk_intr().
   b->disk = 1;
-    80006038:	00caa223          	sw	a2,4(s5)
+    800062c8:	00caa223          	sw	a2,4(s5)
   disk.info[idx[0]].b = b;
-    8000603c:	0355b423          	sd	s5,40(a1)
+    800062cc:	0355b423          	sd	s5,40(a1)
 
   // tell the device the first index in our chain of descriptors.
   disk.avail->ring[disk.avail->idx % NUM] = idx[0];
-    80006040:	6698                	ld	a4,8(a3)
-    80006042:	00275783          	lhu	a5,2(a4)
-    80006046:	8b9d                	andi	a5,a5,7
-    80006048:	0786                	slli	a5,a5,0x1
-    8000604a:	973e                	add	a4,a4,a5
-    8000604c:	00a71223          	sh	a0,4(a4)
+    800062d0:	6698                	ld	a4,8(a3)
+    800062d2:	00275783          	lhu	a5,2(a4)
+    800062d6:	8b9d                	andi	a5,a5,7
+    800062d8:	0786                	slli	a5,a5,0x1
+    800062da:	973e                	add	a4,a4,a5
+    800062dc:	00a71223          	sh	a0,4(a4)
 
   __sync_synchronize();
-    80006050:	0ff0000f          	fence
+    800062e0:	0ff0000f          	fence
 
   // tell the device another avail ring entry is available.
   disk.avail->idx += 1; // not % NUM ...
-    80006054:	6698                	ld	a4,8(a3)
-    80006056:	00275783          	lhu	a5,2(a4)
-    8000605a:	2785                	addiw	a5,a5,1
-    8000605c:	00f71123          	sh	a5,2(a4)
+    800062e4:	6698                	ld	a4,8(a3)
+    800062e6:	00275783          	lhu	a5,2(a4)
+    800062ea:	2785                	addiw	a5,a5,1
+    800062ec:	00f71123          	sh	a5,2(a4)
 
   __sync_synchronize();
-    80006060:	0ff0000f          	fence
+    800062f0:	0ff0000f          	fence
 
   *R(VIRTIO_MMIO_QUEUE_NOTIFY) = 0; // value is queue number
-    80006064:	100017b7          	lui	a5,0x10001
-    80006068:	0407a823          	sw	zero,80(a5) # 10001050 <_entry-0x6fffefb0>
+    800062f4:	100017b7          	lui	a5,0x10001
+    800062f8:	0407a823          	sw	zero,80(a5) # 10001050 <_entry-0x6fffefb0>
 
   // Wait for virtio_disk_intr() to say request has finished.
   while(b->disk == 1) {
-    8000606c:	004aa783          	lw	a5,4(s5)
-    80006070:	02c79163          	bne	a5,a2,80006092 <virtio_disk_rw+0x190>
+    800062fc:	004aa783          	lw	a5,4(s5)
+    80006300:	02c79163          	bne	a5,a2,80006322 <virtio_disk_rw+0x190>
     sleep(b, &disk.vdisk_lock);
-    80006074:	0001f917          	auipc	s2,0x1f
-    80006078:	0b490913          	addi	s2,s2,180 # 80025128 <disk+0x2128>
+    80006304:	0001f917          	auipc	s2,0x1f
+    80006308:	e2490913          	addi	s2,s2,-476 # 80025128 <disk+0x2128>
   while(b->disk == 1) {
-    8000607c:	4485                	li	s1,1
+    8000630c:	4485                	li	s1,1
     sleep(b, &disk.vdisk_lock);
-    8000607e:	85ca                	mv	a1,s2
-    80006080:	8556                	mv	a0,s5
-    80006082:	ffffc097          	auipc	ra,0xffffc
-    80006086:	fe4080e7          	jalr	-28(ra) # 80002066 <sleep>
+    8000630e:	85ca                	mv	a1,s2
+    80006310:	8556                	mv	a0,s5
+    80006312:	ffffc097          	auipc	ra,0xffffc
+    80006316:	eee080e7          	jalr	-274(ra) # 80002200 <sleep>
   while(b->disk == 1) {
-    8000608a:	004aa783          	lw	a5,4(s5)
-    8000608e:	fe9788e3          	beq	a5,s1,8000607e <virtio_disk_rw+0x17c>
+    8000631a:	004aa783          	lw	a5,4(s5)
+    8000631e:	fe9788e3          	beq	a5,s1,8000630e <virtio_disk_rw+0x17c>
   }
 
   disk.info[idx[0]].b = 0;
-    80006092:	f8042903          	lw	s2,-128(s0)
-    80006096:	20090713          	addi	a4,s2,512
-    8000609a:	0712                	slli	a4,a4,0x4
-    8000609c:	0001d797          	auipc	a5,0x1d
-    800060a0:	f6478793          	addi	a5,a5,-156 # 80023000 <disk>
-    800060a4:	97ba                	add	a5,a5,a4
-    800060a6:	0207b423          	sd	zero,40(a5)
+    80006322:	f8042903          	lw	s2,-128(s0)
+    80006326:	20090713          	addi	a4,s2,512
+    8000632a:	0712                	slli	a4,a4,0x4
+    8000632c:	0001d797          	auipc	a5,0x1d
+    80006330:	cd478793          	addi	a5,a5,-812 # 80023000 <disk>
+    80006334:	97ba                	add	a5,a5,a4
+    80006336:	0207b423          	sd	zero,40(a5)
     int flag = disk.desc[i].flags;
-    800060aa:	0001f997          	auipc	s3,0x1f
-    800060ae:	f5698993          	addi	s3,s3,-170 # 80025000 <disk+0x2000>
-    800060b2:	00491713          	slli	a4,s2,0x4
-    800060b6:	0009b783          	ld	a5,0(s3)
-    800060ba:	97ba                	add	a5,a5,a4
-    800060bc:	00c7d483          	lhu	s1,12(a5)
+    8000633a:	0001f997          	auipc	s3,0x1f
+    8000633e:	cc698993          	addi	s3,s3,-826 # 80025000 <disk+0x2000>
+    80006342:	00491713          	slli	a4,s2,0x4
+    80006346:	0009b783          	ld	a5,0(s3)
+    8000634a:	97ba                	add	a5,a5,a4
+    8000634c:	00c7d483          	lhu	s1,12(a5)
     int nxt = disk.desc[i].next;
-    800060c0:	854a                	mv	a0,s2
-    800060c2:	00e7d903          	lhu	s2,14(a5)
+    80006350:	854a                	mv	a0,s2
+    80006352:	00e7d903          	lhu	s2,14(a5)
     free_desc(i);
-    800060c6:	00000097          	auipc	ra,0x0
-    800060ca:	c60080e7          	jalr	-928(ra) # 80005d26 <free_desc>
+    80006356:	00000097          	auipc	ra,0x0
+    8000635a:	c60080e7          	jalr	-928(ra) # 80005fb6 <free_desc>
     if(flag & VRING_DESC_F_NEXT)
-    800060ce:	8885                	andi	s1,s1,1
-    800060d0:	f0ed                	bnez	s1,800060b2 <virtio_disk_rw+0x1b0>
+    8000635e:	8885                	andi	s1,s1,1
+    80006360:	f0ed                	bnez	s1,80006342 <virtio_disk_rw+0x1b0>
   free_chain(idx[0]);
 
   release(&disk.vdisk_lock);
-    800060d2:	0001f517          	auipc	a0,0x1f
-    800060d6:	05650513          	addi	a0,a0,86 # 80025128 <disk+0x2128>
-    800060da:	ffffb097          	auipc	ra,0xffffb
-    800060de:	baa080e7          	jalr	-1110(ra) # 80000c84 <release>
+    80006362:	0001f517          	auipc	a0,0x1f
+    80006366:	dc650513          	addi	a0,a0,-570 # 80025128 <disk+0x2128>
+    8000636a:	ffffb097          	auipc	ra,0xffffb
+    8000636e:	91a080e7          	jalr	-1766(ra) # 80000c84 <release>
 }
-    800060e2:	70e6                	ld	ra,120(sp)
-    800060e4:	7446                	ld	s0,112(sp)
-    800060e6:	74a6                	ld	s1,104(sp)
-    800060e8:	7906                	ld	s2,96(sp)
-    800060ea:	69e6                	ld	s3,88(sp)
-    800060ec:	6a46                	ld	s4,80(sp)
-    800060ee:	6aa6                	ld	s5,72(sp)
-    800060f0:	6b06                	ld	s6,64(sp)
-    800060f2:	7be2                	ld	s7,56(sp)
-    800060f4:	7c42                	ld	s8,48(sp)
-    800060f6:	7ca2                	ld	s9,40(sp)
-    800060f8:	7d02                	ld	s10,32(sp)
-    800060fa:	6de2                	ld	s11,24(sp)
-    800060fc:	6109                	addi	sp,sp,128
-    800060fe:	8082                	ret
+    80006372:	70e6                	ld	ra,120(sp)
+    80006374:	7446                	ld	s0,112(sp)
+    80006376:	74a6                	ld	s1,104(sp)
+    80006378:	7906                	ld	s2,96(sp)
+    8000637a:	69e6                	ld	s3,88(sp)
+    8000637c:	6a46                	ld	s4,80(sp)
+    8000637e:	6aa6                	ld	s5,72(sp)
+    80006380:	6b06                	ld	s6,64(sp)
+    80006382:	7be2                	ld	s7,56(sp)
+    80006384:	7c42                	ld	s8,48(sp)
+    80006386:	7ca2                	ld	s9,40(sp)
+    80006388:	7d02                	ld	s10,32(sp)
+    8000638a:	6de2                	ld	s11,24(sp)
+    8000638c:	6109                	addi	sp,sp,128
+    8000638e:	8082                	ret
   struct virtio_blk_req *buf0 = &disk.ops[idx[0]];
-    80006100:	f8042503          	lw	a0,-128(s0)
-    80006104:	20050793          	addi	a5,a0,512
-    80006108:	0792                	slli	a5,a5,0x4
+    80006390:	f8042503          	lw	a0,-128(s0)
+    80006394:	20050793          	addi	a5,a0,512
+    80006398:	0792                	slli	a5,a5,0x4
   if(write)
-    8000610a:	0001d817          	auipc	a6,0x1d
-    8000610e:	ef680813          	addi	a6,a6,-266 # 80023000 <disk>
-    80006112:	00f80733          	add	a4,a6,a5
-    80006116:	01a036b3          	snez	a3,s10
-    8000611a:	0ad72423          	sw	a3,168(a4)
+    8000639a:	0001d817          	auipc	a6,0x1d
+    8000639e:	c6680813          	addi	a6,a6,-922 # 80023000 <disk>
+    800063a2:	00f80733          	add	a4,a6,a5
+    800063a6:	01a036b3          	snez	a3,s10
+    800063aa:	0ad72423          	sw	a3,168(a4)
   buf0->reserved = 0;
-    8000611e:	0a072623          	sw	zero,172(a4)
+    800063ae:	0a072623          	sw	zero,172(a4)
   buf0->sector = sector;
-    80006122:	0b973823          	sd	s9,176(a4)
+    800063b2:	0b973823          	sd	s9,176(a4)
   disk.desc[idx[0]].addr = (uint64) buf0;
-    80006126:	7679                	lui	a2,0xffffe
-    80006128:	963e                	add	a2,a2,a5
-    8000612a:	0001f697          	auipc	a3,0x1f
-    8000612e:	ed668693          	addi	a3,a3,-298 # 80025000 <disk+0x2000>
-    80006132:	6298                	ld	a4,0(a3)
-    80006134:	9732                	add	a4,a4,a2
+    800063b6:	7679                	lui	a2,0xffffe
+    800063b8:	963e                	add	a2,a2,a5
+    800063ba:	0001f697          	auipc	a3,0x1f
+    800063be:	c4668693          	addi	a3,a3,-954 # 80025000 <disk+0x2000>
+    800063c2:	6298                	ld	a4,0(a3)
+    800063c4:	9732                	add	a4,a4,a2
   struct virtio_blk_req *buf0 = &disk.ops[idx[0]];
-    80006136:	0a878593          	addi	a1,a5,168
-    8000613a:	95c2                	add	a1,a1,a6
+    800063c6:	0a878593          	addi	a1,a5,168
+    800063ca:	95c2                	add	a1,a1,a6
   disk.desc[idx[0]].addr = (uint64) buf0;
-    8000613c:	e30c                	sd	a1,0(a4)
+    800063cc:	e30c                	sd	a1,0(a4)
   disk.desc[idx[0]].len = sizeof(struct virtio_blk_req);
-    8000613e:	6298                	ld	a4,0(a3)
-    80006140:	9732                	add	a4,a4,a2
-    80006142:	45c1                	li	a1,16
-    80006144:	c70c                	sw	a1,8(a4)
+    800063ce:	6298                	ld	a4,0(a3)
+    800063d0:	9732                	add	a4,a4,a2
+    800063d2:	45c1                	li	a1,16
+    800063d4:	c70c                	sw	a1,8(a4)
   disk.desc[idx[0]].flags = VRING_DESC_F_NEXT;
-    80006146:	6298                	ld	a4,0(a3)
-    80006148:	9732                	add	a4,a4,a2
-    8000614a:	4585                	li	a1,1
-    8000614c:	00b71623          	sh	a1,12(a4)
+    800063d6:	6298                	ld	a4,0(a3)
+    800063d8:	9732                	add	a4,a4,a2
+    800063da:	4585                	li	a1,1
+    800063dc:	00b71623          	sh	a1,12(a4)
   disk.desc[idx[0]].next = idx[1];
-    80006150:	f8442703          	lw	a4,-124(s0)
-    80006154:	628c                	ld	a1,0(a3)
-    80006156:	962e                	add	a2,a2,a1
-    80006158:	00e61723          	sh	a4,14(a2) # ffffffffffffe00e <end+0xffffffff7ffd800e>
+    800063e0:	f8442703          	lw	a4,-124(s0)
+    800063e4:	628c                	ld	a1,0(a3)
+    800063e6:	962e                	add	a2,a2,a1
+    800063e8:	00e61723          	sh	a4,14(a2) # ffffffffffffe00e <end+0xffffffff7ffd800e>
   disk.desc[idx[1]].addr = (uint64) b->data;
-    8000615c:	0712                	slli	a4,a4,0x4
-    8000615e:	6290                	ld	a2,0(a3)
-    80006160:	963a                	add	a2,a2,a4
-    80006162:	058a8593          	addi	a1,s5,88
-    80006166:	e20c                	sd	a1,0(a2)
+    800063ec:	0712                	slli	a4,a4,0x4
+    800063ee:	6290                	ld	a2,0(a3)
+    800063f0:	963a                	add	a2,a2,a4
+    800063f2:	058a8593          	addi	a1,s5,88
+    800063f6:	e20c                	sd	a1,0(a2)
   disk.desc[idx[1]].len = BSIZE;
-    80006168:	6294                	ld	a3,0(a3)
-    8000616a:	96ba                	add	a3,a3,a4
-    8000616c:	40000613          	li	a2,1024
-    80006170:	c690                	sw	a2,8(a3)
+    800063f8:	6294                	ld	a3,0(a3)
+    800063fa:	96ba                	add	a3,a3,a4
+    800063fc:	40000613          	li	a2,1024
+    80006400:	c690                	sw	a2,8(a3)
   if(write)
-    80006172:	e40d1ae3          	bnez	s10,80005fc6 <virtio_disk_rw+0xc4>
+    80006402:	e40d1ae3          	bnez	s10,80006256 <virtio_disk_rw+0xc4>
     disk.desc[idx[1]].flags = VRING_DESC_F_WRITE; // device writes b->data
-    80006176:	0001f697          	auipc	a3,0x1f
-    8000617a:	e8a6b683          	ld	a3,-374(a3) # 80025000 <disk+0x2000>
-    8000617e:	96ba                	add	a3,a3,a4
-    80006180:	4609                	li	a2,2
-    80006182:	00c69623          	sh	a2,12(a3)
-    80006186:	b5b9                	j	80005fd4 <virtio_disk_rw+0xd2>
+    80006406:	0001f697          	auipc	a3,0x1f
+    8000640a:	bfa6b683          	ld	a3,-1030(a3) # 80025000 <disk+0x2000>
+    8000640e:	96ba                	add	a3,a3,a4
+    80006410:	4609                	li	a2,2
+    80006412:	00c69623          	sh	a2,12(a3)
+    80006416:	b5b9                	j	80006264 <virtio_disk_rw+0xd2>
 
-0000000080006188 <virtio_disk_intr>:
+0000000080006418 <virtio_disk_intr>:
 
 void
 virtio_disk_intr()
 {
-    80006188:	1101                	addi	sp,sp,-32
-    8000618a:	ec06                	sd	ra,24(sp)
-    8000618c:	e822                	sd	s0,16(sp)
-    8000618e:	e426                	sd	s1,8(sp)
-    80006190:	e04a                	sd	s2,0(sp)
-    80006192:	1000                	addi	s0,sp,32
+    80006418:	1101                	addi	sp,sp,-32
+    8000641a:	ec06                	sd	ra,24(sp)
+    8000641c:	e822                	sd	s0,16(sp)
+    8000641e:	e426                	sd	s1,8(sp)
+    80006420:	e04a                	sd	s2,0(sp)
+    80006422:	1000                	addi	s0,sp,32
   acquire(&disk.vdisk_lock);
-    80006194:	0001f517          	auipc	a0,0x1f
-    80006198:	f9450513          	addi	a0,a0,-108 # 80025128 <disk+0x2128>
-    8000619c:	ffffb097          	auipc	ra,0xffffb
-    800061a0:	a34080e7          	jalr	-1484(ra) # 80000bd0 <acquire>
+    80006424:	0001f517          	auipc	a0,0x1f
+    80006428:	d0450513          	addi	a0,a0,-764 # 80025128 <disk+0x2128>
+    8000642c:	ffffa097          	auipc	ra,0xffffa
+    80006430:	7a4080e7          	jalr	1956(ra) # 80000bd0 <acquire>
   // we've seen this interrupt, which the following line does.
   // this may race with the device writing new entries to
   // the "used" ring, in which case we may process the new
   // completion entries in this interrupt, and have nothing to do
   // in the next interrupt, which is harmless.
   *R(VIRTIO_MMIO_INTERRUPT_ACK) = *R(VIRTIO_MMIO_INTERRUPT_STATUS) & 0x3;
-    800061a4:	10001737          	lui	a4,0x10001
-    800061a8:	533c                	lw	a5,96(a4)
-    800061aa:	8b8d                	andi	a5,a5,3
-    800061ac:	d37c                	sw	a5,100(a4)
+    80006434:	10001737          	lui	a4,0x10001
+    80006438:	533c                	lw	a5,96(a4)
+    8000643a:	8b8d                	andi	a5,a5,3
+    8000643c:	d37c                	sw	a5,100(a4)
 
   __sync_synchronize();
-    800061ae:	0ff0000f          	fence
+    8000643e:	0ff0000f          	fence
 
   // the device increments disk.used->idx when it
   // adds an entry to the used ring.
 
   while(disk.used_idx != disk.used->idx){
-    800061b2:	0001f797          	auipc	a5,0x1f
-    800061b6:	e4e78793          	addi	a5,a5,-434 # 80025000 <disk+0x2000>
-    800061ba:	6b94                	ld	a3,16(a5)
-    800061bc:	0207d703          	lhu	a4,32(a5)
-    800061c0:	0026d783          	lhu	a5,2(a3)
-    800061c4:	06f70163          	beq	a4,a5,80006226 <virtio_disk_intr+0x9e>
+    80006442:	0001f797          	auipc	a5,0x1f
+    80006446:	bbe78793          	addi	a5,a5,-1090 # 80025000 <disk+0x2000>
+    8000644a:	6b94                	ld	a3,16(a5)
+    8000644c:	0207d703          	lhu	a4,32(a5)
+    80006450:	0026d783          	lhu	a5,2(a3)
+    80006454:	06f70163          	beq	a4,a5,800064b6 <virtio_disk_intr+0x9e>
     __sync_synchronize();
     int id = disk.used->ring[disk.used_idx % NUM].id;
-    800061c8:	0001d917          	auipc	s2,0x1d
-    800061cc:	e3890913          	addi	s2,s2,-456 # 80023000 <disk>
-    800061d0:	0001f497          	auipc	s1,0x1f
-    800061d4:	e3048493          	addi	s1,s1,-464 # 80025000 <disk+0x2000>
+    80006458:	0001d917          	auipc	s2,0x1d
+    8000645c:	ba890913          	addi	s2,s2,-1112 # 80023000 <disk>
+    80006460:	0001f497          	auipc	s1,0x1f
+    80006464:	ba048493          	addi	s1,s1,-1120 # 80025000 <disk+0x2000>
     __sync_synchronize();
-    800061d8:	0ff0000f          	fence
+    80006468:	0ff0000f          	fence
     int id = disk.used->ring[disk.used_idx % NUM].id;
-    800061dc:	6898                	ld	a4,16(s1)
-    800061de:	0204d783          	lhu	a5,32(s1)
-    800061e2:	8b9d                	andi	a5,a5,7
-    800061e4:	078e                	slli	a5,a5,0x3
-    800061e6:	97ba                	add	a5,a5,a4
-    800061e8:	43dc                	lw	a5,4(a5)
+    8000646c:	6898                	ld	a4,16(s1)
+    8000646e:	0204d783          	lhu	a5,32(s1)
+    80006472:	8b9d                	andi	a5,a5,7
+    80006474:	078e                	slli	a5,a5,0x3
+    80006476:	97ba                	add	a5,a5,a4
+    80006478:	43dc                	lw	a5,4(a5)
 
     if(disk.info[id].status != 0)
-    800061ea:	20078713          	addi	a4,a5,512
-    800061ee:	0712                	slli	a4,a4,0x4
-    800061f0:	974a                	add	a4,a4,s2
-    800061f2:	03074703          	lbu	a4,48(a4) # 10001030 <_entry-0x6fffefd0>
-    800061f6:	e731                	bnez	a4,80006242 <virtio_disk_intr+0xba>
+    8000647a:	20078713          	addi	a4,a5,512
+    8000647e:	0712                	slli	a4,a4,0x4
+    80006480:	974a                	add	a4,a4,s2
+    80006482:	03074703          	lbu	a4,48(a4) # 10001030 <_entry-0x6fffefd0>
+    80006486:	e731                	bnez	a4,800064d2 <virtio_disk_intr+0xba>
       panic("virtio_disk_intr status");
 
     struct buf *b = disk.info[id].b;
-    800061f8:	20078793          	addi	a5,a5,512
-    800061fc:	0792                	slli	a5,a5,0x4
-    800061fe:	97ca                	add	a5,a5,s2
-    80006200:	7788                	ld	a0,40(a5)
+    80006488:	20078793          	addi	a5,a5,512
+    8000648c:	0792                	slli	a5,a5,0x4
+    8000648e:	97ca                	add	a5,a5,s2
+    80006490:	7788                	ld	a0,40(a5)
     b->disk = 0;   // disk is done with buf
-    80006202:	00052223          	sw	zero,4(a0)
+    80006492:	00052223          	sw	zero,4(a0)
     wakeup(b);
-    80006206:	ffffc097          	auipc	ra,0xffffc
-    8000620a:	fec080e7          	jalr	-20(ra) # 800021f2 <wakeup>
+    80006496:	ffffc097          	auipc	ra,0xffffc
+    8000649a:	ef6080e7          	jalr	-266(ra) # 8000238c <wakeup>
 
     disk.used_idx += 1;
-    8000620e:	0204d783          	lhu	a5,32(s1)
-    80006212:	2785                	addiw	a5,a5,1
-    80006214:	17c2                	slli	a5,a5,0x30
-    80006216:	93c1                	srli	a5,a5,0x30
-    80006218:	02f49023          	sh	a5,32(s1)
+    8000649e:	0204d783          	lhu	a5,32(s1)
+    800064a2:	2785                	addiw	a5,a5,1
+    800064a4:	17c2                	slli	a5,a5,0x30
+    800064a6:	93c1                	srli	a5,a5,0x30
+    800064a8:	02f49023          	sh	a5,32(s1)
   while(disk.used_idx != disk.used->idx){
-    8000621c:	6898                	ld	a4,16(s1)
-    8000621e:	00275703          	lhu	a4,2(a4)
-    80006222:	faf71be3          	bne	a4,a5,800061d8 <virtio_disk_intr+0x50>
+    800064ac:	6898                	ld	a4,16(s1)
+    800064ae:	00275703          	lhu	a4,2(a4)
+    800064b2:	faf71be3          	bne	a4,a5,80006468 <virtio_disk_intr+0x50>
   }
 
   release(&disk.vdisk_lock);
-    80006226:	0001f517          	auipc	a0,0x1f
-    8000622a:	f0250513          	addi	a0,a0,-254 # 80025128 <disk+0x2128>
-    8000622e:	ffffb097          	auipc	ra,0xffffb
-    80006232:	a56080e7          	jalr	-1450(ra) # 80000c84 <release>
+    800064b6:	0001f517          	auipc	a0,0x1f
+    800064ba:	c7250513          	addi	a0,a0,-910 # 80025128 <disk+0x2128>
+    800064be:	ffffa097          	auipc	ra,0xffffa
+    800064c2:	7c6080e7          	jalr	1990(ra) # 80000c84 <release>
 }
-    80006236:	60e2                	ld	ra,24(sp)
-    80006238:	6442                	ld	s0,16(sp)
-    8000623a:	64a2                	ld	s1,8(sp)
-    8000623c:	6902                	ld	s2,0(sp)
-    8000623e:	6105                	addi	sp,sp,32
-    80006240:	8082                	ret
+    800064c6:	60e2                	ld	ra,24(sp)
+    800064c8:	6442                	ld	s0,16(sp)
+    800064ca:	64a2                	ld	s1,8(sp)
+    800064cc:	6902                	ld	s2,0(sp)
+    800064ce:	6105                	addi	sp,sp,32
+    800064d0:	8082                	ret
       panic("virtio_disk_intr status");
-    80006242:	00002517          	auipc	a0,0x2
-    80006246:	63e50513          	addi	a0,a0,1598 # 80008880 <syscalls+0x3c0>
-    8000624a:	ffffa097          	auipc	ra,0xffffa
-    8000624e:	2f0080e7          	jalr	752(ra) # 8000053a <panic>
+    800064d2:	00002517          	auipc	a0,0x2
+    800064d6:	42650513          	addi	a0,a0,1062 # 800088f8 <syscalls+0x3c8>
+    800064da:	ffffa097          	auipc	ra,0xffffa
+    800064de:	060080e7          	jalr	96(ra) # 8000053a <panic>
 	...
 
 0000000080007000 <_trampoline>:

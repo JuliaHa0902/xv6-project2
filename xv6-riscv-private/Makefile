@@ -134,6 +134,8 @@ UPROGS=\
 	$U/_zombie\
 	$U/_test_getsyscallinfo\
 	$U/_ps\
+	$U/_foo\
+	$U/_test_settickets\
 
 fs.img: mkfs/mkfs README $(UPROGS)
 	mkfs/mkfs fs.img README $(UPROGS)

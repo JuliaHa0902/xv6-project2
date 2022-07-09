@@ -22,3 +22,4 @@
 #define SYS_close  21
 #define SYS_getsyscallinfo  22
 #define SYS_cps 23
+#define SYS_settickets 24

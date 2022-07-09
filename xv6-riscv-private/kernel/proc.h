@@ -110,5 +110,6 @@ struct proc {
   //new variables tracking the ticks of this process
   int hticks;
   int lticks;
+  int ticket;
   enum queue_name in_queue;
 };

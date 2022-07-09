@@ -109,3 +109,13 @@ sys_cps(void)
 {
 	return cps();
 }
+
+uint64
+sys_settickets(void)
+{
+	int num;
+	int pid = myproc()->pid;
+	if (argint (0, &num) < 0)
+		return -1;
+	return settickets (pid, num);
+}
